@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: detect-private-key
+      - id: check-case-conflict
+      - id: check-yaml
+      - id: check-json
+      - id: trailing-whitespace
+      - id: sort-simple-yaml
+      - id: mixed-line-ending
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.77.0 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_docs

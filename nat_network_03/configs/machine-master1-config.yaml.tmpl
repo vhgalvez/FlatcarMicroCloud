@@ -1,0 +1,661 @@
+variant: flatcar
+version: 1.1.0
+
+ignition:
+  version: 3.4.0
+
+passwd:
+  users:
+    - name: core
+      shell: /bin/bash
+      sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+      groups: [adm, wheel]
+      lock_passwd: false
+      ssh_authorized_keys:
+        - ${ssh_keys}
+    - name: root
+      shell: /bin/bash
+      ssh_authorized_keys:
+        - ${ssh_keys}
+      password_hash: "$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/"
+
+storage:
+  directories:
+    - path: /etc/kubernetes/pki
+      filesystem: root
+      mode: 0755
+    - path: /opt/bin
+      filesystem: root
+      mode: 0755
+    - path: /etc/cni/net.d
+      filesystem: root
+      mode: 0755
+
+  files:
+    - path: /etc/hostname
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: ${host_name}
+
+    - path: /etc/kubernetes/kubelet.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Config
+          clusters:
+          - cluster:
+              certificate-authority: /etc/kubernetes/pki/ca.pem
+              server: https://${ip}:6443
+            name: local
+          contexts:
+          - context:
+              cluster: local
+              user: kubelet
+            name: local
+          current-context: local
+          users:
+          - name: kubelet
+            user:
+              client-certificate: /etc/kubernetes/pki/kubelet-${node_name}.pem
+              client-key: /etc/kubernetes/pki/kubelet-${node_name}-key.pem
+
+    - path: /etc/kubernetes/manifests/kube-apiserver.yaml
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kube-apiserver
+            namespace: kube-system
+            labels:
+              component: kube-apiserver
+              tier: control-plane
+          spec:
+            containers:
+            - name: kube-apiserver
+              image: k8s.gcr.io/kube-apiserver:v1.21.0
+              command:
+              - kube-apiserver
+              - --advertise-address=${ip}
+              - --allow-privileged=true
+              - --authorization-mode=Node,RBAC
+              - --client-ca-file=/etc/kubernetes/pki/ca.pem
+              - --enable-admission-plugins=NodeRestriction
+              - --etcd-servers=https://${ip}:2379
+              - --etcd-cafile=/etc/kubernetes/pki/etcd/ca.pem
+              - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.pem
+              - --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client-key.pem
+              - --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.pem
+              - --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client-key.pem
+              - --runtime-config=api/all=true
+              - --service-account-key-file=/etc/kubernetes/pki/sa.pem
+              - --service-account-signing-key-file=/etc/kubernetes/pki/sa-key.pem
+              - --service-account-issuer=https://kubernetes.default.svc.cluster.local
+              - --service-cluster-ip-range=10.96.0.0/12
+              - --tls-cert-file=/etc/kubernetes/pki/apiserver.pem
+              - --tls-private-key-file=/etc/kubernetes/pki/apiserver-key.pem
+              - --v=2
+              ports:
+              - containerPort: 6443
+                hostPort: 6443
+                name: https
+                protocol: TCP
+              livenessProbe:
+                httpGet:
+                  path: /healthz
+                  port: 6443
+                  scheme: HTTPS
+                initialDelaySeconds: 15
+                timeoutSeconds: 15
+              readinessProbe:
+                httpGet:
+                  path: /healthz
+                  port: 6443
+                  scheme: HTTPS
+                initialDelaySeconds: 15
+                timeoutSeconds: 15
+              volumeMounts:
+              - mountPath: /etc/kubernetes/pki
+                name: pki
+                readOnly: true
+              - mountPath: /var/lib/kubernetes
+                name: var-lib-kubernetes
+                readOnly: true
+            hostNetwork: true
+            volumes:
+            - name: pki
+              hostPath:
+                path: /etc/kubernetes/pki
+            - name: var-lib-kubernetes
+              hostPath:
+                path: /var/lib/kubernetes
+            - name: etc-kubernetes-manifests
+              hostPath:
+                path: /etc/kubernetes/manifests
+            - name: etc-ssl-certs
+              hostPath:
+                path: /etc/ssl/certs
+
+    - path: /etc/kubernetes/kubelet-config.yaml
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          kind: KubeletConfiguration
+          apiVersion: kubelet.config.k8s.io/v1beta1
+          authentication:
+            x509:
+              clientCAFile: "/etc/kubernetes/pki/ca.pem"
+          authorization:
+            mode: Webhook
+          serverTLSBootstrap: true
+          tlsCertFile: "/etc/kubernetes/pki/kubelet-${node_name}.pem"
+          tlsPrivateKeyFile: "/etc/kubernetes/pki/kubelet-${node_name}-key.pem"
+          cgroupDriver: systemd
+          runtimeRequestTimeout: "15m"
+          containerRuntimeEndpoint: "unix:///var/run/crio/crio.sock"
+
+    - path: /etc/kubernetes/kube-proxy-config.yaml
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: kubeproxy.config.k8s.io/v1alpha1
+          kind: KubeProxyConfiguration
+          clientConnection:
+            kubeconfig: "/etc/kubernetes/kube-proxy.kubeconfig"
+          mode: "iptables"
+          clusterCIDR: "10.244.0.0/16"
+
+    - path: /etc/systemd/network/10-eth0.network
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          [Match]
+          Name=eth0
+
+          [Network]
+          Address=${ip}/24
+          Gateway=${gateway}
+          DNS=${dns1}
+          DNS=${dns2}
+
+    - path: /etc/tmpfiles.d/hosts.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          f /etc/hosts 0644 - - - -
+          127.0.0.1   localhost
+          ::1         localhost
+          ${ip}  ${host_name} ${node_name}
+
+    - path: /run/systemd/resolve/resolv.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          nameserver ${dns1}
+          nameserver ${dns2}
+
+    - path: /etc/tmpfiles.d/resolv.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
+
+    - path: /etc/kubernetes/scheduler.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Config
+          clusters:
+          - cluster:
+              certificate-authority: /etc/kubernetes/pki/ca.pem
+              server: https://${ip}:6443
+            name: kubernetes
+          contexts:
+          - context:
+              cluster: kubernetes
+              user: system:kube-scheduler
+            name: system:kube-scheduler@kubernetes
+          current-context: system:kube-scheduler@kubernetes
+          users:
+          - name: system:kube-scheduler
+            user:
+              client-certificate: /etc/kubernetes/pki/kube-scheduler.pem
+              client-key: /etc/kubernetes/pki/kube-scheduler-key.pem
+
+    - path: /etc/kubernetes/controller-manager.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Config
+          clusters:
+          - cluster:
+              certificate-authority: /etc/kubernetes/pki/ca.pem
+              server: https://${ip}:6443
+            name: kubernetes
+          contexts:
+          - context:
+              cluster: kubernetes
+              user: system:kube-controller-manager
+            name: system:kube-controller-manager@kubernetes
+          current-context: system:kube-controller-manager@kubernetes
+          users:
+          - name: system:kube-controller-manager
+            user:
+              client-certificate: /etc/kubernetes/pki/kube-controller-manager.pem
+              client-key: /etc/kubernetes/pki/kube-controller-manager-key.pem
+
+    - path: /etc/kubernetes/kube-proxy.kubeconfig
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Config
+          clusters:
+          - cluster:
+              certificate-authority: /etc/kubernetes/pki/ca.pem
+              server: https://${ip}:6443
+            name: kubernetes
+          contexts:
+          - context:
+              cluster: kubernetes
+              user: system:kube-proxy
+            name: default
+          current-context: default
+          users:
+          - name: system:kube-proxy
+            user:
+              client-certificate: /etc/kubernetes/pki/kube-proxy.pem
+              client-key: /etc/kubernetes/pki/kube-proxy-key.pem
+
+    - path: /home/core/install-components.sh
+      filesystem: root
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          exec > /var/log/install-components.log 2>&1
+
+          # Crear directorios necesarios
+          sudo mkdir -p /opt/bin /etc/kubernetes/pki /opt/cni/bin /etc/kubernetes/pki/etcd /etc/kubernetes/manifests/
+
+          # Instalar kube-proxy (v1.31.0)
+          sudo curl -L -o /tmp/kube-proxy https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kube-proxy
+          sudo mv /tmp/kube-proxy /opt/bin/kube-proxy
+          sudo chmod +x /opt/bin/kube-proxy
+
+          # Instalar etcd (v3.5.9)
+          sudo curl -L -o /tmp/etcd.tar.gz https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-linux-amd64.tar.gz
+          sudo tar -xzf /tmp/etcd.tar.gz -C /tmp
+          sudo mv /tmp/etcd-v3.5.9-linux-amd64/etcd /opt/bin/etcd
+          sudo chmod +x /opt/bin/etcd
+          sudo rm -rf /tmp/etcd.tar.gz /tmp/etcd-v3.5.9-linux-amd64
+
+          # Instalar kube-apiserver (v1.31.0)
+          sudo curl -L -o /tmp/kube-apiserver https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kube-apiserver
+          sudo mv /tmp/kube-apiserver /opt/bin/kube-apiserver
+          sudo chmod +x /opt/bin/kube-apiserver
+
+          # Instalar kube-controller-manager (v1.31.0)
+          sudo curl -L -o /tmp/kube-controller-manager https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kube-controller-manager
+          sudo mv /tmp/kube-controller-manager /opt/bin/kube-controller-manager
+          sudo chmod +x /opt/bin/kube-controller-manager
+
+          # Instalar kube-scheduler (v1.31.0)
+          sudo curl -L -o /tmp/kube-scheduler https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kube-scheduler
+          sudo mv /tmp/kube-scheduler /opt/bin/kube-scheduler
+          sudo chmod +x /opt/bin/kube-scheduler
+
+          # Instalar oc (OpenShift Client)
+          sudo curl -L -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
+          sudo tar -xzf /tmp/oc.tar.gz -C /tmp
+          sudo mv /tmp/oc /opt/bin/oc
+          sudo chmod +x /opt/bin/oc
+          sudo rm -rf /tmp/oc.tar.gz
+
+          # Instalar kubelet (v1.31.0)
+          sudo curl -L -o /opt/bin/kubelet https://storage.googleapis.com/kubernetes-release/release/v1.31.0/bin/linux/amd64/kubelet
+          sudo chmod +x /opt/bin/kubelet
+    
+          # Descargar e instalar CRI-O (v1.30.5)
+          sudo curl -L -o /tmp/crio.tar.gz "https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.30.5.tar.gz"
+          sudo tar -xzf /tmp/crio.tar.gz -C /opt/bin/
+          sudo chmod +x /opt/bin/cri-o/crio/bin/*
+          sudo rm -rf /tmp/crio.tar.gz
+
+          # Añadir CRI-O y CNI al PATH
+          export PATH=$PATH:/opt/bin/
+          export PATH=$PATH:/opt/bin/cri-o/bin/
+
+          # Descargar archivo de instalación de CRI-O y plugins CNI
+          sudo curl --retry 5 --retry-delay 10 -L -o /home/core/install "http://10.17.3.14/install-cri-o/install" >> /home/core/curl-download.log 2>&1
+          sudo chmod +x /home/core/install
+          sudo /home/core/install >> /home/core/install.log 2>&1
+
+          # Descargar los certificados del servidor web
+          sudo curl -o /etc/kubernetes/pki/ca.pem http://10.17.3.14/certificates/shared/ca.pem
+          sudo curl -o /etc/kubernetes/pki/admin.pem http://10.17.3.14/certificates/shared/admin.pem
+          sudo curl -o /etc/kubernetes/pki/admin-key.pem http://10.17.3.14/certificates/shared/admin-key.pem
+
+          # Descargar certificados de Kubelet y API Server
+          sudo curl -o /etc/kubernetes/pki/apiserver.pem http://10.17.3.14/certificates/apiserver/apiserver.pem
+          sudo curl -o /etc/kubernetes/pki/apiserver-key.pem http://10.17.3.14/certificates/apiserver/apiserver-key.pem
+          sudo curl -o /etc/kubernetes/pki/kubelet-bootstrap.pem http://10.17.3.14/certificates/kubelet/kubelet-bootstrap.pem
+          sudo curl -o /etc/kubernetes/pki/kubelet-bootstrap-key.pem http://10.17.3.14/certificates/kubelet/kubelet-bootstrap-key.pem
+
+          # Descargar certificados adicionales
+          sudo curl -o /etc/kubernetes/pki/apiserver-etcd-client.pem http://10.17.3.14/certificates/apiserver-etcd-client/apiserver-etcd-client.pem
+          sudo curl -o /etc/kubernetes/pki/apiserver-etcd-client-key.pem http://10.17.3.14/certificates/apiserver-etcd-client/apiserver-etcd-client-key.pem
+          sudo curl -o /etc/kubernetes/pki/apiserver-kubelet-client.pem http://10.17.3.14/certificates/apiserver/apiserver-kubelet-client.pem
+          sudo curl -o /etc/kubernetes/pki/apiserver-kubelet-client-key.pem http://10.17.3.14/certificates/apiserver/apiserver-kubelet-client-key.pem
+
+          # Descargar certificados de Kube Scheduler, Controller Manager y Proxy
+          sudo curl -o /etc/kubernetes/pki/kube-scheduler.pem http://10.17.3.14/certificates/kube-scheduler/kube-scheduler.pem
+          sudo curl -o /etc/kubernetes/pki/kube-scheduler-key.pem http://10.17.3.14/certificates/kube-scheduler/kube-scheduler-key.pem
+          sudo curl -o /etc/kubernetes/pki/kube-controller-manager.pem http://10.17.3.14/certificates/kube-controller-manager/kube-controller-manager.pem
+          sudo curl -o /etc/kubernetes/pki/kube-controller-manager-key.pem http://10.17.3.14/certificates/kube-controller-manager/kube-controller-manager-key.pem
+          sudo curl -o /etc/kubernetes/pki/kube-proxy.pem http://10.17.3.14/certificates/kube-proxy/kube-proxy.pem
+          sudo curl -o /etc/kubernetes/pki/kube-proxy-key.pem http://10.17.3.14/certificates/kube-proxy/kube-proxy-key.pem
+
+          # Descargar certificados específicos de Kubelet para cada nodo (reemplazar ${node_name} con el nombre del nodo)
+          sudo curl -o /etc/kubernetes/pki/kubelet-${node_name}.pem http://10.17.3.14/certificates/kubelet/${node_name}.pem
+          sudo curl -o /etc/kubernetes/pki/kubelet-${node_name}-key.pem http://10.17.3.14/certificates/kubelet/${node_name}-key.pem
+
+          # Descargar certificados del Service Account
+          sudo curl -o /etc/kubernetes/pki/sa-key.pem http://10.17.3.14/certificates/sa/sa-key.pem
+          sudo curl -o /etc/kubernetes/pki/sa.pem http://10.17.3.14/certificates/sa/sa.pem
+
+          # Descargar certificados de ETCD (reemplazar ${ip} con la IP del nodo ETCD correspondiente)
+          sudo curl -o /etc/kubernetes/pki/etcd/etcd-${ip}.pem http://10.17.3.14/certificates/etcd/etcd-${ip}.pem
+          sudo curl -o /etc/kubernetes/pki/etcd/etcd-${ip}-key.pem http://10.17.3.14/certificates/etcd/etcd-${ip}-key.pem
+
+          # Ajustar permisos de archivos y directorios
+          sudo chown root:root /etc/kubernetes/pki/*.pem
+          sudo chmod 644 /etc/kubernetes/pki/*.pem
+          sudo chmod 600 /etc/kubernetes/pki/*-key.pem
+
+          # Ajustar permisos para la carpeta y los archivos de etcd
+          sudo chown -R etcd:etcd /etc/kubernetes/pki/etcd
+          sudo chmod 600 /etc/kubernetes/pki/etcd/*.pem
+          sudo chmod 600 /etc/kubernetes/pki/etcd/*-key.pem
+
+          # Ajustar permisos para la carpeta de datos de etcd
+          sudo chown -R etcd:etcd /var/lib/etcd
+          sudo chmod -R 700 /var/lib/etcd
+
+          # Ajustar permisos para el certificado de bootstrap
+          sudo chown root:root /etc/kubernetes/pki/kubelet-bootstrap*.pem
+          sudo chmod 600 /etc/kubernetes/pki/kubelet-bootstrap*.pem
+
+          # Ajustar permisos para las claves del service account
+          sudo chmod 644 /etc/kubernetes/pki/sa.pem
+
+          sudo chmod 644 /etc/kubernetes/pki/*.pem
+          sudo chmod 600 /etc/kubernetes/pki/*-key.pem
+          sudo chmod 644 /etc/kubernetes/pki/etcd/*.pem
+          sudo chmod 600 /etc/kubernetes/pki/etcd/*-key.pem
+
+          sudo chmod 644 /etc/kubernetes/pki/*.pem
+          sudo chmod 600 /etc/kubernetes/pki/*-key.pem
+
+
+          sudo chmod 600 /etc/kubernetes/pki/kubelet.pem /etc/kubernetes/pki/kubelet-key.pem
+
+           
+          sudo systemctl daemon-reload
+          sudo systemctl enable --now crio kubelet kube-proxy etcd kube-controller-manager kube-apiserver kube-scheduler
+          sudo systemctl start crio kubelet kube-proxy etcd kube-controller-manager kube-apiserver kube-scheduler
+
+systemd:
+  units:
+    - name: crio.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=CRI-O container runtime
+        After=network.target
+
+        [Service]
+        Type=notify
+        ExecStart=/opt/bin/crio
+        Environment="PATH=/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        Restart=always
+        RestartSec=5
+        LimitNOFILE=65536
+        LimitNPROC=4096
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: etcd.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=etcd - Distributed Key-Value Store
+        Documentation=https://github.com/etcd-io/etcd
+        After=network.target download-certificates.service
+        Wants=network-online.target
+
+        [Service]
+        User=etcd
+        Type=notify
+        WorkingDirectory=/var/lib/etcd
+        ExecStart=/opt/bin/etcd \
+          --name=etcd-${ip} \
+          --data-dir=/var/lib/etcd \
+          --initial-advertise-peer-urls=https://${ip}:2380 \
+          --listen-peer-urls=https://${ip}:2380 \
+          --listen-client-urls=https://${ip}:2379,https://127.0.0.1:2379 \
+          --advertise-client-urls=https://${ip}:2379 \
+          --initial-cluster=etcd-${ip}=https://${ip}:2380 \
+          --initial-cluster-state=new \
+          --initial-cluster-token=etcd-cluster-token \
+          --cert-file=/etc/kubernetes/pki/etcd/etcd-${ip}.pem \
+          --key-file=/etc/kubernetes/pki/etcd/etcd-${ip}-key.pem \
+          --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem \
+          --client-cert-auth=true \
+          --peer-cert-file=/etc/kubernetes/pki/etcd/etcd-${ip}.pem \
+          --peer-key-file=/etc/kubernetes/pki/etcd/etcd-${ip}-key.pem \
+          --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem \
+          --peer-client-cert-auth=true
+        Restart=always
+        RestartSec=10s
+        LimitNOFILE=40000
+
+        [Install]
+        WantedBy=multi-user.target     
+
+    - name: apply-network-routes.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Apply custom network routes
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: set-hosts.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set /etc/hosts file
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: download-certificates.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Download Kubernetes Certificates
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash /home/core/download-certificates.sh
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: install-components.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Install Kubernetes components
+        After=download-certificates.service
+        Wants=download-certificates.service
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash /home/core/install-components.sh
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: kube-apiserver.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Kubernetes API Server
+        Documentation=https://kubernetes.io/docs/concepts/overview/components/
+        After=network.target
+
+        [Service]
+        ExecStart=/opt/bin/kube-apiserver \
+          --advertise-address=${ip} \
+          --allow-privileged=true \
+          --authorization-mode=Node,RBAC \
+          --client-ca-file=/etc/kubernetes/pki/ca.pem \
+          --enable-admission-plugins=NodeRestriction \
+          --etcd-servers=https://${ip}:2379 \
+          --etcd-cafile=/etc/kubernetes/pki/etcd/ca.pem \
+          --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.pem \
+          --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client-key.pem \
+          --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.pem \
+          --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client-key.pem \
+          --runtime-config=api/all=true \
+          --service-account-key-file=/etc/kubernetes/pki/sa.pem \
+          --service-account-signing-key-file=/etc/kubernetes/pki/sa-key.pem \
+          --service-account-issuer=https://kubernetes.default.svc.cluster.local \
+          --service-cluster-ip-range=10.96.0.0/12 \
+          --tls-cert-file=/etc/kubernetes/pki/apiserver.pem \
+          --tls-private-key-file=/etc/kubernetes/pki/apiserver-key.pem \
+          --v=2
+
+        Restart=on-failure
+        RestartSec=5
+
+        [Install]
+        WantedBy=multi-user.target
+      
+    - name: kube-controller-manager.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Kubernetes Controller Manager
+        Documentation=https://kubernetes.io/docs/concepts/overview/components/
+        After=network.target
+
+        [Service]
+        ExecStart=/opt/bin/kube-controller-manager \
+          --kubeconfig=/etc/kubernetes/controller-manager.conf \
+          --bind-address=0.0.0.0 \
+          --leader-elect=true \
+          --use-service-account-credentials=true \
+          --controllers=*,bootstrapsigner,tokencleaner \
+          --cluster-signing-cert-file=/etc/kubernetes/pki/ca.pem \
+          --cluster-signing-key-file=/etc/kubernetes/pki/ca-key.pem \
+          --root-ca-file=/etc/kubernetes/pki/ca.pem \
+          --service-account-private-key-file=/etc/kubernetes/pki/sa-key.pem \
+          --cluster-name=kubernetes \
+          --cluster-cidr=10.244.0.0/16 \
+          --allocate-node-cidrs=true \
+          --node-cidr-mask-size=24 \
+          --service-cluster-ip-range=10.96.0.0/12 \
+          --v=2
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: kube-scheduler.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Kubernetes Scheduler
+        Documentation=https://kubernetes.io/docs/concepts/overview/components/
+        After=network.target
+
+        [Service]
+        ExecStart=/opt/bin/kube-scheduler --kubeconfig=/etc/kubernetes/scheduler.conf --leader-elect=true --v=2
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: kubelet.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=kubelet: The Kubernetes Node Agent
+        Documentation=https://kubernetes.io/docs/
+        Wants=crio.service
+        After=crio.service
+
+        [Service]
+        ExecStart=/opt/bin/kubelet --config=/etc/kubernetes/kubelet-config.yaml --kubeconfig=/etc/kubernetes/kubelet.conf
+        Restart=always
+        StartLimitInterval=0
+        RestartSec=10
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: kube-proxy.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Kubernetes Kube-Proxy Server
+        Documentation=https://kubernetes.io/docs/
+        After=network.target
+
+        [Service]
+        ExecStart=/opt/bin/kube-proxy --config=/etc/kubernetes/kube-proxy-config.yaml
+        Restart=always
+        RestartSec=5
+        LimitNOFILE=65536
+        LimitNPROC=4096
+
+        [Install]
+        WantedBy=multi-user.target

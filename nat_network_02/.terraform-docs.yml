@@ -1,0 +1,26 @@
+# https://terraform-docs.io/user-guide/configuration/
+
+formatter: "markdown table"
+
+sections:
+  show:
+    - requirements
+    - providers
+    - inputs
+    - outputs
+
+sort:
+  enabled: true
+  by: required
+
+settings:
+  default: false
+  lockfile: false
+  hide-empty: true
+
+output:
+  file: README.md
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->

@@ -1,0 +1,120 @@
+#cloud-config
+growpart:
+  mode: auto
+  devices: ["/"]
+  ignore_growroot_disabled: false
+
+resize_rootfs: noblock
+
+chpasswd:
+  expire: false
+ssh_pwauth: true
+disable_root: false
+
+users:
+  - default
+  - name: serra
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: adm,wheel
+    passwd: $6$HE/RBjEb$dQXF27SB4..................
+    lock_passwd: false
+    ssh_authorized_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDC9XqGWEd2de3Ud8TgvzFchK2/SYh+WHohA1KEuveXjCbse9aXKmNAZ369vaGFFGrxbSptMeEt41ytEFpU09gAXM6KSsQWGZxfkCJQSWIaIEAdft7QHnTpMeronSgYZIU+5P7/RJcVhHBXfjLHV6giHxFRJ9MF7n6sms38VsuF2s4smI03DWGWP6Ro7siXvd+LBu2gDqosQaZQiz5/FX5YWxvuhq0E/ACas/JE8fjIL9DQPcFrgQkNAv1kHpIWRqSLPwyTMMxGgFxGI8aCTH/Uaxbqa7Qm/aBfdG2lZBE1XU6HRjAToFmqsPJv4LkBxaC1Ag62QPXONNxAA97arICr vhgalvez@gmail.com"
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFF4U68b4mR8YBBq76u+UzNjCu+epodUgc3HbUTFMWhY2arZdzPHlsuI7bgqXD38dCyVtn2MD6pxdIm+cOv9RVQn2h9taHF7Iywxh6oxaQUlxQ19WYPEfQ7ZuWhZyIFG8TDlfBWaUlZOVbNl0e3TdRA3DQYkbx2W6hnXShB1Gf+NdV1C6y3jwyaV4UcbaMv4irKyc8BWPzpHBD67bOJ3RMzQ+1Vhny2nYboF3oAnM12ab9D8fzVYGr0Wy+Hd7JHMjMeYLgqr+BSltnSi+VhD5f1thCGZryprogQd4YcuKFCqin+yK72mn8bwfL/nTLV/XPaAAZM3ZE6eMhRghpfJ+hn3DFTkQGFwk1VJI9gHvIdZVeU8/sz7Y9ZT2pWzHLQrb7w12vFwBCnUvxQZyylLCXx9pw1CGmK3nzlJPSL79q5Yd/v1YNn/D8L2LlOzyPeHeTlCinCUwRBGj2zCKRmlNViq34NduI+4H3T5+T63J2uDXCXZ6ihyP3lI1EkPKMJQc= root@azure"
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQtHcKWdBG3rUXmZlvKImL5cp8TgG1Y326uSoWCA4JALCXzH9VvCjd1F/KkivffRS205TuPyylnFLVFNBX5WiSaIpF6+Is/nRI1SDe4Zp2EWgHKyDaLbGFYtoOOU+EGk8sNj3rxIMNcG2hjPRf5JHhaz3c84Ra6wlsZInH6dQsnI9wMlNEDe1wlDWsp13k1aw7w8YKgIOQNFh4ZcIbM1MZXuEqV8x4RBUChjFbVarh0m59O9AYntm+iF2qFpmIZOQgFqsrbf4yufWGusHyO9ZMELYi9/TUnEcisbgepzAFzifX3Y8z1DIiPR9iny3zig9vrNiNJ2/nDW/RiGKHBc33 root@ovh"
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCepHyz7nybFjTUmy2q/LktHIkIQ/SzFUkppaNpRJvqjWeasWaxbQPYTCeccdSaXl2Qhk6kO1tjIY/W4H0AfGipeRV4XgQ+SdbPwuIDsNhu+JrdGwGm7UdbXPkJ/hi6qfXcrIIbGSTFi6ZLhUV/8ajraCO9FVvQQa/T8UPfXyb1at6TIJ6E5/T/wvc+zyvusmvgqppTf4uV1rwe9lA6tnJnQBQ0JbJwx0rnVhXmaVK5ugF5CXYXh9EAHjCq8XzVE+p4PmPItjLZv+76w7X0I2hl6spBd6jkS4lZ0JFCI7kLH2vmcPKkFlCyRJrTaIAlmxDvjFYPV53f3cKv+z6fuZBn ofsen"
+  - name: root
+    passwd: $6$l8cuFHX3KS.......................
+    ssh_authorized_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAsA1JBEUJMBkDmWXlceuqV77pUoUF6O0gGJTcnwcCOQAR6fNWzZJkf8Fjp/nyjENg9sZyE9whZUqBBXO25H6apSD47Jx0ebHZbH+F5CBo8onG1UwmILWMZMDuIPdRiIS5L7eoyYJ6cGTriJu7ABaUpu9As+Wkj0C62uhb240AJPdsADKNhfvmBED+l9H2vt9EpStweMYjD+xqO9ZxW6E/0cfWrJyjE3M7t1lqtbVadV0F73clOHPC51FirEj/G0QCSvkmppBKTl73gLRe6AVmP0+eQIYU9QLIHiWATDa73veB+t1E7vib5JxCQo8//jSiFjNgs/KY0yZuOCj7PUxPow== user1"
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFF4U68b4mR8YBBq76u+UzNjCu+epodUgc3HbUTFMWhY2arZdzPHlsuI7bgqXD38dCyVtn2MD6pxdIm+cOv9RVQn2h9taHF7Iywxh6oxaQUlxQ19WYPEfQ7ZuWhZyIFG8TDlfBWaUlZOVbNl0e3TdRA3DQYkbx2W6hnXShB1Gf+NdV1C6y3jwyaV4UcbaMv4irKyc8BWPzpHBD67bOJ3RMzQ+1Vhny2nYboF3oAnM12ab9D8fzVYGr0Wy+Hd7JHMjMeYLgqr+BSltnSi+VhD5f1thCGZryprogQd4YcuKFCqin+yK72mn8bwfL/nTLV/XPaAAZM3ZE6eMhRghpfJ+hn3DFTkQGFwk1VJI9gHvIdZVeU8/sz7Y9ZT2pWzHLQrb7w12vFwBCnUvxQZyylLCXx9pw1CGmK3nzlJPSL79q5Yd/v1YNn/D8L2LlOzyPeHeTlCinCUwRBGj2zCKRmlNViq34NduI+4H3T5+T63J2uDXCXZ6ihyP3lI1EkPKMJQc= user2@domain"
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCepHyz7nybFjTUmy2q/LktHIkIQ/SzFUkppaNpRJvqjWeasWaxbQPYTCeccdSaXl2Qhk6kO1tjIY/W4H0AfGipeRV4XgQ+SdbPwuIDsNhu+JrdGwGm7UdbXPkJ/hi6qfXcrIIbGSTFi6ZLhUV/8ajraCO9FVvQQa/T8UPfXyb1at6TIJ6E5/T/wvc+zyvusmvgqppTf4uV1rwe9lA6tnJnQBQ0JbJwx0rnVhXmaVK5ugF5CXYXh9EAHjCq8XzVE+p4PmPItjLZv+76w7X0I2hl6spBd6jkS4lZ0JFCI7kLH2vmcPKkFlCyRJrTaIAlmxDvjFYPV53f3cKv+z6fuZBn ofsen"
+
+timezone: Europe/London
+# Disable selinux with overwriting conf file
+write_files:
+-   encoding: b64
+    content: U0VMSU5VWD1kaXNhYmxlZApTRUxJTlVYVFlQRT10YXJnZXRlZCAKIyAK
+    owner: root:root
+    path: /etc/sysconfig/selinux
+    permissions: '0644'
+
+-   encoding: b64
+    content: VFlQRT0iRXRoZXJuZXQiClBST1hZX01FVEhPRD0ibm9uZSIKQlJPV1NFUl9PTkxZPSJubyIKQk9PVFBST1RPPSJub25lIgpERUZST1VURT0ieWVzIgpJUFY0X0ZBSUxVUkVfRkFUQUw9Im5vIgpJUFY2SU5JVD0ibm8iCk5BTUU9ImV0aDAiCkRFVklDRT0iZXRoMCIKT05CT09UPSJ5ZXMiCklQQUREUj0iMTkyLjE2OC4xMjIuMjQ5IgpQUkVGSVg9IjI0IgpHQVRFV0FZPSIxOTIuMTY4LjEyMi4xIgpETlMxPSI4LjguOC44IgoK
+    owner: root:root
+    path:  /etc/sysconfig/network-scripts/ifcfg-eth0
+    permissions: '0644'
+
+
+-   encoding: b64
+    content: R1JVQl9USU1FT1VUPTUKR1JVQl9ESVNUUklCVVRPUj0iJChzZWQgJ3MsIHJlbGVhc2UgLiokLCxnJyAvZXRjL3N5c3RlbS1yZWxlYXNlKSIKR1JVQl9ERUZBVUxUPXNhdmVkCkdSVUJfRElTQUJMRV9TVUJNRU5VPWZhbHNlCkdSVUJfVEVSTUlOQUw9ImNvbnNvbGUiCiNHUlVCX1RFUk1JTkFMPSJjb25zb2xlIHNlcmlhbCIKR1JVQl9TRVJJQUxfQ09NTUFORD0ic2VyaWFsIC0tc3BlZWQ9MTE1MjAwIgojR1JVQl9DTURMSU5FX0xJTlVYPSJpcHY2LmRpc2FibGU9MSBjb25zb2xlPXR0eTEgZWFybHlwcmludGs9dHR5UzAgY3Jhc2hrZXJuZWw9YXV0byBjb25zb2xlPXR0eVMwLDExNTIwMCIKR1JVQl9DTURMSU5FX0xJTlVYPSJpcHY2LmRpc2FibGU9MSBjb25zb2xlPXR0eTAgY3Jhc2hrZXJuZWw9YXV0byIKR1JVQl9ESVNBQkxFX1JFQ09WRVJZPSJmYWxzZSIKCg==
+    owner: root:root
+    path: /etc/default/grub
+    permissions: '0644'
+
+-   encoding: b64
+    content: IyEvYmluL2Jhc2gKdG91Y2ggL3Zhci9sb2NrL3N1YnN5cy9sb2NhbAppZiBbWyAtZiAvZXRjL3JjLmxvY2FsLnJlYm9vdG9uY2UgXV0gCnRoZW4KICAgYmFzaCAvZXRjL3JjLmxvY2FsLnJlYm9vdG9uY2UKZmkK
+    owner: root:root
+    path: /etc/rc.d/rc.local
+    permissions: '0755'
+
+-   encoding: b64
+    content: Cm5ldC5pcHY2LmNvbmYuYWxsLmRpc2FibGVfaXB2NiA9IDEKbmV0LmlwdjYuY29uZi5kZWZhdWx0LmRpc2FibGVfaXB2NiA9IDEK
+    owner: root:root
+    path: /etc/sysctl.conf
+    permissions: '0644'
+
+-   encoding: b64
+    content: TXkgSVAgYWRkcmVzczogXDR7ZXRoMH0gIFxuIFxsCgo=
+    owner: root:root
+    path: /etc/issue.net
+    permissions: '0644'
+
+-   encoding: b64
+    content: TXkgSVAgYWRkcmVzczogXDR7ZXRoMH0gIFxuIFxsCgo=
+    owner: root:root
+    path: /etc/issue
+    permissions: '0644'
+
+
+
+-   encoding: b64
+    content: IyEvYmluL2Jhc2gKZWNobyAiUmVib290aW5nIGZvciBTZWxpbnV4IG9ubHkgb25jZSIKcm0gLWYgIC9ldGMvcmMubG9jYWwucmVib290b25jZQpncnViMi1ta2NvbmZpZyAtbyAvYm9vdC9ncnViMi9ncnViLmNmZwp5dW0gLXkgdXBncmFkZSAKcm0gLWYgL2V0Yy9zc2gvc3NoX2hvc3RfKgojIGh0dHBzOi8vd3d3LnNzaC1hdWRpdC5jb20vaGFyZGVuaW5nX2d1aWRlcy5odG1sI3JoZWw4CnNzaC1rZXlnZW4gLXQgcnNhIC1iIDQwOTYgLWYgL2V0Yy9zc2gvc3NoX2hvc3RfcnNhX2tleSAtTiAiIgpzc2gta2V5Z2VuIC10IGVkMjU1MTkgLWYgL2V0Yy9zc2gvc3NoX2hvc3RfZWQyNTUxOV9rZXkgLU4gIiIKY2hncnAgc3NoX2tleXMgL2V0Yy9zc2gvc3NoX2hvc3RfZWQyNTUxOV9rZXkgL2V0Yy9zc2gvc3NoX2hvc3RfcnNhX2tleQpjaG1vZCBnK3IgL2V0Yy9zc2gvc3NoX2hvc3RfZWQyNTUxOV9rZXkgL2V0Yy9zc2gvc3NoX2hvc3RfcnNhX2tleQphd2sgJyQ1ID49IDMwNzEnIC9ldGMvc3NoL21vZHVsaSA+IC9ldGMvc3NoL21vZHVsaS5zYWZlCm12IC1mIC9ldGMvc3NoL21vZHVsaS5zYWZlIC9ldGMvc3NoL21vZHVsaQpzZWQgLWkgJ3MvXkhvc3RLZXkgXC9ldGNcL3NzaFwvc3NoX2hvc3RfZWNkc2Ffa2V5JC9cI0hvc3RLZXkgXC9ldGNcL3NzaFwvc3NoX2hvc3RfZWNkc2Ffa2V5L2cnIC9ldGMvc3NoL3NzaGRfY29uZmlnCmNwIC9ldGMvY3J5cHRvLXBvbGljaWVzL2JhY2stZW5kcy9vcGVuc3Noc2VydmVyLmNvbmZpZyAvZXRjL2NyeXB0by1wb2xpY2llcy9iYWNrLWVuZHMvb3BlbnNzaHNlcnZlci5jb25maWcub3JpZwplY2hvIC1lICJDaXBoZXJzIGNoYWNoYTIwLXBvbHkxMzA1QG9wZW5zc2guY29tLGFlczI1Ni1nY21Ab3BlbnNzaC5jb20sYWVzMTI4LWdjbUBvcGVuc3NoLmNvbSxhZXMyNTYtY3RyLGFlczE5Mi1jdHIsYWVzMTI4LWN0cgpNQUNzIGhtYWMtc2hhMi0yNTYtZXRtQG9wZW5zc2guY29tLGhtYWMtc2hhMi01MTItZXRtQG9wZW5zc2guY29tLHVtYWMtMTI4LWV0bUBvcGVuc3NoLmNvbQpHU1NBUElLZXhBbGdvcml0aG1zIGdzcy1jdXJ2ZTI1NTE5LXNoYTI1Ni0KS2V4QWxnb3JpdGhtcyBjdXJ2ZTI1NTE5LXNoYTI1NixjdXJ2ZTI1NTE5LXNoYTI1NkBsaWJzc2gub3JnLGRpZmZpZS1oZWxsbWFuLWdyb3VwMTYtc2hhNTEyLGRpZmZpZS1oZWxsbWFuLWdyb3VwMTgtc2hhNTEyLGRpZmZpZS1oZWxsbWFuLWdyb3VwLWV4Y2hhbmdlLXNoYTI1NgpIb3N0S2V5QWxnb3JpdGhtcyBzc2gtZWQyNTUxOSxzc2gtZWQyNTUxOS1jZXJ0LXYwMUBvcGVuc3NoLmNvbSxyc2Etc2hhMi0yNTYscnNhLXNoYTItNTEyClB1YmtleUFjY2VwdGVkQWxnb3JpdGhtcyBzc2gtZWQyNTUxOSxzc2gtZWQyNTUxOS1jZXJ0LXYwMUBvcGVuc3NoLmNvbSxyc2Etc2hhMi0yNTYscnNhLXNoYTItNTEyCkNBU2lnbmF0dXJlQWxnb3JpdGhtcyBlY2RzYS1zaGEyLW5pc3RwMjU2LHNrLWVjZHNhLXNoYTItbmlzdHAyNTZAb3BlbnNzaC5jb20sZWNkc2Etc2hhMi1uaXN0cDM4NCxlY2RzYS1zaGEyLW5pc3RwNTIxLHNzaC1lZDI1NTE5LHNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tLHJzYS1zaGEyLTI1Nixyc2Etc2hhMi01MTIKUmVxdWlyZWRSU0FTaXplIDIwNDgiID4gL2V0Yy9jcnlwdG8tcG9saWNpZXMvYmFjay1lbmRzL29wZW5zc2hzZXJ2ZXIuY29uZmlnCnJlYm9vdAoKCg==
+    owner: root:root
+    path: /etc/rc.local.rebootonce
+    permissions: '0755'
+
+# package_update: true
+# Below upgrades packages
+# package_upgrade: true
+
+runcmd:
+  - [ /etc/rc.local.rebootonce ]
+
+
+#power_state:
+#    delay: now
+#    mode: reboot
+#    message: Reboot for Selinux
+#    timeout: 1
+#    condition: true
+#
+#
+
+#rh_subscription:
+#  username: sample@redhat.com
+#  password: 'mypassword'
+#  auto-attach: True
+#  service-level: self-support
+#
+# subscription-manager register --org=11xxxxx --activationkey=yyyyy  --auto-attach
+#rh_subscription:
+#  activation-key: yyyyy
+#  org: 11xxxx
+#  auto-attach: true
+#  service-level: self-support
+#  enable-repo:
+#    - rhel-9-for-x86_64-baseos-rpms
+#    - rhel-9-for-x86_64-appstream-rpms
+#    - rhel-9-for-x86_64-supplementary-rpms

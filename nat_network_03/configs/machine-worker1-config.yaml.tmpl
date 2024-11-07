@@ -1,0 +1,311 @@
+variant: flatcar
+version: 1.1.0
+
+ignition:
+  version: 3.4.0
+
+passwd:
+  users:
+    - name: core
+      shell: /bin/bash
+      sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+      groups: [adm, wheel]
+      lock_passwd: false
+      ssh_authorized_keys:
+        - ${ssh_keys}
+    - name: root
+      shell: /bin/bash
+      ssh_authorized_keys:
+        - ${ssh_keys}
+      password_hash: "$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/"
+
+storage:
+  directories:
+    - path: /etc/kubernetes/pki
+      filesystem: root
+      mode: 0755
+    - path: /opt/bin
+      filesystem: root
+      mode: 0755
+    - path: /etc/cni/net.d
+      filesystem: root
+      mode: 0755
+
+  files:
+    - path: /etc/hostname
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: ${host_name}
+
+    - path: /etc/kubernetes/kubelet.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Config
+          clusters:
+          - cluster:
+              certificate-authority: /etc/kubernetes/pki/ca.crt
+              server: https://${ip}:6443
+            name: local
+          contexts:
+          - context:
+              cluster: local
+              user: kubelet
+            name: local
+          current-context: local
+          users:
+          - name: kubelet
+            user:
+              client-certificate: /etc/kubernetes/pki/kubelet.crt
+              client-key: /etc/kubernetes/pki/kubelet.key
+
+    - path: /etc/kubernetes/kubelet-config.yaml
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          kind: KubeletConfiguration
+          apiVersion: kubelet.config.k8s.io/v1beta1
+          authentication:
+            x509:
+              clientCAFile: "/etc/kubernetes/pki/ca.crt"
+          authorization:
+            mode: Webhook
+          serverTLSBootstrap: true
+          tlsCertFile: "/etc/kubernetes/pki/kubelet.crt"
+          tlsPrivateKeyFile: "/etc/kubernetes/pki/kubelet.key"
+          cgroupDriver: systemd
+          runtimeRequestTimeout: "15m"
+          containerRuntimeEndpoint: "unix:///var/run/crio/crio.sock"
+
+    - path: /etc/systemd/network/10-eth0.network
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          [Match]
+          Name=eth0
+
+          [Network]
+          Address=${ip}/24
+          Gateway=${gateway}
+          DNS=${dns1}
+          DNS=${dns2}
+
+    - path: /etc/tmpfiles.d/hosts.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          f /etc/hosts 0644 - - - -
+          127.0.0.1   localhost
+          ::1         localhost
+          ${ip}  ${host_name} ${node_name}
+
+    - path: /run/systemd/resolve/resolv.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          nameserver ${dns1}
+          nameserver ${dns2}
+
+    - path: /etc/tmpfiles.d/resolv.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
+
+    - path: /home/core/install-components.sh
+      filesystem: root
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -euo pipefail
+          exec > /var/log/install-components.log 2>&1
+
+          # Crear directorios necesarios
+          sudo mkdir -p /opt/bin /etc/kubernetes/pki /opt/cni/bin 
+          
+          # Instalar kube-proxy (v1.31.0)
+          sudo curl -L -o /tmp/kube-proxy https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kube-proxy
+          sudo mv /tmp/kube-proxy /opt/bin/kube-proxy
+          sudo chmod +x /opt/bin/kube-proxy
+
+          # Instalar kubelet (v1.31.0)
+          sudo curl -L -o /opt/bin/kubelet https://storage.googleapis.com/kubernetes-release/release/v1.31.0/bin/linux/amd64/kubelet
+          sudo chmod +x /opt/bin/kubelet
+
+          # Instalar oc (OpenShift Client)
+          sudo curl -L -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
+          sudo tar -xzf /tmp/oc.tar.gz -C /tmp
+          sudo mv /tmp/oc /opt/bin/oc
+          sudo chmod +x /opt/bin/oc
+          sudo rm -rf /tmp/oc.tar.gz
+
+          # Descargar e instalar CRI-O (mantener la versión v1.30.5)
+          sudo curl -L -o /tmp/crio.tar.gz "https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.30.5.tar.gz"
+          sudo tar -xzf /tmp/crio.tar.gz -C /opt/bin/
+          sudo chmod +x /opt/bin/cri-o/crio/bin/*
+          sudo rm -rf /tmp/crio.tar.gz
+
+          # Añadir CRI-O y CNI al PATH
+          export PATH=$PATH:/opt/bin/
+          export PATH=$PATH:/opt/bin/cri-o/bin/
+
+          # Descargar archivo de instalación de CRI-O y plugins CNI
+          sudo curl --retry 5 --retry-delay 10 -L -o /home/core/install "http://10.17.3.14/certificates/install-cri-o/install" >> /home/core/curl-download.log 2>&1
+          sudo chmod +x /home/core/install
+          sudo /home/core/install >> /home/core/install.log 2>&1
+         
+
+          # Descargar y almacenar los certificados necesarios
+          sudo mkdir -p /etc/kubernetes/pki
+          sudo mkdir -p /etc/kubernetes/pki/etcd
+          
+          sudo curl -o /etc/kubernetes/pki/ca.pem http://10.17.3.14/certificates/shared/ca.pem
+          sudo curl -o /etc/kubernetes/pki/kubelet-${node_name}.pem http://10.17.3.14/certificates/kubelet/${node_name}.pem
+          sudo curl -o /etc/kubernetes/pki/kubelet-${node_name}-key.pem http://10.17.3.14/certificates/kubelet/${node_name}-key.pem
+        
+          # Recargar systemd y activar servicios
+          sudo systemctl daemon-reload
+          sudo systemctl enable crio kubelet kube-proxy
+          sudo systemctl start crio kubelet kube-proxy
+
+systemd:
+  units:
+    - name: crio.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=CRI-O container runtime
+        After=network.target
+
+        [Service]
+        Type=notify
+        ExecStart=/opt/bin/crio/crio
+        Environment="PATH=/opt/bin/crio:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        Restart=always
+        RestartSec=5
+        LimitNOFILE=65536
+        LimitNPROC=4096
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: apply-network-routes.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Apply custom network routes
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: set-hosts.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set /etc/hosts file
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: download-certificates.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Download Kubernetes Certificates
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash /home/core/download-certificates.sh
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: install-components.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Install Kubernetes components
+        After=download-certificates.service
+        Wants=download-certificates.service
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash /home/core/install-components.sh
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: kubelet.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=kubelet: The Kubernetes Node Agent
+        Documentation=https://kubernetes.io/docs/
+        Wants=crio.service
+        After=crio.service
+
+        [Service]
+        ExecStart=/opt/bin/kubelet \
+          --kubeconfig=/etc/kubernetes/kubelet.conf \
+          --config=/etc/kubernetes/kubelet-config.yaml \
+          --container-runtime=remote \
+          --container-runtime-endpoint=unix:///var/run/crio/crio.sock \
+          --runtime-request-timeout=15m \
+          --image-gc-high-threshold=80 \
+          --image-gc-low-threshold=40 \
+          --enforce-node-allocatable=cpu,memory \
+          --fail-swap-on=false \
+          --cgroup-driver=systemd \
+          --network-plugin=cni \
+          --cni-bin-dir=/opt/cni/bin \
+          --cni-conf-dir=/etc/cni/net.d \
+          --pod-infra-container-image=k8s.gcr.io/pause:3.1 \
+          --v=2
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: kube-proxy.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Kubernetes Kube-Proxy Server
+        Documentation=https://kubernetes.io/docs/
+        After=network.target
+
+        [Service]
+        ExecStart=/opt/bin/kube-proxy --config=/etc/kubernetes/kube-proxy-config.yaml
+        Restart=always
+        RestartSec=5
+        LimitNOFILE=65536
+        LimitNPROC=4096
+
+        [Install]
+        WantedBy=multi-user.target
