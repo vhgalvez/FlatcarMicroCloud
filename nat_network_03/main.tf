@@ -34,8 +34,12 @@ resource "libvirt_network" "kube_network_03" {
 resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
   type = "dir"
-  path = "/mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
+  target {
+    path = "/mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
+  }
 }
+
+
 
 resource "libvirt_volume" "base" {
   name   = "base"
