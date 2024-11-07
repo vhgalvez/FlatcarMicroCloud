@@ -31,3 +31,24 @@ sudo systemctl enable firewalld
 sudo systemctl start firewalld
 sudo firewall-cmd --reload
 ```
+
+
+### Reiniciar 
+
+```bash
+
+sudo setenforce 0
+sudo systemctl restart firewalld
+sudo systemctl restart iptables 
+sudo systemctl restart NetworkManager
+```
+
+
+# Deshabilitar SELinux
+
+```bash
+sudo setenforce 0
+sudo systemctl restart libvirtd
+```
+
+
