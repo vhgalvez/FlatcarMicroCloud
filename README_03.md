@@ -368,6 +368,7 @@ resource "libvirt_network" "kube_network_03" {
    ################
                         Memory: 21362MiB / 35904MiB
 ```
+
 # Resumen del Flujo
 
 1. Las **conexiones HTTPS** externas ingresan por la **IP pública (192.168.0.21)**.
