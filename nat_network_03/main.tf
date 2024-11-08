@@ -22,6 +22,12 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
+variable "timezone" {
+  description = "Timezone for the VMs"
+  type        = string
+  default     = "Europe/Madrid"
+}
+
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
