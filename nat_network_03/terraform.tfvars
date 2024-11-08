@@ -1,3 +1,5 @@
+# nat_network_03\terraform.tfvars
+
 base_image = "/mnt/lv_data/organized_storage/images/fedora-coreos-40.20240906.3.0-qemu.x86_64.qcow2"
 
 vm_definitions = {
@@ -6,7 +8,7 @@ vm_definitions = {
     memory       = 4096
     ip           = "10.17.4.21"
     name_dominio = "master1.cefaslocalserver.com"
-    disk_size    = 51200  # 50 GB in MB
+    disk_size    = 51200 # 50 GB in MB
     node_name    = "master1"
   }
   master2 = {
@@ -14,7 +16,7 @@ vm_definitions = {
     memory       = 4096
     ip           = "10.17.4.22"
     name_dominio = "master2.cefaslocalserver.com"
-    disk_size    = 51200  # 50 GB in MB
+    disk_size    = 51200 # 50 GB in MB
     node_name    = "master2"
   }
   master3 = {
@@ -22,7 +24,7 @@ vm_definitions = {
     memory       = 4096
     ip           = "10.17.4.23"
     name_dominio = "master3.cefaslocalserver.com"
-    disk_size    = 51200  # 50 GB in MB
+    disk_size    = 51200 # 50 GB in MB
     node_name    = "master3"
   }
   worker1 = {
@@ -30,7 +32,7 @@ vm_definitions = {
     memory       = 3584
     ip           = "10.17.4.24"
     name_dominio = "worker1.cefaslocalserver.com"
-    disk_size    = 51200  # 50 GB in MB
+    disk_size    = 51200 # 50 GB in MB
     node_name    = "worker1"
   }
   worker2 = {
@@ -38,7 +40,7 @@ vm_definitions = {
     memory       = 3584
     ip           = "10.17.4.25"
     name_dominio = "worker2.cefaslocalserver.com"
-    disk_size    = 51200  # 50 GB in MB
+    disk_size    = 51200 # 50 GB in MB
     node_name    = "worker2"
   }
   worker3 = {
@@ -46,7 +48,7 @@ vm_definitions = {
     memory       = 3584
     ip           = "10.17.4.26"
     name_dominio = "worker3.cefaslocalserver.com"
-    disk_size    = 51200  # 50 GB in MB
+    disk_size    = 51200 # 50 GB in MB
     node_name    = "worker3"
   }
   bootstrap = {
@@ -54,7 +56,7 @@ vm_definitions = {
     memory       = 3584
     ip           = "10.17.4.27"
     name_dominio = "bootstrap.cefaslocalserver.com"
-    disk_size    = 51200  # 50 GB in MB
+    disk_size    = 51200 # 50 GB in MB
     node_name    = "bootstrap"
   }
 }
