@@ -45,3 +45,9 @@ variable "node_name" {
   type        = string
   default     = null
 }
+
+variable "timezone" {
+  description = "Timezone for the VMs"
+  type        = string
+  default     = "Europe/Madrid"
+}
