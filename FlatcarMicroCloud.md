@@ -207,6 +207,44 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 - **Rook y Ceph**: Rook orquesta Ceph en Kubernetes para almacenamiento persistente.
 
+### Integración continua CI/CD
+
+- **Jenkins**: Automatización de pruebas y despliegue de aplicaciones.
+- **GitHub Actions**: Control de versiones y CI/CD.
+- **SonarQube**: Análisis de código y calidad.
+- **Docker Registry**: Registro de imágenes de contenedores.
+- **Harbor**: Registro de imágenes de contenedores y escaneo de vulnerabilidades.
+- **Kaniko**: Construcción de imágenes de contenedores sin privilegios.
+- **Helm**: Gestión de paquetes de Kubernetes.
+- **Kustomize**: Personalización de despliegues de Kubernetes.
+- **ArgoCD**: Despliegue continuo de aplicaciones en Kubernetes.
+- **Tekton**: Automatización de pipelines de CI/CD.
+- **Spinnaker**: Automatización de despliegues en Kubernetes.
+
+
+- **Kubernetes Operators**: Automatización de operaciones en Kubernetes.
+- **Kubernetes Helm Charts**: Plantillas predefinidas para despliegues en Kubernetes.
+- **Kubernetes Custom Resources**: Recursos personalizados para operaciones específicas en Kubernetes.
+- **Kubernetes Ingress**: Gestión de tráfico de red en Kubernetes.
+- **Kubernetes Services**: Exposición de servicios en Kubernetes.
+- **Kubernetes Volumes**: Almacenamiento persistente en Kubernetes.
+- **Kubernetes Namespaces**: Aislamiento de recursos en Kubernetes.
+- **Kubernetes RBAC**: Control de acceso basado en roles en Kubernetes.
+- **Kubernetes Secrets**: Gestión de secretos en Kubernetes.
+- **Kubernetes ConfigMaps**: Gestión de configuraciones en Kubernetes.
+- **Kubernetes Network Policies**: Políticas de red en Kubernetes.
+- **Kubernetes Pod Security Policies**: Políticas de seguridad en Kubernetes.
+- **Kubernetes Pod Disruption Budgets**: Control de la disponibilidad de pods en Kubernetes.
+- **Kubernetes Horizontal Pod Autoscaler**: Escalado automático de pods en Kubernetes.
+- **Kubernetes Vertical Pod Autoscaler**: Escalado automático de recursos en pods en Kubernetes.
+- **Kubernetes Cluster Autoscaler**: Escalado automático de nodos en Kubernetes.
+- **Kubernetes Pod Affinity**: Afinidad de pods en Kubernetes.
+- **Kubernetes Pod Anti-Affinity**: Anti-afinidad de pods en Kubernetes.
+- **Kubernetes Taints and Tolerations**: Tolerancias y restricciones en Kubernetes.
+- **Kubernetes DaemonSets**: Despliegue de pods en todos los nodos en Kubernetes.
+- **Kubernetes StatefulSets**: Despliegue de aplicaciones con estado en Kubernetes.
+- **Kubernetes Jobs**: Ejecución de tareas en Kubernetes.
+
 ---
 
 ## Configuración de Redes Virtuales
