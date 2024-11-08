@@ -1,8 +1,8 @@
-# ClusterFlex: Entorno Kubernetes Optimizado para Servidores Físicos con Comunicación de Microservicios y Escalabilidad
+# FlatcarMicroCloud: Entorno Kubernetes Optimizado para Servidores Físicos con Comunicación de Microservicios y Escalabilidad
 
 ## Descripción General
 
-ClusterFlex es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Rocky Linux 9.4. ClusterFlex facilita el despliegue de aplicaciones en contenedores con herramientas como K3s para Kubernetes ligero, Rook y Ceph para almacenamiento persistente y monitoreo avanzado con Prometheus y Grafana. Este entorno optimizado permite una administración eficiente y escalabilidad. Ahora incluye comunicación entre microservicios con Apache Kafka y MQTT Mosquitto, y Redis para escalabilidad de base de datos en RAM.
+FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Rocky Linux 9.4. FlatcarMicroCloud facilita el despliegue de aplicaciones en contenedores con herramientas como K3s para Kubernetes ligero, Rook y Ceph para almacenamiento persistente y monitoreo avanzado con Prometheus y Grafana. Este entorno optimizado permite una administración eficiente y escalabilidad. Ahora incluye comunicación entre microservicios con Apache Kafka y MQTT Mosquitto, y Redis para escalabilidad de base de datos en RAM.
 
 ## Análisis de Recursos
 
@@ -284,55 +284,73 @@ resource "libvirt_network" "kube_network_03" {
 
 ## Diagrama de Nodos y Conexiones
 
-```plaintext
-                +-----------------------+                       
-                |   IP Pública          |                       
-                |   (HTTPS) 192.168.0.21|                       
-                +-----------+-----------+                       
-                            |                                     
-                            v                                     
-                +-----------+-----------+                       
-                |  Bastion Node         |                       
-                |   IP: 192.168.0.20    |                       
-                |   SSH Access          |                       
-                +-----------+-----------+                       
-                            |                                     
-                            v                                     
-                +-----------+-----------+                       
-                |  Load Balancer        |                       
-                |   Traefik (10.17.3.12)|                       
-                +-----------+-----------+                       
-                            |                                     
-          +-----------------+-----------------+                  
-          |                 |                 |                  
-          v                 v                 v                  
-   +------+-------+    +----+-------+    +----+-------+    +----+-------+       
-   | Master Node  |    | Worker 1   |    | Worker 2   |    | Worker 3   |      
-   | 10.17.4.21   |    | 10.17.4.24 |    | 10.17.4.25 |    | 10.17.4.23 |      
-   +------+-------+    +----+-------+    +----+-------+    +----+-------+          
-          |                |                    |                
-          +----+-----------+                    +-----------+----+
-               |                                         |       
-               v                                         v       
-      +--------+--------+                       +--------+--------+
-      |  Redis Cache    |                       | Apache Kafka    |
-      |   In-memory     |                       | Message Queue   |
-      |                 |                       +------------------+
-      +-----------------+                                     
-                            |                                     
-                            v                                     
-                +-----------+-----------+                       
-                |  FreeIPA Node         |                       
-                |   DNS / Auth          |                       
-                |   IP: 10.17.3.11      |                       
-                +-----------+-----------+                       
-                            |                                     
-                            v                                     
-               +-----------+-----------+                         
-               | PostgreSQL Node       |                         
-               | IP: 10.17.3.13        |                         
-               +-----------+-----------+                         
+
+```bash
+                 +---------------------------+                        
+                 |        IP Pública         |                       
+                 |         (HTTPS)           |
+                 |       192.168.0.21        |                       
+                 +---------------------------+                       
+                             |                                     
+                             v                                     
+                 +---------------------------+                       
+                 |       Bastion Node        |                       
+                 |        SSH Access         |                       
+                 |      IP: 192.168.0.20     |                       
+                 +---------------------------+                       
+                             |                                     
+                             v                                     
+                 +---------------------------+                       
+                 |      Load Balancer        |                       
+                 |         Traefik           |                       
+                 |      IP: 10.17.3.12       |                       
+                 +---------------------------+                       
+                             |                                     
+            +----------------+---------------+-----------------+                  
+            |                |               |                 |
+            v                v               v                 v  
+     +------+-------+   +----+-------+   +----+-------+   +----+-------+       
+     | Master Node 1 |   |   Worker    |   |   Worker    |   |   Worker    |      
+     |    (etcd)     |   |     1       |   |     2       |   |     3       |
+     | IP: 10.17.4.21|   | IP: 10.17.4.24|   | IP: 10.17.4.25|   | IP: 10.17.4.26|    
+     +---------------+   +--------------+   +--------------+   +--------------+          
+             |                                                   
+             |        +----------------------------------------+
+             |        |                                        |
+             |        v                                        v
+     +---------------------+                           +---------------------+
+     |     Master Node 2   |                           |     Master Node 3   |
+     |       (etcd)        |                           |       (etcd)        |
+     |     IP: 10.17.4.22  |                           |     IP: 10.17.4.23  |
+     +---------------------+                           +---------------------+
+             |                                                                  
+             +----------------------------------------------------------------+
+                                                                              
+                          |                                          |
+                          v                                          v       
+               +-------------+-------------+            +-------------+-------------+
+               |        Redis Cache        |            |        Apache Kafka       |
+               |       (In-memory)         |            |       (Message Queue)     |
+               +---------------------------+            +---------------------------+
+                             |                                      
+                             v                                      
+                 +---------------------------+                       
+                 |       FreeIPA Node        |                       
+                 |         DNS/Auth          |                       
+                 |      IP: 10.17.3.11       |                       
+                 +---------------------------+                       
+                             |                                     
+                             v                                     
+                 +---------------------------+                         
+                 |     PostgreSQL Node       |                         
+                 |      IP: 10.17.3.13       |                         
+                 +---------------------------+                          
+
 ```
+
+
+
+
 
 
 # Resumen del Flujo
