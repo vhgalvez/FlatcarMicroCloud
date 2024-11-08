@@ -69,4 +69,6 @@ gateway = "10.17.4.1"
 dns1    = "10.17.3.11"
 dns2    = "8.8.8.8"
 
+timezone = "Europe/Madrid"
+
 initial_cluster = "master1=http://10.17.4.21:2380,master2=http://10.17.4.22:2380,master3=http://10.17.4.23:2380"

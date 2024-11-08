@@ -433,6 +433,18 @@ storage:
 
 systemd:
   units:
+    - name: set-timezone.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set timezone to ${timezone}
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/timedatectl set-timezone ${timezone}
+
+        [Install]
+        WantedBy=multi-user.target
     - name: crio.service
       enabled: true
       contents: |
