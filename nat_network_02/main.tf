@@ -28,8 +28,12 @@ resource "libvirt_network" "kube_network_02" {
 resource "libvirt_pool" "volumetmp_nat_02" {
   name = "${var.cluster_name}_nat_02"
   type = "dir"
-  path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_nat_02"
+
+  target {
+    path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_nat_02"
+  }
 }
+
 
 resource "libvirt_volume" "rocky9_image" {
   name   = "${var.cluster_name}_rocky9_image"
@@ -43,14 +47,14 @@ data "template_file" "vm-configs" {
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
   vars = {
-    ssh_keys = jsonencode(var.ssh_keys),
-    hostname = each.value.hostname,
+    ssh_keys       = jsonencode(var.ssh_keys),
+    hostname       = each.value.hostname,
     short_hostname = each.value.short_hostname,
-    timezone = var.timezone,
-    ip       = each.value.ip,
-    gateway  = var.gateway,
-    dns1     = var.dns1,
-    dns2     = var.dns2
+    timezone       = var.timezone,
+    ip             = each.value.ip,
+    gateway        = var.gateway,
+    dns1           = var.dns1,
+    dns2           = var.dns2
   }
 }
 
