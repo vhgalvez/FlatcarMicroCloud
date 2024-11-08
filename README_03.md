@@ -377,3 +377,135 @@ resource "libvirt_network" "kube_network_03" {
 4. El **Bootstrap Node** inicia la instalación de OKD, solicitando los certificados al
 5. **FreeIPA** actúa como **servidor DNS y NTP**, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
 6. Los **nodos workers** ejecutan las aplicaciones, manteniendo la sincronización temporal con FreeIPA a través de **chronyc**.
+
+
+## Resumen de Recursos para Máquinas Virtuales
+
+| Nombre de VM       | CPU | Memoria (MB) | IP            | Nombre de Dominio                  | Tamaño de Disco (MB) | Hostname   |
+|--------------------|-----|--------------|---------------|------------------------------------|-----------------------|------------|
+| master1            | 2   | 4096         | 10.17.4.21    | master1.cefaslocalserver.com       | 51200 (50 GB)        | master1    |
+| master2            | 2   | 4096         | 10.17.4.22    | master2.cefaslocalserver.com       | 51200 (50 GB)        | master2    |
+| master3            | 2   | 4096         | 10.17.4.23    | master3.cefaslocalserver.com       | 51200 (50 GB)        | master3    |
+| worker1            | 2   | 4096         | 10.17.4.24    | worker1.cefaslocalserver.com       | 51200 (50 GB)        | worker1    |
+| worker2            | 2   | 4096         | 10.17.4.25    | worker2.cefaslocalserver.com       | 51200 (50 GB)        | worker2    |
+| worker3            | 2   | 4096         | 10.17.4.26    | worker3.cefaslocalserver.com       | 51200 (50 GB)        | worker3    |
+| bootstrap          | 2   | 4096         | 10.17.4.27    | bootstrap.cefaslocalserver.com     | 51200 (50 GB)        | bootstrap  |
+| freeipa1           | 2   | 2048         | 10.17.3.11    | freeipa1.cefaslocalserver.com      | 32212 (32 GB)        | freeipa1   |
+| load_balancer1     | 2   | 2048         | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32212 (32 GB)        | loadbalancer1 |
+| postgresql1        | 2   | 2048         | 10.17.3.13    | postgresql1.cefaslocalserver.com   | 32212 (32 GB)        | postgresql1 |
+| helper             | 2   | 2048         | 10.17.3.14    | helper.cefaslocalserver.com        | 32212 (32 GB)        | helper_node |
+
+---
+## Detalles de Configuración
+
+- **Imágenes Base**:
+  - Fedora CoreOS: `/mnt/lv_data/organized_storage/images/fedora-coreos-40.20240906.3.0-qemu.x86_64.qcow2`
+  - Rocky Linux: `/mnt/lv_data/organized_storage/images/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2`
+
+- **Red Gateway**:
+  - kube_network_03: 10.17.4.1
+  - kube_network_02: 10.17.3.1
+
+- **DNS**:
+  - Primario: 10.17.3.11 (FreeIPA)
+  - Secundario: 8.8.8.8
+
+- **Zona Horaria**:
+  - Europe/London
+
+- **Clave SSH**:
+  - Clave pública SSH incluida para acceso seguro a las VMs.
+
+---
+
+## Estructura del Proyecto
+
+- `br0_network/`
+- `nat_network_02/`
+- `nat_network_03/`
+
+## Requisitos
+
+- [Terraform](https://www.terraform.io/downloads.html) v0.13 o superior
+- Acceso a un servidor KVM con libvirt
+
+## Instrucciones de Ejecución
+
+
+Clonar el Repositorio de Terraform
+
+Clona el repositorio que contiene tu configuración de Terraform.
+
+```bash
+git clone https://github.com/vhgalvez/FlatcarMicroCloud.git
+cd FlatcarMicroCloud
+```
+
+### Inicializar y Aplicar Terraform para `br0_network`
+
+
+
+1. Navegue al directorio `br0_network`:
+
+   ```bash
+   cd br0_network
+   ```
+
+2. Inicialice Terraform y actualice los proveedores:
+
+   ```bash
+   sudo terraform init --upgrade
+   ```
+
+3. Aplique la configuración de Terraform:
+
+   ```bash
+   sudo terraform apply
+   ```
+
+### Inicializar y Aplicar Terraform para `nat_network_02`
+
+1. Navegue al directorio `nat_network_02`:
+
+   ```bash
+   cd ../nat_network_02
+   ```
+
+2. Inicialice Terraform y actualice los proveedores:
+
+   ```bash
+   sudo terraform init --upgrade
+   ```
+
+3. Aplique la configuración de Terraform:
+
+   ```bash
+   sudo terraform apply
+   ```
+
+### Inicializar y Aplicar Terraform para `nat_network_03`
+
+1. Navegue al directorio `nat_network_03`:
+
+   ```bash
+   cd ../nat_network_03
+   ```
+
+2. Inicialice Terraform y actualice los proveedores:
+
+   ```bash
+   sudo terraform init --upgrade
+   ```
+
+3. Aplique la configuración de Terraform:
+
+   ```bash
+   sudo terraform apply
+   ```
+
+
+## Notas Adicionales
+
+- Asegúrese de tener las variables y configuraciones adecuadas en los archivos `terraform.tfvars` de cada subproyecto.
+- Cada subproyecto tiene su propio `main.tf` y configuración de variables, por lo que no debería haber conflictos de nombres si sigue las instrucciones anteriores.
+- Puede ajustar las configuraciones y variables según sea necesario para adaptarse a su entorno y necesidades específicas.
