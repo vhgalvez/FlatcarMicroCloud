@@ -383,4 +383,3 @@ cd FlatcarMicroCloud
 | Supervisión Activa             | Usa Grafana para monitoreo en tiempo real, ajustando recursos según los picos de carga detectados.  |
 
 Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
-
