@@ -1,6 +1,7 @@
 # ClusterFlex: Entorno Kubernetes Optimizado para Servidores Físicos con Comunicación de Microservicios y Escalabilidad
 
 ## Descripción General
+
 ClusterFlex es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Rocky Linux 9.4. ClusterFlex facilita el despliegue de aplicaciones en contenedores con herramientas como K3s para Kubernetes ligero, Rook y Ceph para almacenamiento persistente y monitoreo avanzado con Prometheus y Grafana. Este entorno optimizado permite una administración eficiente y escalabilidad. Ahora incluye comunicación entre microservicios con Apache Kafka y MQTT Mosquitto, y Redis para escalabilidad de base de datos en RAM.
 
 ## Análisis de Recursos
