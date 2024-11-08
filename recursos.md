@@ -166,3 +166,97 @@ FlatcarMicroCloud es un entorno Kubernetes optimizado para servidores físicos, 
                  +---------------------------+                          
 
 ```
+
+Este repositorio contiene tres subproyectos de Terraform que se deben ejecutar de manera independiente para evitar conflictos de nombres. Siga las instrucciones a continuación para inicializar y aplicar cada subproyecto.
+
+## Estructura del Proyecto
+
+- `br0_network/`
+- `nat_network_02/`
+- `nat_network_03/`
+
+## Requisitos
+
+- [Terraform](https://www.terraform.io/downloads.html) v0.13 o superior
+- Acceso a un servidor KVM con libvirt
+
+## Instrucciones de Ejecución
+
+
+Clonar el Repositorio de Terraform
+
+Clona el repositorio que contiene tu configuración de Terraform.
+
+```bash
+git clone https://github.com/vhgalvez/FlatcarMicroCloud.git
+cd FlatcarMicroCloud
+```
+
+### Inicializar y Aplicar Terraform para `br0_network`
+
+
+
+1. Navegue al directorio `br0_network`:
+
+   ```bash
+   cd br0_network
+   ```
+
+2. Inicialice Terraform y actualice los proveedores:
+
+   ```bash
+   sudo terraform init --upgrade
+   ```
+
+3. Aplique la configuración de Terraform:
+
+   ```bash
+   sudo terraform apply
+   ```
+
+### Inicializar y Aplicar Terraform para `nat_network_02`
+
+1. Navegue al directorio `nat_network_02`:
+
+   ```bash
+   cd ../nat_network_02
+   ```
+
+2. Inicialice Terraform y actualice los proveedores:
+
+   ```bash
+   sudo terraform init --upgrade
+   ```
+
+3. Aplique la configuración de Terraform:
+
+   ```bash
+   sudo terraform apply
+   ```
+
+### Inicializar y Aplicar Terraform para `nat_network_03`
+
+1. Navegue al directorio `nat_network_03`:
+
+   ```bash
+   cd ../nat_network_03
+   ```
+
+2. Inicialice Terraform y actualice los proveedores:
+
+   ```bash
+   sudo terraform init --upgrade
+   ```
+
+3. Aplique la configuración de Terraform:
+
+   ```bash
+   sudo terraform apply
+   ```
+
+
+## Notas Adicionales
+
+- Asegúrese de tener las variables y configuraciones adecuadas en los archivos `terraform.tfvars` de cada subproyecto.
+- Cada subproyecto tiene su propio `main.tf` y configuración de variables, por lo que no debería haber conflictos de nombres si sigue las instrucciones anteriores.
+- Puede ajustar las configuraciones y variables según sea necesario para adaptarse a su entorno y necesidades específicas.
