@@ -13,10 +13,10 @@ FlatcarMicroCloud es un entorno Kubernetes optimizado para servidores físicos, 
 | master1            | 2   | 4096         | 10.17.4.21    | master1.cefaslocalserver.com       | 51200 (50 GB)        | master1    |
 | master2            | 2   | 4096         | 10.17.4.22    | master2.cefaslocalserver.com       | 51200 (50 GB)        | master2    |
 | master3            | 2   | 4096         | 10.17.4.23    | master3.cefaslocalserver.com       | 51200 (50 GB)        | master3    |
-| worker1            | 2   | 3584         | 10.17.4.24    | worker1.cefaslocalserver.com       | 51200 (50 GB)        | worker1    |
-| worker2            | 2   | 3584         | 10.17.4.25    | worker2.cefaslocalserver.com       | 51200 (50 GB)        | worker2    |
-| worker3            | 2   | 3584         | 10.17.4.26    | worker3.cefaslocalserver.com       | 51200 (50 GB)        | worker3    |
-| bootstrap          | 2   | 3584         | 10.17.4.27    | bootstrap.cefaslocalserver.com     | 51200 (50 GB)        | bootstrap  |
+| worker1            | 2   | 4096         | 10.17.4.24    | worker1.cefaslocalserver.com       | 51200 (50 GB)        | worker1    |
+| worker2            | 2   | 4096         | 10.17.4.25    | worker2.cefaslocalserver.com       | 51200 (50 GB)        | worker2    |
+| worker3            | 2   | 4096         | 10.17.4.26    | worker3.cefaslocalserver.com       | 51200 (50 GB)        | worker3    |
+| bootstrap          | 2   | 4096         | 10.17.4.27    | bootstrap.cefaslocalserver.com     | 51200 (50 GB)        | bootstrap  |
 | freeipa1           | 2   | 2048         | 10.17.3.11    | freeipa1.cefaslocalserver.com      | 32212 (32 GB)        | freeipa1   |
 | load_balancer1     | 2   | 2048         | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32212 (32 GB)        | loadbalancer1 |
 | postgresql1        | 2   | 2048         | 10.17.3.13    | postgresql1.cefaslocalserver.com   | 32212 (32 GB)        | postgresql1 |
@@ -105,9 +105,9 @@ FlatcarMicroCloud es un entorno Kubernetes optimizado para servidores físicos, 
 ## Diagramas de Red y Arquitectura
 
 ```bash
-                 +---------------------------+                       
+                               +---------------------------+                        
                  |        IP Pública         |                       
-                 |       (HTTPS)             |
+                 |         (HTTPS)           |
                  |       192.168.0.21        |                       
                  +---------------------------+                       
                              |                                     
@@ -129,20 +129,30 @@ FlatcarMicroCloud es un entorno Kubernetes optimizado para servidores físicos, 
             |                |               |                 |
             v                v               v                 v  
      +------+-------+   +----+-------+   +----+-------+   +----+-------+       
-     |   Master     |   |   Worker    |   |   Worker    |   |   Worker    |      
-     |    Node      |   |     1       |   |     2       |   |     3       |
-     | IP: 10.17.4.21|   | IP: 10.17.4.24|   | IP: 10.17.4.25|   | IP: 10.17.4.23|    
-     +------+-------+   +----+-------+   +----+-------+   +----+-------+          
-             |              |                |                 |                 
-             +--------------+----------------+-----------------+-----------------+
-                            |                                    |       
-                            v                                    v       
-              +-------------+-------------+           +----------+----------+
-              |        Redis Cache        |           |       Apache Kafka     |
-              |       (In-memory)         |           |       (Message Queue)  |
-              +---------------------------+           +------------------------+
-                             |                                     
-                             v                                     
+     | Master Node 1 |   |   Worker    |   |   Worker    |   |   Worker    |      
+     |    (etcd)     |   |     1       |   |     2       |   |     3       |
+     | IP: 10.17.4.21|   | IP: 10.17.4.24|   | IP: 10.17.4.25|   | IP: 10.17.4.26|    
+     +---------------+   +--------------+   +--------------+   +--------------+          
+             |                                                   
+             |        +----------------------------------------+
+             |        |                                        |
+             |        v                                        v
+     +---------------------+                           +---------------------+
+     |     Master Node 2   |                           |     Master Node 3   |
+     |       (etcd)        |                           |       (etcd)        |
+     |     IP: 10.17.4.22  |                           |     IP: 10.17.4.23  |
+     +---------------------+                           +---------------------+
+             |                                                                  
+             +----------------------------------------------------------------+
+                                                                              
+                          |                                          |
+                          v                                          v       
+               +-------------+-------------+            +-------------+-------------+
+               |        Redis Cache        |            |        Apache Kafka       |
+               |       (In-memory)         |            |       (Message Queue)     |
+               +---------------------------+            +---------------------------+
+                             |                                      
+                             v                                      
                  +---------------------------+                       
                  |       FreeIPA Node        |                       
                  |         DNS/Auth          |                       
@@ -153,5 +163,6 @@ FlatcarMicroCloud es un entorno Kubernetes optimizado para servidores físicos, 
                  +---------------------------+                         
                  |     PostgreSQL Node       |                         
                  |      IP: 10.17.3.13       |                         
-                 +---------------------------+ 
+                 +---------------------------+                          
+
 ```
