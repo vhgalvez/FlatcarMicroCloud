@@ -158,6 +158,8 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 - Usa **Vue.js** para desarrollar la interfaz de usuario, conectada a las APIs de FastAPI.
 - Despliega el frontend en K3s y configúralo para acceso mediante el Load Balancer (Traefik).
 
+## backend FastAPI
+
 ---
 
 ## Resumen de los Hostnames e IPs

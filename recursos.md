@@ -105,7 +105,7 @@ FlatcarMicroCloud es un entorno Kubernetes optimizado para servidores físicos, 
 ## Diagramas de Red y Arquitectura
 
 ```bash
-                               +---------------------------+                        
+                 +---------------------------+                        
                  |        IP Pública         |                       
                  |         (HTTPS)           |
                  |       192.168.0.21        |                       

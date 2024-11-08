@@ -29,7 +29,7 @@ vm_definitions = {
   }
   worker1 = {
     cpus         = 2
-    memory       = 3584
+    memory       = 4096
     ip           = "10.17.4.24"
     name_dominio = "worker1.cefaslocalserver.com"
     disk_size    = 51200 # 50 GB in MB
@@ -37,7 +37,7 @@ vm_definitions = {
   }
   worker2 = {
     cpus         = 2
-    memory       = 3584
+    memory       = 4096
     ip           = "10.17.4.25"
     name_dominio = "worker2.cefaslocalserver.com"
     disk_size    = 51200 # 50 GB in MB
@@ -45,7 +45,7 @@ vm_definitions = {
   }
   worker3 = {
     cpus         = 2
-    memory       = 3584
+    memory       = 4096
     ip           = "10.17.4.26"
     name_dominio = "worker3.cefaslocalserver.com"
     disk_size    = 51200 # 50 GB in MB
@@ -53,7 +53,7 @@ vm_definitions = {
   }
   bootstrap = {
     cpus         = 2
-    memory       = 3584
+    memory       = 4096
     ip           = "10.17.4.27"
     name_dominio = "bootstrap.cefaslocalserver.com"
     disk_size    = 51200 # 50 GB in MB
