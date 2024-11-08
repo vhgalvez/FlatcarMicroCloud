@@ -48,6 +48,29 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | Worker Nodes           | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
 | Bootstrap Node         | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
 
+## Explicación de Roles de las VMs
+
+- **Maestros (master1, master2, master3)**:
+  - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
+
+- **Workers (worker1, worker2, worker3)**:
+  - Nodos responsables de ejecutar aplicaciones en contenedores y manejar la carga de trabajo del clúster.
+
+- **Bootstrap**:
+  - Nodo utilizado para iniciar y configurar el clúster.
+
+- **FreeIPA (freeipa1)**:
+  - Nodo que actúa como servidor DNS y de autenticación, proporcionando gestión de nombres y autenticación centralizada.
+
+- **Load Balancer (load_balancer1)**:
+  - Nodo que utiliza Traefik para gestionar la distribución de tráfico entre los nodos del clúster.
+
+- **PostgreSQL (postgresql1)**:
+  - Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
+
+- **Helper**:
+  - Nodo auxiliar para tareas administrativas y de soporte dentro del clúster.
+
 ## Fases de Implementación
 
 ### Fase 1: Instalación y Configuración de K3s en el Clúster de Kubernetes
@@ -78,7 +101,35 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 - **Terraform**: Automatización de infraestructura.
 - **Ansible**: Configuración y manejo de operaciones.
 
-### Seguridad y Monitoreo
+### Microservicios en Pods
+
+#### Análisis y Visualización de Datos
+
+- **ELK Stack Elasticsearch**: Visualización de métricas del clúster
+- **ELK Stack Kibana**: Visualización de datos
+- **ELK Stack Logstash**: Procesamiento de logs
+- **Prometheus**: Herramientas para el monitoreo, alertas **alertmanager** y visualización de métricas
+- **Grafana**: Visualización de métricas del clúster
+- **cAdvisor**: Monitorear el rendimiento y uso de recursos por parte de los contenedores.
+- **Nagios**: Rendimiento del sistema
+
+#### Microservicios de Servicios de Aplicaciones
+
+- **Nginx**: Servidor web y proxy inverso para aplicaciones web.
+- **Apache Kafka**: Plataforma de mensajería utilizada para la comunicación entre microservicios.
+- **Redis**: Almacenamiento en caché y base de datos en memoria para mejorar el rendimiento de las aplicaciones.
+
+### Seguridad y Protección
+
+- **Firewall**: Configuración de reglas de firewall para proteger el clúster.
+- **Fail2Ban**: Protección contra accesos no autorizados y ataques.
+- **DNS y FreeIPA**: Gestión centralizada de autenticación y políticas de seguridad y servidor de DNS.
+
+### Almacenamiento Persistente
+
+- **Rook y Ceph**: Orquestar Ceph en Kubernetes para almacenamiento persistente.
+
+## Seguridad y Monitoreo
 
 - **FreeIPA**: DNS y gestión de autenticación.
 - **Prometheus y Grafana**: Monitoreo avanzado y visualización de métricas.
@@ -252,6 +303,13 @@ cd FlatcarMicroCloud
 - Cada subproyecto tiene su propio `main.tf` y configuración de variables, por lo que no debería haber conflictos de nombres si sigue las instrucciones anteriores.
 - Puede ajustar las configuraciones y variables según sea necesario para adaptarse a su entorno y necesidades específicas.
 
+## Red y Conectividad
+
+- **Switch**: TP-Link LS1008G - 8 puertos Gigabit no administrados
+- **Router WiFi**: Conexión fibra óptica, 600 Mbps de subida/bajada, IP pública
+- **Red**: Configurada red NAT y red Bridge de kvm
+- **VPN**: WireGuard para acceso seguro SSH administrado por Bastion Node
+
 ## Diagramas de Red y Arquitectura
 
 ```bash
@@ -325,3 +383,4 @@ cd FlatcarMicroCloud
 | Supervisión Activa             | Usa Grafana para monitoreo en tiempo real, ajustando recursos según los picos de carga detectados.  |
 
 Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
+

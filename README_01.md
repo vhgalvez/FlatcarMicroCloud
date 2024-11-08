@@ -246,6 +246,7 @@ A continuación se proporciona un resumen de los hostnames e IPs para referencia
 
 
 # Configuración de Redes Virtuales
+
 ### Red br0 - Bridge Network
 
 ```hcl
