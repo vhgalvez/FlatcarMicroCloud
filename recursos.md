@@ -1,6 +1,7 @@
 # Documento Técnico: FlatcarMicroCloud en Entorno Kubernetes
 
 ## Descripción General del Proyecto
+
 FlatcarMicroCloud es un entorno Kubernetes optimizado para servidores físicos, diseñado para implementar aplicaciones en contenedores y servicios de microservicios. Esta solución usa K3s como Kubernetes ligero, Rook y Ceph para almacenamiento persistente, y una combinación de herramientas para la comunicación entre microservicios, monitoreo y escalabilidad. Se despliega en un servidor físico ProLiant DL380 G7 con Rocky Linux 9.4 y KVM.
 
 ---
