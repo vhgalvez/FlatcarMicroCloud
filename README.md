@@ -64,8 +64,6 @@ Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
 
 ---
 
-
-
 ## Máquinas Virtuales y Roles
 
 | Nodo                    | Sistema Operativo         | Función                                         | Cantidad |
