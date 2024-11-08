@@ -351,6 +351,25 @@ resource "libvirt_network" "kube_network_03" {
 
 
 
+## Información del Sistema
+
+```bash
+        #####           victory@physical1.cefaslocalserver.com
+       #######          --------------------------------------
+       ##O#O##          OS: Rocky Linux 9.4 (Blue Onyx) x86_64
+       #######          Host: ProLiant DL380 G7
+     ###########        Kernel: 5.14.0-427.22.1.el9_4.x86_64
+    #############       Uptime: 3 hours, 5 mins
+   ###############      Packages: 1301 (rpm)
+   ################     Shell: bash 5.1.8
+  #################     Resolution: 1024x768
+#####################   Terminal: /dev/pts/16
+#####################   CPU: Intel Xeon X5650 (24) @ 2.665GHz
+  #################     GPU: AMD ATI 01:03.0 ES1000
+   ################
+                        Memory: 21362MiB / 35904MiB
+```
+
 
 
 # Resumen del Flujo
