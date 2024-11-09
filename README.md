@@ -35,7 +35,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
 | loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
 | postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
-| helper        | 2   | 2048         | 10.17.3.14 | helper.cefaslocalserver.com        | 32                   | helper\_node  |
+| helper        | 2   | 2048         | 10.17.3.14 | helper.cefaslocalserver.com        | 32                   | helper_node   |
 
 ## Máquinas Virtuales y Roles
 
@@ -67,7 +67,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
   - Nodo que actúa como servidor DNS y de autenticación, proporcionando gestión de nombres y autenticación centralizada.
 
-- **Load Balancer (load\_balancer1)**:
+- **Load Balancer (load_balancer1)**:
 
   - Nodo que utiliza Traefik para gestionar la distribución de tráfico entre los nodos del clúster.
 
@@ -127,13 +127,13 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 #### Análisis y Visualización de Datos
 
-- **ELK Stack Elasticsearch**: Visualización de métricas del clúster
-- **ELK Stack Kibana**: Visualización de datos
-- **ELK Stack Logstash**: Procesamiento de logs
-- **Prometheus**: Herramientas para el monitoreo, alertas **alertmanager** y visualización de métricas
-- **Grafana**: Visualización de métricas del clúster
+- **ELK Stack Elasticsearch**: Visualización de métricas del clúster.
+- **ELK Stack Kibana**: Visualización de datos.
+- **ELK Stack Logstash**: Procesamiento de logs.
+- **Prometheus**: Herramientas para el monitoreo, alertas **alertmanager** y visualización de métricas.
+- **Grafana**: Visualización de métricas del clúster.
 - **cAdvisor**: Monitorear el rendimiento y uso de recursos por parte de los contenedores.
-- **Nagios**: Rendimiento del sistema
+- **Nagios**: Rendimiento del sistema.
 
 #### Microservicios de Servicios de Aplicaciones
 
@@ -187,16 +187,16 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ### Redes Virtuales Configuradas
 
-| Red NAT           | Nodos         | Dirección IP | Rol del Nodo                             |
-| ----------------- | ------------- | ------------ | ---------------------------------------- |
-| kube\_network\_02 | freeipa1      | 10.17.3.11   | Servidor de DNS y gestión de identidades |
-| kube\_network\_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
-| kube\_network\_02 | postgresql1   | 10.17.3.13   | Gestión de bases de datos                |
-| kube\_network\_02 | bootstrap1    | 10.17.3.14   | Inicialización del clúster               |
-| kube\_network\_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
-| kube\_network\_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
-| kube\_network\_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
-| kube\_network\_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
+| Red NAT         | Nodos         | Dirección IP | Rol del Nodo                             |
+| --------------- | ------------- | ------------ | ---------------------------------------- |
+| kube_network_02 | freeipa1      | 10.17.3.11   | Servidor de DNS y gestión de identidades |
+| kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
+| kube_network_02 | postgresql1   | 10.17.3.13   | Gestión de bases de datos                |
+| kube_network_02 | bootstrap1    | 10.17.3.14   | Inicialización del clúster               |
+| kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
+| kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
+| kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
+| kube_network_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
 
 ### Red br0 - Bridge Network
 
@@ -213,8 +213,8 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 - **Red Gateway**:
 
-  - kube\_network\_03: 10.17.4.1
-  - kube\_network\_02: 10.17.3.1
+  - kube_network_03: 10.17.4.1
+  - kube_network_02: 10.17.3.1
 
 - **DNS**:
 
@@ -245,7 +245,7 @@ resource "libvirt_network" "br0" {
 }
 ```
 
-### Red kube\_network\_02 - NAT Network
+### Red kube_network_02 - NAT Network
 
 ```hcl
 resource "libvirt_network" "kube_network_02" {
@@ -256,7 +256,7 @@ resource "libvirt_network" "kube_network_02" {
 }
 ```
 
-### Red kube\_network\_03 - NAT Network
+### Red kube_network_03 - NAT Network
 
 ```hcl
 resource "libvirt_network" "kube_network_03" {
@@ -377,35 +377,35 @@ cd FlatcarMicroCloud
 ## Diagramas de Red y Arquitectura
 
 ```bash
-                 +---------------------------+                       
-                 |        IP Pública         |                       
+                 +---------------------------+
+                 |        IP Pública         |
                  |         (HTTPS)           |
-                 |       192.168.0.21        |                       
-                 +---------------------------+                       
-                             |                                     
-                             v                                     
-                 +---------------------------+                       
-                 |       Bastion Node        |                       
-                 |        SSH Access         |                       
-                 |      IP: 192.168.0.20     |                       
-                 +---------------------------+                       
-                             |                                     
-                             v                                     
-                 +---------------------------+                       
-                 |      Load Balancer        |                       
-                 |         Traefik           |                       
-                 |      IP: 10.17.3.12       |                       
-                 +---------------------------+                       
-                             |                                     
-            +----------------+---------------+-----------------+                  
+                 |       192.168.0.21        |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |       Bastion Node        |
+                 |        SSH Access         |
+                 |      IP: 192.168.0.20     |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |      Load Balancer        |
+                 |         Traefik           |
+                 |      IP: 10.17.3.12       |
+                 +---------------------------+
+                             |
+            +----------------+---------------+-----------------+
             |                |               |                 |
-            v                v               v                 v  
-     +------+-------+   +----+-------+   +----+-------+   +----+-------+       
-     | Master Node 1 |   |   Worker    |   |   Worker    |   |   Worker    |      
+            v                v               v                 v
+     +------+-------+   +----+-------+   +----+-------+   +----+-------+
+     | Master Node 1 |   |   Worker    |   |   Worker    |   |   Worker    |
      |    (etcd)     |   |     1       |   |     2       |   |     3       |
-     | IP: 10.17.4.21|   | IP: 10.17.4.24|   | IP: 10.17.4.25|   | IP: 10.17.4.26|    
-     +---------------+   +--------------+   +--------------+   +--------------+          
-             |                                                   
+     | IP: 10.17.4.21|   | IP: 10.17.4.24|   | IP: 10.17.4.25|   | IP: 10.17.4.26|
+     +---------------+   +--------------+   +--------------+   +--------------+
+             |
              |        +----------------------------------------+
              |        |                                        |
              |        v                                        v
@@ -414,28 +414,28 @@ cd FlatcarMicroCloud
      |       (etcd)        |                           |       (etcd)        |
      |     IP: 10.17.4.22  |                           |     IP: 10.17.4.23  |
      +---------------------+                           +---------------------+
-             |                                                                 
+             |
              +----------------------------------------------------------------+
-                                                                              
+
                           |                                          |
-                          v                                          v       
+                          v                                          v
                +-------------+-------------+            +-------------+-------------+
                |        Redis Cache        |            |        Apache Kafka       |
                |       (In-memory)         |            |       (Message Queue)     |
                +---------------------------+            +---------------------------+
-                             |                                     
-                             v                                     
-                 +---------------------------+                       
-                 |       FreeIPA Node        |                       
-                 |         DNS/Auth          |                       
-                 |      IP: 10.17.3.11       |                       
-                 +---------------------------+                       
-                             |                                     
-                             v                                     
-                 +---------------------------+                         
-                 |     PostgreSQL Node       |                         
-                 |      IP: 10.17.3.13       |                         
-                 +---------------------------+                         
+                             |
+                             v
+                 +---------------------------+
+                 |       FreeIPA Node        |
+                 |         DNS/Auth          |
+                 |      IP: 10.17.3.11       |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |     PostgreSQL Node       |
+                 |      IP: 10.17.3.13       |
+                 +---------------------------+
 ```
 
 ## Optimización para Producción
@@ -450,8 +450,6 @@ Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
 
 ## Interfaz de Red
 
-
-
 | Interfaz     |
 | ------------ |
 | **enp3s0f0** |
@@ -460,10 +458,9 @@ Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
 | **enp4s0f1** |
 | **lo**       |
 
-## Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
+Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
 
-\
-Resumen del Flujo
+## Resumen del Flujo
 
 1. **Ingreso de Conexiones Externas**: Las conexiones HTTPS externas ingresan por la **IP pública (192.168.0.21)**.
 2. **Acceso Seguro**: El tráfico pasa por el **Bastion Node (192.168.0.20)** para acceder de manera segura a la red interna.
@@ -473,3 +470,4 @@ Resumen del Flujo
    - **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
 6. **Ejecución de Aplicaciones**: Los **nodos workers** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
+---
