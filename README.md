@@ -444,6 +444,8 @@ resource "libvirt_network" "kube_network_03" {
                  +---------------------------+
 ```
 
+![alt text](additional_resources/image/nodos_mv.png)
+
 ## Optimización para Producción
 
 | Aspecto                     | Detalle                                                                                            |
@@ -475,3 +477,4 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 5. **Resolución de Nombres y Sincronización de Tiempo**:
    - **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
 6. **Ejecución de Aplicaciones**: Los **nodos workers** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
+
