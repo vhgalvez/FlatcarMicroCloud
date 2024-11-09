@@ -96,17 +96,8 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 ---
 
 
-### Interfaces de Red Identificadas
 
-| Interfaz     | Dirección IP    |
-|--------------|-----------------|
-| **enp3s0f0** | 192.168.0.15    |
-| **enp3s0f1** | 192.168.0.16    |
-| **enp4s0f0** | 192.168.0.20    |
-| **enp4s0f1** | 192.168.0.18    |
-| **lo**       | 127.0.0.1       |
 
-Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
 
 ---
 
