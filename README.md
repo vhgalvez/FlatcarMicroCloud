@@ -115,6 +115,19 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 Clonar el repositorio en el servidor Rocky Linux.
 
+#### Estructura del Proyecto
+
+- `br0_network/`
+- `nat_network_02/`
+- `nat_network_03/`
+
+#### Requisitos
+
+- [Terraform](https://www.terraform.io/downloads.html) v0.13 o superior
+- Acceso a un servidor KVM con libvirt
+
+## Red y Conectividad
+
 ```bash
 # Clonar repositorio
 git clone https://github.com/vhgalvez/FlatcarMicroCloud.git
@@ -124,7 +137,7 @@ cd FlatcarMicroCloud
 ### Paso 2: Configuración de Redes Virtuales con Terraform
 
 - **Red br0_network**:
-  
+
   ```bash
   # Navegar a br0_network
   cd br0_network
@@ -134,7 +147,7 @@ cd FlatcarMicroCloud
   ```
 
 - **Red nat_network_02**:
-  
+
   ```bash
   # Navegar a nat_network_02
   cd ../nat_network_02
@@ -144,7 +157,7 @@ cd FlatcarMicroCloud
   ```
 
 - **Red nat_network_03**:
-  
+
   ```bash
   # Navegar a nat_network_03
   cd ../nat_network_03
@@ -152,6 +165,12 @@ cd FlatcarMicroCloud
   sudo terraform init --upgrade
   sudo terraform apply
   ```
+
+## Notas Adicionales
+
+- Asegúrese de tener las variables y configuraciones adecuadas en los archivos `terraform.tfvars` de cada subproyecto.
+- Cada subproyecto tiene su propio `main.tf` y configuración de variables, por lo que no debería haber conflictos de nombres si sigue las instrucciones anteriores.
+- Puede ajustar las configuraciones y variables según sea necesario para adaptarse a su entorno y necesidades específicas.
 
 ### Paso 3: Instalación de VMs y Sistemas Operativos
 
@@ -262,16 +281,16 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ### Redes Virtuales Configuradas
 
-| Red NAT           | Nodos         | Dirección IP | Rol del Nodo                             |
-| ----------------- | ------------- | ------------ | ---------------------------------------- |
-| kube_network_02   | freeipa1      | 10.17.3.11   | Servidor de DNS y gestión de identidades |
-| kube_network_02   | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
-| kube_network_02   | postgresql1   | 10.17.3.13   | Gestión de bases de datos                |
-| kube_network_02   | bootstrap1    | 10.17.3.14   | Inicialización del clúster               |
-| kube_network_03   | master1       | 10.17.4.21   | Gestión del clúster                      |
-| kube_network_03   | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
-| kube_network_03   | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
-| kube_network_03   | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
+| Red NAT         | Nodos         | Dirección IP | Rol del Nodo                             |
+| --------------- | ------------- | ------------ | ---------------------------------------- |
+| kube_network_02 | freeipa1      | 10.17.3.11   | Servidor de DNS y gestión de identidades |
+| kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
+| kube_network_02 | postgresql1   | 10.17.3.13   | Gestión de bases de datos                |
+| kube_network_02 | bootstrap1    | 10.17.3.14   | Inicialización del clúster               |
+| kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
+| kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
+| kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
+| kube_network_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
 
 ### Red br0 - Bridge Network
 
@@ -342,95 +361,7 @@ resource "libvirt_network" "kube_network_03" {
 }
 ```
 
-## Estructura del Proyecto
-
-- `br0_network/`
-- `nat_network_02/`
-- `nat_network_03/`
-
-## Requisitos
-
-- [Terraform](https://www.terraform.io/downloads.html) v0.13 o superior
-- Acceso a un servidor KVM con libvirt
-
-## Instrucciones de Ejecución
-
-Clonar el Repositorio de Terraform
-
-Clona el repositorio que contiene tu configuración de Terraform.
-
-```bash
-git clone https://github.com/vhgalvez/FlatcarMicroCloud.git
-cd FlatcarMicroCloud
-```
-
-### Inicializar y Aplicar Terraform para `br0_network`
-
-1. Navegue al directorio `br0_network`:
-
-   ```bash
-   cd br0_network
-   ```
-
-2. Inicialice Terraform y actualice los proveedores:
-
-   ```bash
-   sudo terraform init --upgrade
-   ```
-
-3. Aplique la configuración de Terraform:
-
-   ```bash
-   sudo terraform apply
-   ```
-
-### Inicializar y Aplicar Terraform para `nat_network_02`
-
-1. Navegue al directorio `nat_network_02`:
-
-   ```bash
-   cd ../nat_network_02
-   ```
-
-2. Inicialice Terraform y actualice los proveedores:
-
-   ```bash
-   sudo terraform init --upgrade
-   ```
-
-3. Aplique la configuración de Terraform:
-
-   ```bash
-   sudo terraform apply
-   ```
-
-### Inicializar y Aplicar Terraform para `nat_network_03`
-
-1. Navegue al directorio `nat_network_03`:
-
-   ```bash
-   cd ../nat_network_03
-   ```
-
-2. Inicialice Terraform y actualice los proveedores:
-
-   ```bash
-   sudo terraform init --upgrade
-   ```
-
-3. Aplique la configuración de Terraform:
-
-   ```bash
-   sudo terraform apply
-   ```
-
-## Notas Adicionales
-
-- Asegúrese de tener las variables y configuraciones adecuadas en los archivos `terraform.tfvars` de cada subproyecto.
-- Cada subproyecto tiene su propio `main.tf` y configuración de variables, por lo que no debería haber conflictos de nombres si sigue las instrucciones anteriores.
-- Puede ajustar las configuraciones y variables según sea necesario para adaptarse a su entorno y necesidades específicas.
-
-## Red y Conectividad
+## Configuración de Redes Virtuales
 
 - **Switch**: TP-Link LS1008G - 8 puertos Gigabit no administrados
 - **Router WiFi**: Conexión fibra óptica, 600 Mbps de subida/bajada, IP pública
@@ -452,35 +383,35 @@ cd FlatcarMicroCloud
 ## Diagramas de Red y Arquitectura
 
 ```bash
-                 +---------------------------+                       
-                 |        IP Pública         |                       
+                 +---------------------------+
+                 |        IP Pública         |
                  |         (HTTPS)           |
-                 |       192.168.0.21        |                       
-                 +---------------------------+                       
-                             |                                     
-                             v                                     
-                 +---------------------------+                       
-                 |       Bastion Node        |                       
-                 |        SSH Access         |                       
-                 |      IP: 192.168.0.20     |                       
-                 +---------------------------+                       
-                             |                                     
-                             v                                     
-                 +---------------------------+                       
-                 |      Load Balancer        |                       
-                 |         Traefik           |                       
-                 |      IP: 10.17.3.12       |                       
-                 +---------------------------+                       
-                             |                                     
-            +----------------+---------------+-----------------+                  
+                 |       192.168.0.21        |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |       Bastion Node        |
+                 |        SSH Access         |
+                 |      IP: 192.168.0.20     |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |      Load Balancer        |
+                 |         Traefik           |
+                 |      IP: 10.17.3.12       |
+                 +---------------------------+
+                             |
+            +----------------+---------------+-----------------+
             |                |               |                 |
-            v                v               v                 v  
-     +------+-------+   +----+-------+   +----+-------+   +----+-------+       
-     | Master Node 1 |   |   Worker    |   |   Worker    |   |   Worker    |      
+            v                v               v                 v
+     +------+-------+   +----+-------+   +----+-------+   +----+-------+
+     | Master Node 1 |   |   Worker    |   |   Worker    |   |   Worker    |
      |    (etcd)     |   |     1       |   |     2       |   |     3       |
-     | IP: 10.17.4.21|   | IP: 10.17.4.24|   | IP: 10.17.4.25|   | IP: 10.17.4.26|    
-     +---------------+   +--------------+   +--------------+   +--------------+          
-             |                                                   
+     | IP: 10.17.4.21|   | IP: 10.17.4.24|   | IP: 10.17.4.25|   | IP: 10.17.4.26|
+     +---------------+   +--------------+   +--------------+   +--------------+
+             |
              |        +----------------------------------------+
              |        |                                        |
              |        v                                        v
@@ -489,28 +420,28 @@ cd FlatcarMicroCloud
      |       (etcd)        |                           |       (etcd)        |
      |     IP: 10.17.4.22  |                           |     IP: 10.17.4.23  |
      +---------------------+                           +---------------------+
-             |                                                                 
+             |
              +----------------------------------------------------------------+
-                                                                              
+
                           |                                          |
-                          v                                          v       
+                          v                                          v
                +-------------+-------------+            +-------------+-------------+
                |        Redis Cache        |            |        Apache Kafka       |
                |       (In-memory)         |            |       (Message Queue)     |
                +---------------------------+            +---------------------------+
-                             |                                     
-                             v                                     
-                 +---------------------------+                       
-                 |       FreeIPA Node        |                       
-                 |         DNS/Auth          |                       
-                 |      IP: 10.17.3.11       |                       
-                 +---------------------------+                       
-                             |                                     
-                             v                                     
-                 +---------------------------+                         
-                 |     PostgreSQL Node       |                         
-                 |      IP: 10.17.3.13       |                         
-                 +---------------------------+                         
+                             |
+                             v
+                 +---------------------------+
+                 |       FreeIPA Node        |
+                 |         DNS/Auth          |
+                 |      IP: 10.17.3.11       |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |     PostgreSQL Node       |
+                 |      IP: 10.17.3.13       |
+                 +---------------------------+
 ```
 
 ## Optimización para Producción
