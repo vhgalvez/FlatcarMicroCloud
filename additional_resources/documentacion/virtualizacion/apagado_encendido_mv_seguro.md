@@ -112,3 +112,13 @@ sudo virsh start worker1
 sudo virsh start worker2
 sudo virsh start worker3
 ```
+
+
+
+## Comandos Adicionales
+```bash
+sudo virsh list --all
+```
+
+
+
