@@ -37,17 +37,17 @@ sudo systemctl status named
 
 ```bash
 sudo virsh shutdown bastion1.cefaslocalserver.com
-sudo virsh shutdown freeipa1
 sudo virsh shutdown load_balancer1
 sudo virsh shutdown postgresql1
-sudo virsh shutdown master3
-sudo virsh shutdown master2
-sudo virsh shutdown worker1
-sudo virsh shutdown bootstrap1
-sudo virsh shutdown worker2
-sudo virsh shutdown worker3
-sudo virsh shutdown master1
+sudo virsh shutdown freeipa1
 sudo virsh shutdown helper
+sudo virsh shutdown bootstrap
+sudo virsh shutdown worker3
+sudo virsh shutdown master3
+sudo virsh shutdown master1
+sudo virsh shutdown worker1
+sudo virsh shutdown master2
+sudo virsh shutdown worker2
 ```
 
 Verifica el estado final:
