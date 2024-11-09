@@ -44,11 +44,5 @@ sudo systemctl restart NetworkManager
 ```
 
 
-# Deshabilitar SELinux
-
-```bash
-sudo setenforce 0
-sudo systemctl restart libvirtd
-```
 
 

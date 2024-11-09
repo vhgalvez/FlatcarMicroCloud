@@ -122,3 +122,9 @@ sudo virsh list --all
 
 
 
+# Deshabilitar SELinux
+
+```bash
+sudo setenforce 0
+sudo systemctl restart libvirtd
+```
