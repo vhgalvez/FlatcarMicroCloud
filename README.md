@@ -19,6 +19,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 - **Sistemas Operativos**: Rocky Linux 9.4 y Flatcar Container Linux
 - **Virtualización**: KVM con Libvirt y Virt-Manager
 - **Configuración de Red**: VPN con WireGuard, DHCP, firewall, y configuraciones de redes virtuales (NAT y Bridge) con KVM.
+- **Switch y Router**: Facilitan la comunicación y conectividad del clúster.
 
 ## Resumen de Recursos para Máquinas Virtuales
 
@@ -310,6 +311,18 @@ cd FlatcarMicroCloud
 - **Red**: Configurada red NAT y red Bridge de kvm
 - **VPN**: WireGuard para acceso seguro SSH administrado por Bastion Node
 
+## FreeIPA (10.17.3.11)
+
+- **Servidor DNS y NTP (chronyc)**:
+  FreeIPA actúa como el servidor DNS, gestionando la resolución de nombres y autenticación dentro del clúster. Además, **chronyc** está configurado para sincronizar el tiempo en todo el clúster, utilizando FreeIPA como uno de los servidores NTP principales.
+
+## Chronyc / NTP
+
+- **Sincronización de tiempo**:
+  FreeIPA también proporciona servicios NTP. Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc** y el servidor NTP de FreeIPA (`10.17.3.11`). Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
+
+---
+
 ## Diagramas de Red y Arquitectura
 
 ```bash
@@ -383,3 +396,4 @@ cd FlatcarMicroCloud
 | Supervisión Activa             | Usa Grafana para monitoreo en tiempo real, ajustando recursos según los picos de carga detectados.  |
 
 Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
+
