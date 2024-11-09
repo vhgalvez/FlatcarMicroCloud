@@ -23,53 +23,60 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ## Resumen de Recursos para Máquinas Virtuales
 
-| Nombre de VM    | CPU | Memoria (MB) | IP         | Nombre de Dominio                  | Tamaño de Disco (GB) | Hostname      |
-| --------------- | --- | ------------ | ---------- | ---------------------------------- | ---------------------- | ------------- |
-| master1         | 2   | 4096         | 10.17.4.21 | master1.cefaslocalserver.com       | 50                    | master1       |
-| master2         | 2   | 4096         | 10.17.4.22 | master2.cefaslocalserver.com       | 50                    | master2       |
-| master3         | 2   | 4096         | 10.17.4.23 | master3.cefaslocalserver.com       | 50                    | master3       |
-| worker1         | 2   | 4096         | 10.17.4.24 | worker1.cefaslocalserver.com       | 50                    | worker1       |
-| worker2         | 2   | 4096         | 10.17.4.25 | worker2.cefaslocalserver.com       | 50                    | worker2       |
-| worker3         | 2   | 4096         | 10.17.4.26 | worker3.cefaslocalserver.com       | 50                    | worker3       |
-| bootstrap       | 2   | 4096         | 10.17.4.27 | bootstrap.cefaslocalserver.com     | 50                    | bootstrap     |
-| freeipa1        | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com      | 32                    | freeipa1      |
-| loadbalancer1   | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com | 32                    | loadbalancer1 |
-| postgresql1     | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com   | 32                    | postgresql1   |
-| helper          | 2   | 2048         | 10.17.3.14 | helper.cefaslocalserver.com        | 32                    | helper_node   |
+| Nombre de VM  | CPU | Memoria (MB) | IP         | Nombre de Dominio                  | Tamaño de Disco (GB) | Hostname      |
+| ------------- | --- | ------------ | ---------- | ---------------------------------- | -------------------- | ------------- |
+| master1       | 2   | 4096         | 10.17.4.21 | master1.cefaslocalserver.com       | 50                   | master1       |
+| master2       | 2   | 4096         | 10.17.4.22 | master2.cefaslocalserver.com       | 50                   | master2       |
+| master3       | 2   | 4096         | 10.17.4.23 | master3.cefaslocalserver.com       | 50                   | master3       |
+| worker1       | 2   | 4096         | 10.17.4.24 | worker1.cefaslocalserver.com       | 50                   | worker1       |
+| worker2       | 2   | 4096         | 10.17.4.25 | worker2.cefaslocalserver.com       | 50                   | worker2       |
+| worker3       | 2   | 4096         | 10.17.4.26 | worker3.cefaslocalserver.com       | 50                   | worker3       |
+| bootstrap     | 2   | 4096         | 10.17.4.27 | bootstrap.cefaslocalserver.com     | 50                   | bootstrap     |
+| freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
+| loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
+| postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
+| helper        | 2   | 2048         | 10.17.3.14 | helper.cefaslocalserver.com        | 32                   | helper\_node  |
 
 ## Máquinas Virtuales y Roles
 
-| Nodo                   | Sistema Operativo       | Función                                    | Cantidad |
-| ---------------------- | ----------------------- | ------------------------------------------ | -------- |
-| Bastion Node           | Rocky Linux             | Acceso seguro y conexiones SSH al clúster  | 1        |
-| Load Balancer Node     | Rocky Linux             | Balanceo de tráfico con Traefik            | 1        |
-| FreeIPA Node           | Rocky Linux             | DNS y autenticación                        | 1        |
-| PostgreSQL Node        | Rocky Linux             | Base de datos central para microservicios  | 1        |
-| Master Node            | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
-| Worker Nodes           | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
-| Bootstrap Node         | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
+| Nodo               | Sistema Operativo       | Función                                    | Cantidad |
+| ------------------ | ----------------------- | ------------------------------------------ | -------- |
+| Bastion Node       | Rocky Linux             | Acceso seguro y conexiones SSH al clúster  | 1        |
+| Load Balancer Node | Rocky Linux             | Balanceo de tráfico con Traefik            | 1        |
+| FreeIPA Node       | Rocky Linux             | DNS y autenticación                        | 1        |
+| PostgreSQL Node    | Rocky Linux             | Base de datos central para microservicios  | 1        |
+| Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
+| Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
+| Bootstrap Node     | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
 
 ## Explicación de Roles de las VMs
 
 - **Maestros (master1, master2, master3)**:
+
   - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
 
 - **Workers (worker1, worker2, worker3)**:
+
   - Nodos responsables de ejecutar aplicaciones en contenedores y manejar la carga de trabajo del clúster.
 
 - **Bootstrap**:
+
   - Nodo utilizado para iniciar y configurar el clúster.
 
 - **FreeIPA (freeipa1)**:
+
   - Nodo que actúa como servidor DNS y de autenticación, proporcionando gestión de nombres y autenticación centralizada.
 
-- **Load Balancer (load_balancer1)**:
+- **Load Balancer (load\_balancer1)**:
+
   - Nodo que utiliza Traefik para gestionar la distribución de tráfico entre los nodos del clúster.
 
 - **PostgreSQL (postgresql1)**:
+
   - Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
 
 - **Helper**:
+
   - Nodo auxiliar para tareas administrativas y de soporte dentro del clúster.
 
 ## Fases de Implementación
@@ -81,11 +88,11 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ### Fase 2: Configuración de PostgreSQL
 
-| Aspecto                     | Configuración                                                            |
-| --------------------------- | ------------------------------------------------------------------------ |
-| Servidor                    | `postgresql1.cefaslocalserver.com`                                       |
-| Permisos                    | Ajusta permisos para permitir el acceso de microservicios en el clúster. |
-| Respaldo y Recuperación     | Define políticas para almacenamiento y recuperación de datos.            |
+| Aspecto                 | Configuración                                                            |
+| ----------------------- | ------------------------------------------------------------------------ |
+| Servidor                | `postgresql1.cefaslocalserver.com`                                       |
+| Permisos                | Ajusta permisos para permitir el acceso de microservicios en el clúster. |
+| Respaldo y Recuperación | Define políticas para almacenamiento y recuperación de datos.            |
 
 ### Fase 3: Desarrollo e Implementación de Microservicios
 
@@ -101,6 +108,20 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 - **Terraform**: Automatización de infraestructura.
 - **Ansible**: Configuración y manejo de operaciones.
+
+### Integración Continua CI/CD
+
+- **Jenkins**: Automatización de pruebas y despliegue de aplicaciones.
+- **GitHub Actions**: Control de versiones y CI/CD.
+- **SonarQube**: Análisis de código y calidad.
+- **Docker Registry**: Registro de imágenes de contenedores.
+- **Harbor**: Registro de imágenes de contenedores y escaneo de vulnerabilidades.
+- **Kaniko**: Construcción de imágenes de contenedores sin privilegios.
+- **Helm**: Gestión de paquetes de Kubernetes.
+- **Kustomize**: Personalización de despliegues de Kubernetes.
+- **ArgoCD**: Despliegue continuo de aplicaciones en Kubernetes.
+- **Tekton**: Automatización de pipelines de CI/CD.
+- **Spinnaker**: Automatización de despliegues en Kubernetes.
 
 ### Microservicios en Pods
 
@@ -130,6 +151,31 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 - **Rook y Ceph**: Orquestar Ceph en Kubernetes para almacenamiento persistente.
 
+### Kubernetes Operaciones
+
+- **Kubernetes Operators**: Automatización de operaciones en Kubernetes.
+- **Kubernetes Helm Charts**: Plantillas predefinidas para despliegues en Kubernetes.
+- **Kubernetes Custom Resources**: Recursos personalizados para operaciones específicas en Kubernetes.
+- **Kubernetes Ingress**: Gestión de tráfico de red en Kubernetes.
+- **Kubernetes Services**: Exposición de servicios en Kubernetes.
+- **Kubernetes Volumes**: Almacenamiento persistente en Kubernetes.
+- **Kubernetes Namespaces**: Aislamiento de recursos en Kubernetes.
+- **Kubernetes RBAC**: Control de acceso basado en roles en Kubernetes.
+- **Kubernetes Secrets**: Gestión de secretos en Kubernetes.
+- **Kubernetes ConfigMaps**: Gestión de configuraciones en Kubernetes.
+- **Kubernetes Network Policies**: Políticas de red en Kubernetes.
+- **Kubernetes Pod Security Policies**: Políticas de seguridad en Kubernetes.
+- **Kubernetes Pod Disruption Budgets**: Control de la disponibilidad de pods en Kubernetes.
+- **Kubernetes Horizontal Pod Autoscaler**: Escalado automático de pods en Kubernetes.
+- **Kubernetes Vertical Pod Autoscaler**: Escalado automático de recursos en pods en Kubernetes.
+- **Kubernetes Cluster Autoscaler**: Escalado automático de nodos en Kubernetes.
+- **Kubernetes Pod Affinity**: Afinidad de pods en Kubernetes.
+- **Kubernetes Pod Anti-Affinity**: Anti-afinidad de pods en Kubernetes.
+- **Kubernetes Taints and Tolerations**: Tolerancias y restricciones en Kubernetes.
+- **Kubernetes DaemonSets**: Despliegue de pods en todos los nodos en Kubernetes.
+- **Kubernetes StatefulSets**: Despliegue de aplicaciones con estado en Kubernetes.
+- **Kubernetes Jobs**: Ejecución de tareas en Kubernetes.
+
 ## Seguridad y Monitoreo
 
 - **FreeIPA**: DNS y gestión de autenticación.
@@ -141,16 +187,16 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ### Redes Virtuales Configuradas
 
-| Red NAT           | Nodos           | Dirección IP | Rol del Nodo                             |
-| ----------------- | --------------- | ------------ | ---------------------------------------- |
-| kube\_network\_02  | freeipa1        | 10.17.3.11   | Servidor de DNS y gestión de identidades |
-| kube\_network\_02  | loadbalancer1   | 10.17.3.12   | Balanceo de carga para el clúster        |
-| kube\_network\_02  | postgresql1     | 10.17.3.13   | Gestión de bases de datos                |
-| kube\_network\_02  | bootstrap1      | 10.17.3.14   | Inicialización del clúster               |
-| kube\_network\_03  | master1         | 10.17.4.21   | Gestión del clúster                      |
-| kube\_network\_03  | worker1         | 10.17.4.24   | Ejecución de aplicaciones               |
-| kube\_network\_03  | worker2         | 10.17.4.25   | Ejecución de aplicaciones               |
-| kube\_network\_03  | worker3         | 10.17.4.26   | Ejecución de aplicaciones               |
+| Red NAT           | Nodos         | Dirección IP | Rol del Nodo                             |
+| ----------------- | ------------- | ------------ | ---------------------------------------- |
+| kube\_network\_02 | freeipa1      | 10.17.3.11   | Servidor de DNS y gestión de identidades |
+| kube\_network\_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
+| kube\_network\_02 | postgresql1   | 10.17.3.13   | Gestión de bases de datos                |
+| kube\_network\_02 | bootstrap1    | 10.17.3.14   | Inicialización del clúster               |
+| kube\_network\_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
+| kube\_network\_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
+| kube\_network\_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
+| kube\_network\_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
 
 ### Red br0 - Bridge Network
 
@@ -161,21 +207,26 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 ## Detalles de Configuración
 
 - **Imágenes Base**:
+
   - Fedora CoreOS: `/mnt/lv_data/organized_storage/images/fedora-coreos-40.20240906.3.0-qemu.x86_64.qcow2`
   - Rocky Linux: `/mnt/lv_data/organized_storage/images/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2`
 
 - **Red Gateway**:
-  - kube_network_03: 10.17.4.1
-  - kube_network_02: 10.17.3.1
+
+  - kube\_network\_03: 10.17.4.1
+  - kube\_network\_02: 10.17.3.1
 
 - **DNS**:
+
   - Primario: 10.17.3.11 (FreeIPA)
   - Secundario: 8.8.8.8
 
 - **Zona Horaria**:
+
   - Europe/London
 
 - **Clave SSH**:
+
   - Clave pública SSH incluida para acceso seguro a las VMs.
 
 ---
@@ -194,7 +245,7 @@ resource "libvirt_network" "br0" {
 }
 ```
 
-### Red kube_network_02 - NAT Network
+### Red kube\_network\_02 - NAT Network
 
 ```hcl
 resource "libvirt_network" "kube_network_02" {
@@ -205,7 +256,7 @@ resource "libvirt_network" "kube_network_02" {
 }
 ```
 
-### Red kube_network_03 - NAT Network
+### Red kube\_network\_03 - NAT Network
 
 ```hcl
 resource "libvirt_network" "kube_network_03" {
@@ -389,23 +440,36 @@ cd FlatcarMicroCloud
 
 ## Optimización para Producción
 
-| Aspecto                         | Detalle                                                                                             |
-| ------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Restricción de Recursos         | Configura límites en Kubernetes para cada servicio (Prometheus, PostgreSQL, Kafka, Redis).          |
-| Control de Logs y Monitoreo     | Define políticas de retención de logs en Prometheus y Kafka para reducir el consumo de disco.       |
-| Supervisión Activa             | Usa Grafana para monitoreo en tiempo real, ajustando recursos según los picos de carga detectados.  |
+| Aspecto                     | Detalle                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------- |
+| Restricción de Recursos     | Configura límites en Kubernetes para cada servicio (Prometheus, PostgreSQL, Kafka, Redis).         |
+| Control de Logs y Monitoreo | Define políticas de retención de logs en Prometheus y Kafka para reducir el consumo de disco.      |
+| Supervisión Activa          | Usa Grafana para monitoreo en tiempo real, ajustando recursos según los picos de carga detectados. |
 
 Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
 
 ## Interfaz de Red
 
-| Interfaz     | 
-|--------------|
-| **enp3s0f0** | 
-| **enp3s0f1** | 
-| **enp4s0f0** | 
+
+
+| Interfaz     |
+| ------------ |
+| **enp3s0f0** |
+| **enp3s0f1** |
+| **enp4s0f0** |
 | **enp4s0f1** |
 | **lo**       |
 
-Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
-```
+## Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
+
+\
+Resumen del Flujo
+
+1. **Ingreso de Conexiones Externas**: Las conexiones HTTPS externas ingresan por la **IP pública (192.168.0.21)**.
+2. **Acceso Seguro**: El tráfico pasa por el **Bastion Node (192.168.0.20)** para acceder de manera segura a la red interna.
+3. **Distribución de Tráfico**: El **Load Balancer (Traefik)** distribuye el tráfico hacia los nodos maestros y workers.
+4. **Instalación de OKD**: El **Bootstrap Node** inicia la instalación de OKD, solicitando los certificados al **FreeIPA**.
+5. **Resolución de Nombres y Sincronización de Tiempo**:
+   - **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
+6. **Ejecución de Aplicaciones**: Los **nodos workers** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
+
