@@ -21,6 +21,10 @@ passwd:
 
 storage:
   directories:
+    - path: /etc/systemd/timesyncd.conf.d
+      filesystem: root
+      mode: 0755
+
   files:
     - path: /etc/hostname
       filesystem: root
@@ -67,6 +71,15 @@ storage:
         inline: |
           L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
 
+    - path: /etc/systemd/timesyncd.conf.d/custom-ntp.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          [Time]
+          NTP=10.17.3.11
+          FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org
+
 systemd:
   units:
     - name: set-timezone.service
@@ -112,3 +125,6 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+
+    - name: systemd-timesyncd.service
+      enabled: true

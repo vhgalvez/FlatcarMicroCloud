@@ -478,3 +478,11 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
    - **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
 6. **Ejecución de Aplicaciones**: Los **nodos workers** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
+
+## Recursos Adicionales requeridos con el Proyecto
+
+# Automatización ansible para la configuración de FreeIPA DNS 
+https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
+
+# Automatización ansible para la configuración de NTP
+https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
