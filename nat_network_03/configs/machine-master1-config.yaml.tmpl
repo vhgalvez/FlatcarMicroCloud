@@ -53,38 +53,8 @@ storage:
           DNS=${dns1}
           DNS=${dns2}
 
-    - path: /etc/systemd/timesyncd.conf
-      filesystem: root
-      mode: 0644
-      contents:
-        inline: |
-          [Time]
-          NTP=10.17.3.11
-          FallbackNTP=pool.ntp.org
-
 systemd:
   units:
-    - name: systemd-networkd.service
-      enabled: true
-
-    - name: systemd-timesyncd.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Network Time Synchronization
-        After=network-online.target
-        Wants=network-online.target
-
-        [Service]
-        ExecStart=/lib/systemd/systemd-timesyncd
-        Restart=on-failure
-
-        [Install]
-        WantedBy=multi-user.target
-
-    - name: sshd.service
-      enabled: true
-
     - name: set-timezone.service
       enabled: true
       contents: |
@@ -97,3 +67,37 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+
+    - name: apply-network-routes.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Apply custom network routes
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: set-hosts.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set /etc/hosts file
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: sshd.service
+      enabled: true
