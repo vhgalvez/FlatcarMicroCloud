@@ -138,7 +138,7 @@ systemd:
       contents: |
         [Unit]
         Description=Network Time Synchronization
-        After=network.target
+        After=network-online.target
 
         [Service]
         ExecStart=/usr/lib/systemd/systemd-timesyncd
