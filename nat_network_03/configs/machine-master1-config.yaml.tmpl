@@ -20,6 +20,11 @@ passwd:
       password_hash: "$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/"
 
 storage:
+  directories:
+    - path: /etc/systemd/timesyncd.conf.d
+      filesystem: root
+      mode: 0755
+
   files:
     - path: /etc/hostname
       filesystem: root
@@ -36,7 +41,6 @@ storage:
           Name=eth0
 
           [Network]
-          DHCP=no
           Address=${ip}/24
           Gateway=${gateway}
           DNS=${dns1}
@@ -67,14 +71,14 @@ storage:
         inline: |
           L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
 
-    - path: /etc/systemd/timesyncd.conf
+    - path: /etc/systemd/timesyncd.conf.d/custom-ntp.conf
       filesystem: root
       mode: 0644
       contents:
         inline: |
           [Time]
           NTP=10.17.3.11
-          FallbackNTP=pool.ntp.org
+          FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org
 
 systemd:
   units:
@@ -123,19 +127,4 @@ systemd:
         WantedBy=multi-user.target
 
     - name: systemd-timesyncd.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Network Time Synchronization
-        After=network-online.target
-        Wants=network-online.target
-
-        [Service]
-        ExecStart=/usr/lib/systemd/systemd-timesyncd
-        Restart=on-failure
-
-        [Install]
-        WantedBy=multi-user.target
-
-    - name: sshd.service
       enabled: true
