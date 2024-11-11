@@ -481,8 +481,8 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 ## Recursos Adicionales requeridos con el Proyecto
 
-# Automatización ansible para la configuración de FreeIPA DNS 
+### Automatización ansible para la configuración de FreeIPA DNS 
 https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
 
-# Automatización ansible para la configuración de NTP
+### Automatización ansible para la configuración de NTP
 https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
