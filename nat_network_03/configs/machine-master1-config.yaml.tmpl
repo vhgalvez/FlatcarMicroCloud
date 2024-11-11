@@ -47,6 +47,7 @@ storage:
           Name=eth0
 
           [Network]
+          DHCP=no
           Address=${ip}/24
           Gateway=${gateway}
           DNS=${dns1}
@@ -77,7 +78,7 @@ storage:
         inline: |
           L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
 
-    # Configuración mínima de NTP en timesyncd.conf
+    # Configuración de NTP en timesyncd.conf
     - path: /etc/systemd/timesyncd.conf
       filesystem: root
       mode: 0644
@@ -89,6 +90,9 @@ storage:
 
 systemd:
   units:
+    - name: systemd-networkd.service
+      enabled: true
+
     - name: set-timezone.service
       enabled: true
       contents: |
@@ -129,6 +133,22 @@ systemd:
         Type=oneshot
         ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
         RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: sshd.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=OpenSSH server daemon
+        After=network.target
+
+        [Service]
+        ExecStart=/usr/sbin/sshd -D
+        ExecReload=/bin/kill -HUP $MAINPID
+        KillMode=process
+        Restart=on-failure
 
         [Install]
         WantedBy=multi-user.target
