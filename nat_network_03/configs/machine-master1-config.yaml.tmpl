@@ -41,56 +41,54 @@ storage:
     - path: /etc/systemd/network/10-eth0.network
       filesystem: root
       mode: 0644
-      contents:
-        inline: |
-          [Match]
-          Name=eth0
+      contents: |
+        [Match]
+        Name=eth0
 
-          [Network]
-          DHCP=no
-          Address=${ip}/24
-          Gateway=${gateway}
-          DNS=${dns1}
-          DNS=${dns2}
+        [Network]
+        DHCP=yes
+        Address=${ip}/24
+        Gateway=${gateway}
+        DNS=${dns1}
+        DNS=${dns2}
 
     - path: /etc/tmpfiles.d/hosts.conf
       filesystem: root
       mode: 0644
-      contents:
-        inline: |
-          f /etc/hosts 0644 - - - -
-          127.0.0.1   localhost
-          ::1         localhost
-          ${ip}  ${host_name} ${node_name}
+      contents: |
+        f /etc/hosts 0644 - - - -
+        127.0.0.1   localhost
+        ::1         localhost
+        ${ip}  ${host_name} ${node_name}
 
     - path: /run/systemd/resolve/resolv.conf
       filesystem: root
       mode: 0644
-      contents:
-        inline: |
-          nameserver ${dns1}
-          nameserver ${dns2}
+      contents: |
+        nameserver ${dns1}
+        nameserver ${dns2}
 
     - path: /etc/tmpfiles.d/resolv.conf
       filesystem: root
       mode: 0644
-      contents:
-        inline: |
-          L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
+      contents: |
+        L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
 
     # Configuración de NTP en timesyncd.conf
     - path: /etc/systemd/timesyncd.conf
       filesystem: root
       mode: 0644
-      contents:
-        inline: |
-          [Time]
-          NTP=10.17.3.11
-          FallbackNTP=pool.ntp.org
+      contents: |
+        [Time]
+        NTP=10.17.3.11
+        FallbackNTP=pool.ntp.org
 
 systemd:
   units:
     - name: systemd-networkd.service
+      enabled: true
+
+    - name: systemd-timesyncd.service
       enabled: true
 
     - name: set-timezone.service
