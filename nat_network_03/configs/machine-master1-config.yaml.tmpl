@@ -77,6 +77,7 @@ storage:
         inline: |
           L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
 
+    # Configuración de NTP en timesyncd.conf
     - path: /etc/systemd/timesyncd.conf
       filesystem: root
       mode: 0644
@@ -128,20 +129,6 @@ systemd:
         Type=oneshot
         ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
         RemainAfterExit=true
-
-        [Install]
-        WantedBy=multi-user.target
-
-    - name: systemd-timesyncd.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Network Time Synchronization
-        After=network.target
-
-        [Service]
-        ExecStart=/usr/lib/systemd/systemd-timesyncd
-        Restart=always
 
         [Install]
         WantedBy=multi-user.target
