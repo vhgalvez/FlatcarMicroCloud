@@ -66,22 +66,21 @@ systemd:
   units:
     - name: systemd-networkd.service
       enabled: true
-      contents: |
-        [Unit]
-        Description=Network Service
-        Wants=network-online.target
-        Before=network-online.target
-
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/systemctl start systemd-networkd
-        RemainAfterExit=true
-
-        [Install]
-        WantedBy=multi-user.target
 
     - name: systemd-timesyncd.service
       enabled: true
+      contents: |
+        [Unit]
+        Description=Network Time Synchronization
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        ExecStart=/lib/systemd/systemd-timesyncd
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
 
     - name: sshd.service
       enabled: true
