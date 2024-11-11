@@ -51,8 +51,31 @@ storage:
           NTP=10.17.3.11
           FallbackNTP=pool.ntp.org
 
+    - path: /etc/tmpfiles.d/hosts.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          f /etc/hosts 0644 - - - -
+          127.0.0.1   localhost
+          ::1         localhost
+          ${ip}  ${host_name} ${node_name}
+
 systemd:
   units:
+    - name: set-timezone.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set timezone to ${timezone}
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/timedatectl set-timezone ${timezone}
+
+        [Install]
+        WantedBy=multi-user.target
+
     - name: apply-network-routes.service
       enabled: true
       contents: |
@@ -78,13 +101,8 @@ systemd:
 
         [Service]
         Type=oneshot
-        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; \
-                                 echo "::1         localhost" >> /etc/hosts; \
-                                 echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
+        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
         RemainAfterExit=true
 
         [Install]
         WantedBy=multi-user.target
-
-    - name: sshd.service
-      enabled: true
