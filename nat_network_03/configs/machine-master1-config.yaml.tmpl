@@ -77,6 +77,15 @@ storage:
         inline: |
           L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
 
+    # Configuración de NTP para Flatcar
+    - path: /etc/ntp.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          server 10.17.3.11 iburst prefer
+          pool pool.ntp.org iburst
+
 systemd:
   units:
     - name: set-timezone.service
@@ -119,6 +128,20 @@ systemd:
         Type=oneshot
         ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
         RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: ntpd.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=NTP Daemon
+        After=network.target
+
+        [Service]
+        ExecStart=/usr/sbin/ntpd -g -u ntp:ntp
+        Restart=on-failure
 
         [Install]
         WantedBy=multi-user.target
