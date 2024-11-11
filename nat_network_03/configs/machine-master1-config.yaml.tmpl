@@ -20,17 +20,6 @@ passwd:
       password_hash: "$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/"
 
 storage:
-  directories:
-    - path: /etc/kubernetes/pki
-      filesystem: root
-      mode: 0755
-    - path: /opt/bin
-      filesystem: root
-      mode: 0755
-    - path: /etc/cni/net.d
-      filesystem: root
-      mode: 0755
-
   files:
     - path: /etc/hostname
       filesystem: root
@@ -53,21 +42,17 @@ storage:
           DNS=${dns1}
           DNS=${dns2}
 
+    - path: /etc/systemd/timesyncd.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          [Time]
+          NTP=10.17.3.11
+          FallbackNTP=pool.ntp.org
+
 systemd:
   units:
-    - name: set-timezone.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Set timezone to ${timezone}
-
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/timedatectl set-timezone ${timezone}
-
-        [Install]
-        WantedBy=multi-user.target
-
     - name: apply-network-routes.service
       enabled: true
       contents: |
@@ -93,7 +78,9 @@ systemd:
 
         [Service]
         Type=oneshot
-        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
+        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; \
+                                 echo "::1         localhost" >> /etc/hosts; \
+                                 echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
         RemainAfterExit=true
 
         [Install]
