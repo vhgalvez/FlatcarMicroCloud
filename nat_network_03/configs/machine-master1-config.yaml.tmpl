@@ -131,8 +131,11 @@ systemd:
         Wants=network-online.target
 
         [Service]
-        ExecStart=/lib/systemd/systemd-timesyncd
+        ExecStart=/usr/lib/systemd/systemd-timesyncd
         Restart=on-failure
 
         [Install]
         WantedBy=multi-user.target
+
+    - name: sshd.service
+      enabled: true
