@@ -104,3 +104,36 @@ Descargar la imagen de Rocky Linux 9 Generic Cloud en formato QCOW2:
 cd /var/lib/libvirt/images
 wget https://download.rockylinux.org/pub/rocky/9/images/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2
 ```
+
+
+# Descarga y Preparación de la Imagen de Flatcar Container Linux
+
+Has descargado y descomprimido correctamente la imagen de Flatcar Container Linux en formato QCOW2. A continuación, se detallan los pasos que has seguido:
+
+### 1. Descarga de la Imagen Comprimida
+
+Utilizaste `curl` con privilegios de superusuario para descargar la imagen comprimida desde el sitio oficial de Flatcar:
+
+```bash
+sudo curl -o /mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img.bz2 https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_qemu_image.img.bz2
+```
+
+Este comando guarda el archivo flatcar_production_qemu_image.img.bz2 en el directorio especificado.
+
+2. Descompresión de la Imagen
+Después de la descarga, descomprimiste el archivo utilizando bunzip2:
+
+```bash
+sudo bunzip2 /mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img.bz2
+```
+Este comando descomprime el archivo .bz2, resultando en flatcar_production_qemu_image.img.
+
+3. Verificación de la Imagen Descomprimida
+Finalmente, listaste el contenido del directorio para confirmar la presencia de la imagen descomprimida:
+
+```bash
+ls -l /mnt/lv_data/organized_storage/images/
+```
+La salida muestra que flatcar_production_qemu_image.img está presente con un tamaño de aproximadamente 489 MB.
+
+Con estos pasos, la imagen de Flatcar Container Linux está lista para ser utilizada en tu entorno de virtualización.
