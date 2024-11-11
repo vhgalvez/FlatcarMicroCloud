@@ -446,6 +446,7 @@ Verificación de Credenciales de Kerberos
 
 Si sigues recibiendo el error "did not receive Kerberos credentials", puede que necesites asegurarte de que tu ticket de Kerberos esté vigente y que el tiempo de vida del ticket no haya expirado. Verificar el ticket de Kerberos:
 
+
 ```bash
 klist
 ```
@@ -453,13 +454,11 @@ klist
 ## Paso 3: Verificar los Registros DNS
 
 
-```bash
-kinit admin
-```
+
 
 ```bash
 
-ipa dnsrecord-find cefaslocalserver.com
+sudo ipa dnsrecord-find cefaslocalserver.com
 ```
 
 Verificar la resolución DNS desde una VM
