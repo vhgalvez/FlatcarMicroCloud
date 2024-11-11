@@ -36,35 +36,60 @@ storage:
       filesystem: root
       mode: 0644
       contents:
-        source: "data:text/plain;charset=utf-8;base64,${base64encode(host_name)}"
+        inline: ${host_name}
 
     - path: /etc/systemd/network/10-eth0.network
       filesystem: root
       mode: 0644
       contents:
-        source: "data:text/plain;charset=utf-8;base64,${base64encode("[Match]\nName=eth0\n\n[Network]\nDHCP=no\nAddress=${ip}/24\nGateway=${gateway}\nDNS=${dns1}\nDNS=${dns2}")}"
+        inline: |
+          [Match]
+          Name=eth0
 
-    - path: /etc/hosts
+          [Network]
+          Address=${ip}/24
+          Gateway=${gateway}
+          DNS=${dns1}
+          DNS=${dns2}
+
+    - path: /etc/tmpfiles.d/hosts.conf
       filesystem: root
       mode: 0644
       contents:
-        source: "data:text/plain;charset=utf-8;base64,${base64encode("127.0.0.1   localhost\n::1         localhost\n${ip}  ${host_name} ${node_name}")}"
+        inline: |
+          f /etc/hosts 0644 - - - -
+          127.0.0.1   localhost
+          ::1         localhost
+          ${ip}  ${host_name} ${node_name}
 
     - path: /run/systemd/resolve/resolv.conf
       filesystem: root
       mode: 0644
       contents:
-        source: "data:text/plain;charset=utf-8;base64,${base64encode("nameserver ${dns1}\nnameserver ${dns2}")}"
+        inline: |
+          nameserver ${dns1}
+          nameserver ${dns2}
 
+    - path: /etc/tmpfiles.d/resolv.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
+
+    # Configuración de NTP en timesyncd.conf
     - path: /etc/systemd/timesyncd.conf
       filesystem: root
       mode: 0644
       contents:
-        source: "data:text/plain;charset=utf-8;base64,${base64encode("[Time]\nNTP=10.17.3.11\nFallbackNTP=pool.ntp.org")}"
+        inline: |
+          [Time]
+          NTP=10.17.3.11
+          FallbackNTP=pool.ntp.org
 
 systemd:
   units:
-    - name: systemd-networkd.service
+    - name: systemd-timesyncd.service
       enabled: true
 
     - name: set-timezone.service
@@ -107,22 +132,6 @@ systemd:
         Type=oneshot
         ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
         RemainAfterExit=true
-
-        [Install]
-        WantedBy=multi-user.target
-
-    - name: sshd.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=OpenSSH server daemon
-        After=network.target
-
-        [Service]
-        ExecStart=/usr/sbin/sshd -D
-        ExecReload=/bin/kill -HUP $MAINPID
-        KillMode=process
-        Restart=on-failure
 
         [Install]
         WantedBy=multi-user.target
