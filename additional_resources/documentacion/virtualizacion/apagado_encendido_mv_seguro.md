@@ -17,7 +17,7 @@ sudo virsh list --all
 Asegúrate de que el estado de cada máquina virtual cambie a apagado (shut off).
 
 3. Reinicio y Verificación de Servicios
-Cuando vuelvas a encender las máquinas virtuales, verifica que los servicios críticos, como DNS en freeipa1, estén funcionando correctamente:
+   Cuando vuelvas a encender las máquinas virtuales, verifica que los servicios críticos, como DNS en freeipa1, estén funcionando correctamente:
 
 ```bash
 sudo virsh start freeipa1
@@ -119,14 +119,11 @@ sudo virsh start helper
 
 ```
 
-
-
 ## Comandos Adicionales
+
 ```bash
 sudo virsh list --all
 ```
-
-
 
 # Deshabilitar SELinux
 
