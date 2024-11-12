@@ -486,3 +486,8 @@ https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
 
 ### Automatización ansible para la configuración de NTP
 https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
+
+
+curl -sfL https://get.k3s.io | K3S_URL=https://K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7:6443 K3S_TOKEN=<NODE_TOKEN> sh -
+
+sudo curl -sfL https://get.k3s.io | K3S_URL=https://10.17.4.21:6443 K3S_TOKEN=K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7 sh -
