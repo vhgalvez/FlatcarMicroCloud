@@ -1,18 +1,21 @@
 #!/bin/bash
 
-# Reiniciar el servicio libvirtd
-echo "Reiniciando el servicio libvirtd..."
-sudo systemctl restart libvirtd
-sleep 5  # Esperar 5 segundos para asegurarse de que el servicio se reinicie completamente
+echo "Reiniciando los servicios..."
 
-# Reiniciar el servicio iptables
-echo "Reiniciando el servicio iptables..."
-sudo systemctl restart iptables
-sleep 5  # Esperar 5 segundos para asegurarse de que el servicio se reinicie completamente
+# Reiniciar servicios básicos
+sudo systemctl restart libvirtd && echo "libvirtd reiniciado con éxito."
+sleep 5
 
-# Reiniciar el servicio NetworkManager
-echo "Reiniciando el servicio NetworkManager..."
-sudo systemctl restart NetworkManager
-sleep 5  # Esperar 5 segundos para asegurarse de que el servicio se reinicie completamente
+sudo systemctl restart iptables && echo "iptables reiniciado con éxito."
+sleep 5
+
+sudo systemctl restart NetworkManager && echo "NetworkManager reiniciado con éxito."
+sleep 5
+
+# Reiniciar y habilitar firewalld
+sudo systemctl enable firewalld
+sudo systemctl restart firewalld && echo "firewalld reiniciado y habilitado con éxito."
+sudo firewall-cmd --reload && echo "firewalld recargado con éxito."
+sleep 5
 
 echo "Todos los servicios han sido reiniciados con éxito."
