@@ -164,13 +164,13 @@ Contenido del archivo `traefik.toml`:
     rule = "Host(`api.okd-cluster.cefaslocalserver.com`)"
 
 [http.services]
-  [http.services.api.loadBalancer]
-    [[http.services.api.loadBalancer.servers]]
-      url = "http://10.17.4.21:6443"
-    [[http.services.api.loadBalancer.servers]]
-      url = "http://10.17.4.22:6443"
-    [[http.services.api.loadBalancer.servers]]
-      url = "http://10.17.4.23:6443"
+  [http.services.k8sApi.loadBalancer]
+    [[http.services.k8sApi.loadBalancer.servers]]
+      url = "https://master1.cefaslocalserver.com:6443"
+    [[http.services.k8sApi.loadBalancer.servers]]
+      url = "https://master2.cefaslocalserver.com:6443"
+    [[http.services.k8sApi.loadBalancer.servers]]
+      url = "https://master3.cefaslocalserver.com:6443"
 ```
 
 ### 4.3 Crear el Archivo `acme.json`
