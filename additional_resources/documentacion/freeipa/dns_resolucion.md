@@ -12,10 +12,12 @@ ipa dnsrecord-add cefaslocalserver.com worker3 --a-rec 10.17.4.26
 ipa dnsrecord-add cefaslocalserver.com bastion1 --a-rec 192.168.0.20
 ipa dnsrecord-add cefaslocalserver.com freeipa1 --a-rec 10.17.3.11
 ipa dnsrecord-add cefaslocalserver.com load_balancer1 --a-rec 10.17.3.12
-ipa dnsrecord-add cefaslocalserver.com postgresql1 --a-rec 10.17.3.1
+ipa dnsrecord-add cefaslocalserver.com postgresql1 --a-rec 10.17.3.13
 ```
 
 ```bash
+ipa dnsconfig-mod --forwarder=8.8.8.8  # o cualquier otro DNS público
+
 ipa dnszone-add 4.17.10.in-addr.arpa.
 ipa dnszone-add 3.17.10.in-addr.arpa.
 ipa dnszone-add 0.168.192.in-addr.arpa.
