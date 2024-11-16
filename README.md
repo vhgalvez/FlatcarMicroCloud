@@ -23,19 +23,19 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ## Resumen de Recursos para Máquinas Virtuales
 
-| Nombre de VM  | CPU | Memoria (MB) | IP         | Nombre de Dominio                  | Tamaño de Disco (GB) | Hostname      |
-| ------------- | --- | ------------ | ---------- | ---------------------------------- | -------------------- | ------------- |
-| master1       | 2   | 4096         | 10.17.4.21 | master1.cefaslocalserver.com       | 50                   | master1       |
-| master2       | 2   | 4096         | 10.17.4.22 | master2.cefaslocalserver.com       | 50                   | master2       |
-| master3       | 2   | 4096         | 10.17.4.23 | master3.cefaslocalserver.com       | 50                   | master3       |
-| worker1       | 2   | 4096         | 10.17.4.24 | worker1.cefaslocalserver.com       | 50                   | worker1       |
-| worker2       | 2   | 4096         | 10.17.4.25 | worker2.cefaslocalserver.com       | 50                   | worker2       |
-| worker3       | 2   | 4096         | 10.17.4.26 | worker3.cefaslocalserver.com       | 50                   | worker3       |
-| bootstrap     | 2   | 4096         | 10.17.4.27 | bootstrap.cefaslocalserver.com     | 50                   | bootstrap     |
-| freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
-| loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
-| postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
-| helper        | 2   | 2048         | 10.17.3.14 | helper.cefaslocalserver.com        | 32                   | helper_node   |
+| Nombre de VM  | CPU | Memoria (MB) | IP         | Nombre de Dominio                      | Tamaño de Disco (GB) | Hostname      |
+| ------------- | --- | ------------ | ---------- | -------------------------------------- | -------------------- | ------------- |
+| master1       | 2   | 4096         | 10.17.4.21 | master1.cefaslocalserver.com           | 50                   | master1       |
+| master2       | 2   | 4096         | 10.17.4.22 | master2.cefaslocalserver.com           | 50                   | master2       |
+| master3       | 2   | 4096         | 10.17.4.23 | master3.cefaslocalserver.com           | 50                   | master3       |
+| worker1       | 2   | 4096         | 10.17.4.24 | worker1.cefaslocalserver.com           | 50                   | worker1       |
+| worker2       | 2   | 4096         | 10.17.4.25 | worker2.cefaslocalserver.com           | 50                   | worker2       |
+| worker3       | 2   | 4096         | 10.17.4.26 | worker3.cefaslocalserver.com           | 50                   | worker3       |
+| bootstrap     | 2   | 4096         | 10.17.4.27 | bootstrap.cefaslocalserver.com         | 50                   | bootstrap     |
+| freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com          | 32                   | freeipa1      |
+| loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com     | 32                   | loadbalancer1 |
+| postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com       | 32                   | postgresql1   |
+| helper        | 2   | 2048         | 10.17.3.14 | storage1-rook-ceph.cefaslocalserver.com| 80                   | helper_node   |
 
 ## Máquinas Virtuales y Roles
 
@@ -48,6 +48,8 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
 | Bootstrap Node     | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
+| torage1 Node       | Rocky Linux             | almacenacenamiento                         | 1        |
+
 
 ## Explicación de Roles de las VMs
 

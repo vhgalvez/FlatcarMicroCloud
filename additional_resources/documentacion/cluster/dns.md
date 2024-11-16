@@ -108,64 +108,56 @@ FreeIPA será capaz de resolver nombres internos de infraestructura y consultas 
 ## Diagrama de Conexiones de Infraestructura DNS
 
 ```plaintext
+                 +---------------------------+
+                 |        IP Pública         |
+                 |         (HTTPS)           |
+                 |       192.168.0.21        |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |       Bastion Node        |
+                 |        SSH Access         |
+                 |      IP: 192.168.0.20     |
+                 +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |      Load Balancer        |
+                 |         Traefik           |
+                 |      IP: 10.17.3.12       |
+                 +---------------------------+
+                             |
+        +--------------------+--------------------+
+        |                                         |
+        v                                         v
++---------------------------+      +---------------------------+
+|     FreeIPA Node          |      |  PostgreSQL Node          |
+|      DNS/Auth             |      |  IP: 10.17.3.13           |
+|  IP: 10.17.3.11           |      +---------------------------+
 +---------------------------+
-|        IP Pública         |
-|         (HTTPS)           |
-|       192.168.0.21        |
-+---------------------------+
-            |
-            v
-+---------------------------+
-|       Bastion Node        |
-|        SSH Access         |
-|      IP: 192.168.0.20     |
-+---------------------------+
-            |
-            v
-+---------------------------+
-|      Load Balancer        |
-|         Traefik           |
-|      IP: 10.17.3.12       |
-|  DNS Primary: FreeIPA     |
-|  DNS Secondary: CoreDNS   |
-+---------------------------+
-            |
-+-----------+-----------+---------+---------+
-|           |           |         |         |
-v           v           v         v         v
-+-----------+       +---+---+   +---+---+   +---+---+
-| Master    |       | Worker|   | Worker|   | Worker|
-| Node 1    |       | Node 1|   | Node 2|   | Node 3|
-| (etcd)    |       |       |   |       |   |       |
-| 10.17.4.21|       |10.17.4.24|10.17.4.25|10.17.4.26|
-+-----------+       +-------+   +-------+   +-------+
-       |
-+------|------+   +-------------------------+
-|             |   |                         |
-|             v   v                         v
-|     +-------------------+       +-------------------+
-|     | Master Node 2     |       | Master Node 3     |
-|     | (etcd)            |       | (etcd)            |
-|     | 10.17.4.22        |       | 10.17.4.23        |
-|     +-------------------+       +-------------------+
-|             |
-+-------------+-------------------------------+
-                          |
-                          |
-                          v
-               +---------------------------+
-               |     FreeIPA Node          |
-               |      DNS/Auth             |
-               |      IP: 10.17.3.11       |
-               |   Forwarder: Google DNS   |
-               |       (8.8.8.8)           |
-               +---------------------------+
-                          |
-                          v
-              +---------------------------+
-              |    PostgreSQL Node        |
-              |     IP: 10.17.3.13        |
-              +---------------------------+
+                             |
+                             v
+                 +---------------------------+
+                 |  Storage Node (Rook-Ceph) |
+                 |      IP: 10.17.3.14       |
+                 +---------------------------+
+                             |
++----------------+-----------+---------------+-----------------+
+|                |                           |                 |
+v                v                           v                 v
++------+-------+   +----+-------+   +----+-------+   +----+-------+
+| Master Node  |   |   Worker    |   |   Worker    |   |   Worker    |
+|     (etcd)   |   |     1       |   |     2       |   |     3       |
+| 10.17.4.21   |   | 10.17.4.24  |   | 10.17.4.25  |   | 10.17.4.26  |
++--------------+   +-------------+   +-------------+   +-------------+
+       |                                        |
+       v                                        v
++--------------+                     +----------------+
+| Master Node 2|                     | Master Node 3  |
+|   (etcd)     |                     |   (etcd)       |
+| 10.17.4.22   |                     | 10.17.4.23     |
++--------------+                     +----------------+
 ```
 
 ## Conclusión
@@ -177,3 +169,18 @@ Con esta configuración:
 - FreeIPA se encargará de toda la infraestructura DNS externa e interna con capacidad de delegar consultas no resueltas.
 
 Esto asegura una infraestructura DNS robusta, escalable y sin conflictos.
+
+## Anexo: Tabla de Configuración de Nodos
+| Nombre de VM  | CPU | Memoria (MB) | IP         | Nombre de Dominio                      | Tamaño de Disco (GB) | Hostname      |
+| ------------- | --- | ------------ | ---------- | -------------------------------------- | -------------------- | ------------- |
+| master1       | 2   | 4096         | 10.17.4.21 | master1.cefaslocalserver.com           | 50                   | master1       |
+| master2       | 2   | 4096         | 10.17.4.22 | master2.cefaslocalserver.com           | 50                   | master2       |
+| master3       | 2   | 4096         | 10.17.4.23 | master3.cefaslocalserver.com           | 50                   | master3       |
+| worker1       | 2   | 4096         | 10.17.4.24 | worker1.cefaslocalserver.com           | 50                   | worker1       |
+| worker2       | 2   | 4096         | 10.17.4.25 | worker2.cefaslocalserver.com           | 50                   | worker2       |
+| worker3       | 2   | 4096         | 10.17.4.26 | worker3.cefaslocalserver.com           | 50                   | worker3       |
+| bootstrap     | 2   | 4096         | 10.17.4.27 | bootstrap.cefaslocalserver.com         | 50                   | bootstrap     |
+| freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com          | 32                   | freeipa1      |
+| loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com     | 32                   | loadbalancer1 |
+| postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com       | 32                   | postgresql1   |
+| helper        | 2   | 2048         | 10.17.3.14 | storage1-rook-ceph.cefaslocalserver.com| 80                   | helper_node   |
