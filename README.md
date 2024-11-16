@@ -383,7 +383,7 @@ resource "libvirt_network" "kube_network_03" {
 ## Diagramas de Red y Arquitectura
 
 ```bash
-                                +---------------------------+
+                 +---------------------------+
                  |        IP Pública         |
                  |         (HTTPS)           |
                  |       192.168.0.21        |
