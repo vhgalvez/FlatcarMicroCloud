@@ -35,7 +35,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com          | 32                   | freeipa1      |
 | loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com     | 32                   | loadbalancer1 |
 | postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com       | 32                   | postgresql1   |
-| helper        | 2   | 2048         | 10.17.3.14 | storage1-rook-ceph.cefaslocalserver.com| 80                   | helper_node   |
+| storage1-rook-ceph        | 2   | 2048         | 10.17.3.14 | storage1-rook-ceph.cefaslocalserver.com| 80                   | helper_node   |
 
 ## Máquinas Virtuales y Roles
 
