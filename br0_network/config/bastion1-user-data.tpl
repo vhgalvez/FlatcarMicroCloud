@@ -62,6 +62,10 @@ write_files:
       echo "${ip}  ${hostname} ${short_hostname}" >> /etc/hosts
     permissions: "0755"
 
+  - path: /etc/sysctl.conf
+    content: |
+      net.ipv4.ip_forward = 1
+
 runcmd:
   - sudo ip route add 10.17.3.0/24 via 192.168.0.18 dev eth0
   - sudo ip route add 10.17.4.0/24 via 192.168.0.18 dev eth0
@@ -70,5 +74,6 @@ runcmd:
   - ["systemctl", "enable", "--now", "firewalld"]
   - ["systemctl", "restart", "NetworkManager.service"]
   - /usr/local/bin/set-hosts.sh
+  - sysctl -p
 
 timezone: ${timezone}
