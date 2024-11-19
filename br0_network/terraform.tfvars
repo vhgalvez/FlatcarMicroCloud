@@ -1,5 +1,4 @@
-# br0_network\terraform.tfvars
-
+# br0_network/terraform.tfvars
 
 rocky9_image = "/mnt/lv_data/organized_storage/images/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2"
 
@@ -19,7 +18,6 @@ vm_rockylinux_definitions = {
     short_hostname = "bastion"
   }
 }
-
 
 cluster_name        = "cluster_cefaslocalserver"
 cluster_domain      = "cefaslocalserver.com"
