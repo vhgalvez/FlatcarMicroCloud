@@ -22,7 +22,7 @@ vm_rockylinux_definitions = {
 
 
 cluster_name        = "cluster_cefaslocalserver"
-cluster_domain      = "cefas-core.com"
+cluster_domain      = "cefaslocalserver.com"
 rocky9_network_name = "br0"
 
 ssh_keys = [
