@@ -74,8 +74,9 @@ resource "libvirt_volume" "vm_disk" {
   base_volume_id = libvirt_volume.rocky9_image.id
   pool           = each.value.volume_pool
   format         = each.value.volume_format
-  size           = floor(each.value.volume_size) * 1024 * 1024 * 1024 # Tamaño en bytes como entero
+  size           = each.value.volume_size * 1024 * 1024 * 1024 # Convierte GB a bytes
 }
+
 
 
 resource "libvirt_domain" "vm" {
