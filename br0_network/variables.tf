@@ -39,7 +39,7 @@ variable "vm_rockylinux_definitions" {
     ip             = string
     volume_format  = string
     volume_pool    = string
-    volume_size    = string
+    volume_size    = number
     volume_name    = string
     hostname       = string
     gateway        = string
