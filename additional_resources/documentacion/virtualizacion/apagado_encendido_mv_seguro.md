@@ -48,6 +48,7 @@ sudo virsh shutdown master1
 sudo virsh shutdown worker1
 sudo virsh shutdown master2
 sudo virsh shutdown worker2
+sudo virsh shutdown storage1-rook-ceph
 ```
 
 Verifica el estado final:
