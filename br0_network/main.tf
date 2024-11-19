@@ -77,8 +77,6 @@ resource "libvirt_volume" "vm_disk" {
   size           = each.value.volume_size * 1024 * 1024 * 1024 # Convierte GB a bytes
 }
 
-
-
 resource "libvirt_domain" "vm" {
   for_each = var.vm_rockylinux_definitions
 
