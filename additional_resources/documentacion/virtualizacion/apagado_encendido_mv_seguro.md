@@ -99,23 +99,21 @@ Fecha: [Fecha de Creación del Documento]
 Este documento proporciona una guía paso a paso para el apagado seguro de máquinas virtuales utilizando virsh shutdown y la verificación de servicios críticos después del reinicio.
 
 ```bash
+sudo virsh start bootstrap
 
-   sudo virsh start bootstrap
+sudo virsh start master1
+sudo virsh start master2
+sudo virsh start master3
+sudo virsh start worker1
+sudo virsh start worker2
+sudo virsh start worker3
 
-   sudo virsh start master1
-   sudo virsh start master2
-   sudo virsh start master3
-   sudo virsh start worker1
-   sudo virsh start worker2
-   sudo virsh start worker3
-
-   sudo virsh start storage1-rook-ceph
-   sudo virsh start freeipa1
-   sudo virsh start load_balancer1
+sudo virsh start storage1-rook-ceph
+sudo virsh start freeipa1
+sudo virsh start load_balancer1
 
 sudo virsh start bastion1.cefaslocalserver.com
 sudo virsh start postgresql1
-
 
 ```
 
