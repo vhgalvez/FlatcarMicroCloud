@@ -38,6 +38,7 @@ sudo systemctl status named
 ```bash
 sudo virsh shutdown bastion1.cefaslocalserver.com
 sudo virsh shutdown load_balancer1
+sudo virsh shutdown load_balancer2
 sudo virsh shutdown postgresql1
 sudo virsh shutdown freeipa1
 sudo virsh shutdown bootstrap
