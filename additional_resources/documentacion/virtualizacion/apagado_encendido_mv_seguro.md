@@ -40,7 +40,6 @@ sudo virsh shutdown bastion1.cefaslocalserver.com
 sudo virsh shutdown load_balancer1
 sudo virsh shutdown postgresql1
 sudo virsh shutdown freeipa1
-sudo virsh shutdown helper
 sudo virsh shutdown bootstrap
 sudo virsh shutdown worker3
 sudo virsh shutdown master3
