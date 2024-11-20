@@ -30,15 +30,9 @@ variable "dns1" {
   description = "Primary DNS server"
   type        = string
 }
-
 variable "dns2" {
   description = "Secondary DNS server"
   type        = string
-}
-variable "initial_cluster" {
-  description = "The initial cluster configuration"
-  type        = string
-
 }
 variable "node_name" {
   description = "Nombre del nodo"
