@@ -21,7 +21,7 @@ bash
 Copiar código
 openssl pkcs12 -export -inkey MOK.key -in MOK.crt -out MOK.p12 -name "Mi Certificado MOK"
 Se te pedirá que establezcas una contraseña para el archivo PKCS#12.
-
+contraseña qazwsxedc
 4. Crear y configurar la base de datos NSS:
 
 bash
