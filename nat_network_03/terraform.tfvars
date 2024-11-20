@@ -51,7 +51,6 @@ vm_definitions = {
     disk_size    = 51200 # 50 GB in MB
     node_name    = "worker3"
   }
-
 }
 
 ssh_keys = [
