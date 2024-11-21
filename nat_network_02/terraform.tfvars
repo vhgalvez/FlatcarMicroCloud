@@ -63,7 +63,7 @@ vm_rockylinux_definitions = {
     cpus           = 2,
     memory         = 2048,
     ip             = "10.17.3.15",
-    hostname       = "storage1-rook-ceph.cefaslocalserver.com",
+    hostname       = "rc-storage1.cefaslocalserver.com",
     volume_name    = "storage1_rook_ceph_volume",
     volume_format  = "qcow2",
     volume_pool    = "default",
@@ -71,7 +71,7 @@ vm_rockylinux_definitions = {
     cloudinit_disk = "rocky9_cloudinit_disk.iso",
     cloudinit_pool = "default",
     domain_memory  = "4096",
-    short_hostname = "storage1-rook-ceph"
+    short_hostname = "rc-storage1"
   }
 }
 

@@ -35,7 +35,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com          | 32                   | freeipa1      |
 | loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com     | 32                   | loadbalancer1 |
 | postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com       | 32                   | postgresql1   |
-| storage1-rook-ceph        | 2   | 2048         | 10.17.3.14 | storage1-rook-ceph.cefaslocalserver.com| 80                   | helper_node   |
+| rc-storage1   | 2   | 2048         | 10.17.3.14 | rc-storage1.cefaslocalserver.com       | 80                   | rc-storage1   |
 
 ## Máquinas Virtuales y Roles
 
@@ -48,7 +48,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
 | Bootstrap Node     | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
-| torage1 Node       | Rocky Linux             | almacenacenamiento                         | 1        |
+| rc-storage1        | Rocky Linux             | almacenacenamiento                         | 1        |
 
 
 ## Explicación de Roles de las VMs
@@ -58,12 +58,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
   - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
 
 - **Workers (worker1, worker2, worker3)**:
-
-  - Nodos responsables de ejecutar aplicaciones en contenedores y manejar la carga de trabajo del clúster.
-
-- **Bootstrap**:
-
-  - Nodo utilizado para iniciar y configurar el clúster.
+.
 
 - **FreeIPA (freeipa1)**:
 
@@ -77,9 +72,6 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
   - Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
 
-- **Helper**:
-
-  - Nodo auxiliar para tareas administrativas y de soporte dentro del clúster.
 
 ## Fases de Implementación
 
@@ -287,8 +279,9 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | --------------- | ------------- | ------------ | ---------------------------------------- |
 | kube_network_02 | freeipa1      | 10.17.3.11   | Servidor de DNS y gestión de identidades |
 | kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
-| kube_network_02 | postgresql1   | 10.17.3.13   | Gestión de bases de datos                |
-| kube_network_02 | bootstrap1    | 10.17.3.14   | Inicialización del clúster               |
+| kube_network_02 | loadbalancer2 | 10.17.3.13   | Balanceo de carga para el clúster        |
+| kube_network_02 | postgresql1   | 10.17.3.14   | Gestión de bases de datos                |
+| kube_network_02 | rc-storage1   | 10.17.3.15   | alamacenamiento                          |
 | kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
 | kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
@@ -385,7 +378,7 @@ resource "libvirt_network" "kube_network_03" {
 ## Diagramas de Red y Arquitectura
 
 ```bash
-                                 +---------------------------+
+                 +---------------------------+
                  |        IP Pública         |
                  |         (HTTPS)           |
                  |       192.168.0.21        |
@@ -403,8 +396,8 @@ resource "libvirt_network" "kube_network_03" {
          |                                         |
          v                                         v
 +---------------------------+         +---------------------------+
-|  Load Balancer (Traefik)  |         |  Load Balancer (Traefik)  |
-|      IP: 10.17.3.12       |         |      IP: 10.17.3.15       |
+|  Load Balancer1 (Traefik) |         |  Load Balancer2 (Traefik) |
+|      IP: 10.17.3.12       |         |      IP: 10.17.3.13       |
 +---------------------------+         +---------------------------+
                              |
                              v
@@ -413,14 +406,14 @@ resource "libvirt_network" "kube_network_03" {
         v                                         v
 +---------------------------+      +---------------------------+
 |     FreeIPA Node          |      |  PostgreSQL Node          |
-|      DNS/Auth             |      |  IP: 10.17.3.13           |
+|      DNS/Auth             |      |  IP: 10.17.3.14           |
 |  IP: 10.17.3.11           |      +---------------------------+
 +---------------------------+
                              |
                              v
                  +---------------------------+
                  |  Storage Node (Rook-Ceph) |
-                 |      IP: 10.17.3.14       |
+                 |      IP: 10.17.3.15       |
                  +---------------------------+
                              |
 +----------------+-----------+---------------+-----------------+
@@ -470,11 +463,10 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 1. **Ingreso de Conexiones Externas**: Las conexiones HTTPS externas ingresan por la **IP pública (192.168.0.21)**.
 2. **Acceso Seguro**: El tráfico pasa por el **Bastion Node (192.168.0.20)** para acceder de manera segura a la red interna.
-3. **Distribución de Tráfico**: El **Load Balancer (Traefik)** distribuye el tráfico hacia los nodos maestros y workers.
-4. **Instalación de OKD**: El **Bootstrap Node** inicia la instalación de OKD, solicitando los certificados al **FreeIPA**.
-5. **Resolución de Nombres y Sincronización de Tiempo**:
+3. **Distribución de Tráfico**: El **Load Balancer1 Load Balancer2 (Traefik)** distribuye el tráfico hacia los nodos maestros y workers.
+4. **Resolución de Nombres y Sincronización de Tiempo**:
    - **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
-6. **Ejecución de Aplicaciones**: Los **nodos workers** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
+5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
 
 ## Recursos Adicionales requeridos con el Proyecto
