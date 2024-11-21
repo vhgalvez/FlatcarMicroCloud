@@ -173,9 +173,8 @@ Provisionar y configurar VMs según especificaciones en la tabla de recursos, as
   - Configurar K3s en los nodos Master.
   - Desplegar Traefik para el balanceo de carga.
 - **FreeIPA Node**: Configurar para DNS y autenticación.
-- **Load Balancer**: Configurar con Traefik para distribución de tráfico.
+- **Load Balancer1 Load Balancer2**: Configurar con Traefik para distribución de tráfico.
 - **PostgreSQL Node**: Configurar permisos y definir políticas de respaldo.
-- **Bootstrap Node**: Ejecutar las configuraciones iniciales del clúster.
 
 ### Paso 5: Configuración de Almacenamiento Persistente
 
