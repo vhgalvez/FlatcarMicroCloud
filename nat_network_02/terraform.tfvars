@@ -59,7 +59,7 @@ vm_rockylinux_definitions = {
     domain_memory  = "4096",
     short_hostname = "postgresql1"
   },
-  "storage1-rook-ceph" = {
+  "rc-storage1" = {
     cpus           = 2,
     memory         = 2048,
     ip             = "10.17.3.15",
