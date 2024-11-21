@@ -38,7 +38,7 @@ sudo systemctl status named
 ```bash
 sudo virsh shutdown bastion1.cefaslocalserver.com
 sudo virsh shutdown load_balancer1
-sudo virsh shutdown load_balancer
+sudo virsh shutdown load_balancer2
 sudo virsh shutdown postgresql1
 sudo virsh shutdown freeipa1
 sudo virsh shutdown worker3
@@ -47,8 +47,7 @@ sudo virsh shutdown master1
 sudo virsh shutdown worker1
 sudo virsh shutdown master2
 sudo virsh shutdown worker2
-sudo virsh shutdown storage1-rook-ceph
-sudo virsh shutdown bootstrap
+sudo virsh shutdown rc-storage1
 ```
 
 Verifica el estado final:
@@ -100,8 +99,6 @@ Fecha: [Fecha de Creación del Documento]
 Este documento proporciona una guía paso a paso para el apagado seguro de máquinas virtuales utilizando virsh shutdown y la verificación de servicios críticos después del reinicio.
 
 ```bash
-sudo virsh start bootstrap
-
 sudo virsh start master1
 sudo virsh start master2
 sudo virsh start master3
@@ -109,7 +106,7 @@ sudo virsh start worker1
 sudo virsh start worker2
 sudo virsh start worker3
 
-sudo virsh start storage1-rook-ceph
+sudo virsh start rc-storage1
 sudo virsh start freeipa1
 sudo virsh start load_balancer1
 sudo virsh start load_balancer1
