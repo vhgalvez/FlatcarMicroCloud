@@ -6,9 +6,9 @@
 
 Este documento describe cómo configurar un entorno DNS integrado con FreeIPA y CoreDNS para resolver nombres internos y externos en una infraestructura basada en Kubernetes con un balanceador de carga (`load_balancer1.cefaslocalserver.com`) y un servidor FreeIPA (`freeipa1.cefaslocalserver.com`). La configuración asegura compatibilidad y evita conflictos entre ambos sistemas DNS.
 
-## 1. Configuración de `load_balancer1` para Resolución DNS con FreeIPA y CoreDNS
+## 1. Configuración de `load_balancer1``load_balancer2` para Resolución DNS con FreeIPA y CoreDNS
 
-El balanceador de carga `load_balancer1` es un componente crítico que distribuye el tráfico hacia el clúster Kubernetes. Es necesario que pueda resolver tanto nombres de infraestructura como nombres internos del clúster.
+El balanceador de carga `load_balancer1``load_balancer2` es un componente crítico que distribuye el tráfico hacia el clúster Kubernetes. Es necesario que pueda resolver tanto nombres de infraestructura como nombres internos del clúster.
 
 ### Pasos de Configuración
 
