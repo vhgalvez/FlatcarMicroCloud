@@ -201,3 +201,17 @@ kubectl get nodes
 - **Infraestructura robusta** con alta disponibilidad y balanceo de carga.
 - **Resolución DNS confiable** para nombres internos y externos.
 
+### Acceso a Kubernetes desde los balanceadores
+
+En los nodos loadbalancer1 y loadbalancer2, copia el archivo .kube/config desde master1 y colócalo en /etc/traefik/kubeconfig:
+
+```bash
+scp /home/core/.kube/config core@loadbalancer1:/etc/traefik/kubeconfig
+scp /home/core/.kube/config core@loadbalancer2:/etc/traefik/kubeconfig
+```
+
+Asegúrate de que el archivo tenga los permisos correctos:
+
+```bash
+sudo chmod 600 /etc/traefik/kubeconfig
+```
