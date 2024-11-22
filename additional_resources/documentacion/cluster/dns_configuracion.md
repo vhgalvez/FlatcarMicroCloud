@@ -2,6 +2,11 @@ Pasos para Completar la Configuración
 1. Alias DNS para los Balanceadores
 En el servidor FreeIPA, configura los alias DNS para los balanceadores, los nodos de Kubernetes y la URL principal cefaslocalserver.com con las siguientes entradas:
 
+kinit admin
+klist
+ipa dnsrecord-find cefaslocalserver.com
+
+
 bash
 Copiar código
 # Entradas para /etc/hosts o configuración del servidor DNS
@@ -133,3 +138,5 @@ data:
         reload
         loadbalance
     }
+
+
