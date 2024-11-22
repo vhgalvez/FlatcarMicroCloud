@@ -115,11 +115,7 @@ FreeIPA será capaz de resolver nombres internos de infraestructura y consultas 
                  +---------------------------+
                              |
                              v
-                 +---------------------------+
-                 |       Bastion Node        |
-                 |        SSH Access         |
-                 |      IP: 192.168.0.20     |
-                 +---------------------------+
+               
                              |
                              v
                  +---------------------------+
@@ -160,6 +156,11 @@ v                v                           v                 v
 +--------------+                     +----------------+
 ```
 
+  +---------------------------+
+                 |       Bastion Node        |
+                 |        SSH Access         |
+                 |      IP: 192.168.0.20     |
+                 +---------------------------+
 ## Conclusión
 
 Con esta configuración:

@@ -1,142 +1,203 @@
-Pasos para Completar la Configuración
-1. Alias DNS para los Balanceadores
-En el servidor FreeIPA, configura los alias DNS para los balanceadores, los nodos de Kubernetes y la URL principal cefaslocalserver.com con las siguientes entradas:
+# Configuración de Alta Disponibilidad de Kubernetes con NGINX y Balanceo de Carga
 
-kinit admin
-klist
-ipa dnsrecord-find cefaslocalserver.com
+Este proyecto configura un entorno Kubernetes de alta disponibilidad con balanceadores de carga y servicios esenciales. También se despliega un microservicio para el servidor web NGINX, accesible en [https://cefaslocalserver.com](https://cefaslocalserver.com). A continuación, se presenta una guía paso a paso para organizar y completar el proyecto.
 
+### Configuración Global de Infraestructura y Paso a Paso
 
-bash
-Copiar código
-# Entradas para /etc/hosts o configuración del servidor DNS
-10.17.3.12 loadbalancer1.cefaslocalserver.com
-10.17.3.13 loadbalancer2.cefaslocalserver.com
-10.17.4.21 master1.cefaslocalserver.com
-10.17.4.22 master2.cefaslocalserver.com
-10.17.4.23 master3.cefaslocalserver.com
-10.17.4.31 worker1.cefaslocalserver.com
-10.17.4.32 worker2.cefaslocalserver.com
-10.17.4.33 worker3.cefaslocalserver.com
+#### 1. Configuración de Red
+**Configuración de IP Pública:**
+- Dirección: `192.168.0.21`
+- Asociada con el dominio público `cefaslocalserver.com` para acceso HTTPS.
 
-# Alias DNS para balanceadores con round-robin
-cefaslocalserver.com -> 10.17.3.12, 10.17.3.13
-2. Configuración del Servidor DNS (FreeIPA)
-En el servidor FreeIPA (freeipa1.cefaslocalserver.com), realiza lo siguiente:
+**Asignar IPs Internas:**
+- **Balanceadores de Carga:**
+  - Balanceador de Carga 1: `10.17.3.12`
+  - Balanceador de Carga 2: `10.17.3.13`
+- **Nodos y Servicios Internos:**
+  - FreeIPA: `10.17.3.11`
+  - PostgreSQL: `10.17.3.14`
+  - Almacenamiento (Rook-Ceph): `10.17.3.15`
+  - **Nodos de Kubernetes:**
+    - Maestros: `10.17.4.21`, `10.17.4.22`, `10.17.4.23`
+    - Trabajadores: `10.17.4.24`, `10.17.4.25`, `10.17.4.26`
+  - Nodo Bastion: `192.168.0.20` para acceso SSH
 
-Accede a la interfaz de administración o usa comandos CLI para configurar las zonas DNS:
+**Configuración de DNS Local en FreeIPA:**
+- Crear registros DNS con Round-Robin para balanceo de carga:
+  ```bash
+  ipa dnsrecord-add cefaslocalserver.com loadbalancer --a-rec=10.17.3.12
+  ipa dnsrecord-add cefaslocalserver.com loadbalancer --a-rec=10.17.3.13
+  ipa dnsrecord-add cefaslocalserver.com k8sapi --a-rec=192.168.0.21
+  ```
+- Verificar la resolución DNS:
+  ```bash
+  dig cefaslocalserver.com @10.17.3.11
+  ```
 
-bash
-Copiar código
-ipa dnsrecord-add cefaslocalserver.com loadbalancer1 --a-rec 10.17.3.12
-ipa dnsrecord-add cefaslocalserver.com loadbalancer2 --a-rec 10.17.3.13
-ipa dnsrecord-add cefaslocalserver.com master1 --a-rec 10.17.4.21
-ipa dnsrecord-add cefaslocalserver.com master2 --a-rec 10.17.4.22
-ipa dnsrecord-add cefaslocalserver.com master3 --a-rec 10.17.4.23
-ipa dnsrecord-add cefaslocalserver.com worker1 --a-rec 10.17.4.31
-ipa dnsrecord-add cefaslocalserver.com worker2 --a-rec 10.17.4.32
-ipa dnsrecord-add cefaslocalserver.com worker3 --a-rec 10.17.4.33
+#### 2. Configuración del Balanceador de Carga
+**Instalar y Configurar Traefik:**
+- Instalar Traefik en `10.17.3.12` y `10.17.3.13`.
+- Configurar rutas en `traefik.toml`:
+  - `https://cefaslocalserver.com` → Usuarios públicos.
+  - `https://loadbalancer.cefaslocalserver.com` → Administración del clúster.
 
-# Alias round-robin para balanceadores
-ipa dnsrecord-add cefaslocalserver.com @ --a-rec 10.17.3.12 --a-rec 10.17.3.13
-Reinicia el servicio DNS para aplicar los cambios:
+**Habilitar HTTPS con Let's Encrypt:**
+- Configurar certificados automáticos.
 
-bash
-Copiar código
-systemctl restart named-pkcs11.service
-3. Configuración de CoreDNS en Kubernetes
-Configura CoreDNS para reenviar consultas externas al servidor FreeIPA. Aplica la configuración a través de un ConfigMap:
+**Prueba del Balanceador de Carga:**
+- Acceso desde el navegador: [https://cefaslocalserver.com](https://cefaslocalserver.com).
 
-Crea o actualiza el ConfigMap de CoreDNS:
+#### 3. Configuración del Microservicio NGINX
+**Crear Deployment de NGINX:**
+- **nginx-deployment.yaml**:
+  ```yaml
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: nginx
+    namespace: default
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: nginx
+    template:
+      metadata:
+        labels:
+          app: nginx
+      spec:
+        containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+          - containerPort: 80
+  ```
 
-yaml
-Copiar código
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: coredns
-  namespace: kube-system
-data:
-  Corefile: |
-    .:53 {
-        errors
-        health
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-           pods insecure
-           fallthrough in-addr.arpa ip6.arpa
-        }
-        forward . 10.17.3.11
-        cache 30
-        loop
-        reload
-        loadbalance
-    }
-Aplica el ConfigMap en el clúster:
+**Crear Servicio para NGINX:**
+- **nginx-service.yaml**:
+  ```yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: nginx
+    namespace: default
+  spec:
+    selector:
+      app: nginx
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+    type: ClusterIP
+  ```
 
-bash
-Copiar código
-kubectl apply -f coredns-configmap.yaml
-Reinicia los pods de CoreDNS:
+**Crear Ingress para Exponer NGINX:**
+- **nginx-ingress.yaml**:
+  ```yaml
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: nginx-ingress
+    namespace: default
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+  spec:
+    rules:
+    - host: cefaslocalserver.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: nginx
+              port:
+                number: 80
+    tls:
+    - hosts:
+      - cefaslocalserver.com
+      secretName: nginx-tls
+  ```
 
-bash
-Copiar código
-kubectl rollout restart deployment coredns -n kube-system
-4. Validación de la Configuración
-Consulta DNS desde el clúster Kubernetes:
+**Aplicar Configuración:**
+```bash
+kubectl apply -f nginx-deployment.yaml
+kubectl apply -f nginx-service.yaml
+kubectl apply -f nginx-ingress.yaml
+```
 
-Ejecuta lo siguiente desde un pod o nodo dentro del clúster:
+#### 4. Configuración de FreeIPA y CoreDNS
+**Configurar CoreDNS para Reenviar a FreeIPA:**
+- Editar ConfigMap de CoreDNS:
+  ```yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: coredns
+    namespace: kube-system
+  data:
+    Corefile: |
+      .:53 {
+          errors
+          health
+          ready
+          kubernetes cluster.local in-addr.arpa ip6.arpa {
+              fallthrough
+          }
+          forward . 10.17.3.11
+          cache 30
+          loop
+          reload
+          loadbalance
+      }
+  ```
 
-bash
-Copiar código
-dig loadbalancer1.cefaslocalserver.com
-dig cefaslocalserver.com
-dig worker1.cefaslocalserver.com
-Consulta DNS desde una máquina externa:
+**Verificar Resolución DNS:**
+```bash
+kubectl run -it --rm dnsutils --image=infoblox/dnstools
+nslookup cefaslocalserver.com
+```
 
-Asegúrate de que las consultas a cefaslocalserver.com apunten a los balanceadores correctamente.
+#### 5. Configuración de Kubernetes
+**Actualizar .kube/config:**
+- Cambiar el servidor para apuntar al balanceador de carga:
+  ```yaml
+  server: https://loadbalancer.cefaslocalserver.com
+  ```
 
-Acceso a la aplicación NGINX:
+**Probar Acceso al API Server:**
+```bash
+kubectl get nodes
+```
 
-Visita https://cefaslocalserver.com desde un navegador para verificar que el balanceo y los servicios funcionan correctamente.
+#### 6. Configuración de Almacenamiento
+**Desplegar Rook-Ceph:**
+- Desplegar en `10.17.3.15`.
 
-Este flujo asegura que:
+**Almacenamiento Persistente para NGINX (Opcional):**
+- Añadir un Persistent Volume Claim (PVC) si es necesario.
 
-Alias DNS y balanceo round-robin están configurados en FreeIPA.
-CoreDNS puede reenviar consultas externas a FreeIPA.
-Kubernetes y balanceadores están correctamente configurados para manejar peticiones internas y externas.
+#### 7. Configuración del Nodo Bastion
+**Configurar Acceso SSH Seguro:**
+- Utilizar WireGuard o túneles SSH para acceso seguro.
 
+#### 8. Validaciones Finales
+**Probar Aplicación Web:**
+- Acceso desde el navegador: [https://cefaslocalserver.com](https://cefaslocalserver.com).
 
-Validación de DNS y CoreDNS
-DNS en FreeIPA Ejecuta los siguientes comandos en FreeIPA para confirmar las entradas DNS:
+**Probar Resolución DNS:**
+- Desde nodos y pods:
+  ```bash
+  nslookup cefaslocalserver.com
+  ```
 
-bash
-Copiar código
-ipa dnsrecord-add cefaslocalserver.com loadbalancer1 --a-rec 10.17.3.12
-ipa dnsrecord-add cefaslocalserver.com loadbalancer2 --a-rec 10.17.3.13
-ipa dnsrecord-add cefaslocalserver.com @ --a-rec 10.17.3.12 --a-rec 10.17.3.13
-CoreDNS ConfigMap Configura y aplica:
+**Verificar Balanceo de Carga:**
+- Detener uno de los balanceadores de carga y confirmar que el otro responde correctamente.
 
-yaml
-Copiar código
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: coredns
-  namespace: kube-system
-data:
-  Corefile: |
-    .:53 {
-        errors
-        health
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-           pods insecure
-           fallthrough in-addr.arpa ip6.arpa
-        }
-        forward . 10.17.3.11
-        cache 30
-        loop
-        reload
-        loadbalance
-    }
-
+### Resultado Final
+- **Aplicación web NGINX** disponible en [https://cefaslocalserver.com](https://cefaslocalserver.com).
+- **Administración del clúster** accesible en [https://loadbalancer.cefaslocalserver.com](https://loadbalancer.cefaslocalserver.com).
+- **Infraestructura robusta** con alta disponibilidad y balanceo de carga.
+- **Resolución DNS confiable** para nombres internos y externos.
 
