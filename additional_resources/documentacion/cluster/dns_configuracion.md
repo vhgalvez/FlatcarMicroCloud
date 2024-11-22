@@ -99,3 +99,37 @@ Este flujo asegura que:
 Alias DNS y balanceo round-robin están configurados en FreeIPA.
 CoreDNS puede reenviar consultas externas a FreeIPA.
 Kubernetes y balanceadores están correctamente configurados para manejar peticiones internas y externas.
+
+
+Validación de DNS y CoreDNS
+DNS en FreeIPA Ejecuta los siguientes comandos en FreeIPA para confirmar las entradas DNS:
+
+bash
+Copiar código
+ipa dnsrecord-add cefaslocalserver.com loadbalancer1 --a-rec 10.17.3.12
+ipa dnsrecord-add cefaslocalserver.com loadbalancer2 --a-rec 10.17.3.13
+ipa dnsrecord-add cefaslocalserver.com @ --a-rec 10.17.3.12 --a-rec 10.17.3.13
+CoreDNS ConfigMap Configura y aplica:
+
+yaml
+Copiar código
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+           pods insecure
+           fallthrough in-addr.arpa ip6.arpa
+        }
+        forward . 10.17.3.11
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
