@@ -62,3 +62,12 @@ variable "vm_rockylinux_definitions" {
     short_hostname = string
   }))
 }
+variable "additional_disk_rc_storage1" {
+  description = "Configuration for the additional disk in rc-storage1"
+  type = object({
+    name   = string
+    pool   = string
+    format = string
+    size   = number
+  })
+}
