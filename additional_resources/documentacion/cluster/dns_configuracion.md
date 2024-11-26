@@ -121,6 +121,7 @@ Este proyecto configura un entorno Kubernetes de alta disponibilidad con balance
   ```
 
 #### 3.4. Aplicar Configuración
+
 ```bash
 kubectl apply -f nginx-deployment.yaml
 kubectl apply -f nginx-service.yaml
@@ -128,7 +129,9 @@ kubectl apply -f nginx-ingress.yaml
 ```
 
 ### 4. Configuración de FreeIPA y CoreDNS
+
 #### 4.1. Configurar CoreDNS para Reenviar a FreeIPA
+
 - Editar ConfigMap de CoreDNS:
   ```yaml
   apiVersion: v1
@@ -154,12 +157,14 @@ kubectl apply -f nginx-ingress.yaml
   ```
 
 #### 4.2. Verificar Resolución DNS
+
 ```bash
 kubectl run -it --rm dnsutils --image=infoblox/dnstools
 nslookup cefaslocalserver.com
 ```
 
 ### 5. Configuración de Kubernetes
+
 #### 5.1. Actualizar .kube/config
 - Cambiar el servidor para apuntar al balanceador de carga:
   ```yaml
@@ -176,26 +181,32 @@ kubectl get nodes
 - Desplegar en `10.17.3.15`.
 
 #### 6.2. Almacenamiento Persistente para NGINX (Opcional)
+
 - Añadir un Persistent Volume Claim (PVC) si es necesario.
 
 ### 7. Configuración del Nodo Bastion
+
 #### 7.1. Configurar Acceso SSH Seguro
 - Utilizar WireGuard o túneles SSH para acceso seguro.
 
 ### 8. Validaciones Finales
+
 #### 8.1. Probar Aplicación Web
 - Acceso desde el navegador: [https://cefaslocalserver.com](https://cefaslocalserver.com).
 
 #### 8.2. Probar Resolución DNS
+
 - Desde nodos y pods:
   ```bash
   nslookup cefaslocalserver.com
   ```
 
 #### 8.3. Verificar Balanceo de Carga
+
 - Detener uno de los balanceadores de carga y confirmar que el otro responde correctamente.
 
 ### 9. Acceso a Kubernetes desde los Balanceadores
+
 #### 9.1. Copiar el archivo .kube/config
 - En los nodos `loadbalancer1` y `loadbalancer2`, copiar el archivo `.kube/config` desde `master1` y colocarlo en `/etc/traefik/kubeconfig`:
   ```bash
