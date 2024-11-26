@@ -87,7 +87,7 @@ ssh_keys = [
 timezone = "Europe/Madrid"
 
 
-# Variables para el disco adicional
+# Variables para el disco adicional disk_rc_storage1 de rc-storage1
 additional_disk_rc_storage1 = {
   name   = "rc-storage1-disk2.qcow2"
   pool   = "volumetmp_nat_02"
