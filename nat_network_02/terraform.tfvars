@@ -92,5 +92,5 @@ additional_disk_rc_storage1 = {
   name   = "rc-storage1-disk2.qcow2"
   pool   = "cluster_cefaslocalserver_nat_02"
   format = "qcow2"
-  size   = 51200 # Tamaño en MB (50GB)
+  size   = 64424509440 # Tamaño en MB (60GB)
 }
