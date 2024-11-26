@@ -34,12 +34,18 @@ resource "libvirt_pool" "volumetmp_nat_02" {
   }
 }
 
-
 resource "libvirt_volume" "rocky9_image" {
   name   = "${var.cluster_name}_rocky9_image"
   source = var.rocky9_image
   pool   = libvirt_pool.volumetmp_nat_02.name
   format = "qcow2"
+}
+
+resource "libvirt_volume" "additional_disk_rc_storage1" {
+  name   = var.additional_disk_rc_storage1.name
+  pool   = libvirt_pool.volumetmp_nat_02.name
+  format = var.additional_disk_rc_storage1.format
+  size   = var.additional_disk_rc_storage1.size
 }
 
 data "template_file" "vm-configs" {
@@ -92,6 +98,14 @@ resource "libvirt_domain" "vm_nat_02" {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
 
+  # Nuevo disco adicional para rc-storage1
+  dynamic "disk" {
+    for_each = each.key == "rc-storage1" ? [libvirt_volume.additional_disk_rc_storage1.id] : []
+    content {
+      volume_id = disk.value
+    }
+  }
+
   graphics {
     type        = "vnc"
     listen_type = "address"
@@ -103,7 +117,6 @@ resource "libvirt_domain" "vm_nat_02" {
     mode = "host-passthrough"
   }
 
-  # Add this section for serial console support
   console {
     type        = "pty"
     target_type = "serial"

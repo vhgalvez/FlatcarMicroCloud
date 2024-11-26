@@ -17,48 +17,6 @@ vm_rockylinux_definitions = {
     domain_memory  = "4096",
     short_hostname = "freeipa1"
   },
-  "load_balancer1" = {
-    cpus           = 2,
-    memory         = 2048,
-    ip             = "10.17.3.12",
-    hostname       = "loadbalancer1.cefaslocalserver.com",
-    volume_name    = "loadbalancer1_volume",
-    volume_format  = "qcow2",
-    volume_pool    = "default",
-    volume_size    = "32212254720", # 32 GB
-    cloudinit_disk = "rocky9_cloudinit_disk.iso",
-    cloudinit_pool = "default",
-    domain_memory  = "4096",
-    short_hostname = "loadbalancer1"
-  },
-  "load_balancer2" = {
-    cpus           = 2,
-    memory         = 2048,
-    ip             = "10.17.3.13",
-    hostname       = "loadbalancer2.cefaslocalserver.com",
-    volume_name    = "loadbalancer1_volume",
-    volume_format  = "qcow2",
-    volume_pool    = "default",
-    volume_size    = "32212254720", # 32 GB
-    cloudinit_disk = "rocky9_cloudinit_disk.iso",
-    cloudinit_pool = "default",
-    domain_memory  = "4096",
-    short_hostname = "loadbalancer2"
-  },
-  "postgresql1" = {
-    cpus           = 2,
-    memory         = 2048,
-    ip             = "10.17.3.14",
-    hostname       = "postgresql1.cefaslocalserver.com",
-    volume_name    = "postgresql1_volume",
-    volume_format  = "qcow2",
-    volume_pool    = "default",
-    volume_size    = "32212254720", # 32 GB
-    cloudinit_disk = "rocky9_cloudinit_disk.iso",
-    cloudinit_pool = "default",
-    domain_memory  = "4096",
-    short_hostname = "postgresql1"
-  },
   "rc-storage1" = {
     cpus           = 2,
     memory         = 2048,
@@ -86,3 +44,10 @@ ssh_keys = [
 ]
 timezone = "Europe/Madrid"
 
+# Variables para el disco adicional
+additional_disk_rc_storage1 = {
+  name   = "rc-storage1-disk2.qcow2"
+  pool   = "volumetmp_nat_02"
+  format = "qcow2"
+  size   = 51200 # Tamaño en MB (50 GB)
+}
