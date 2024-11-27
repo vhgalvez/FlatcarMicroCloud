@@ -4,7 +4,7 @@ base_image = "/mnt/lv_data/organized_storage/images/flatcar_production_qemu_imag
 
 vm_definitions = {
   master1 = {
-    cpus         = 2
+    cpus         = 4
     memory       = 4096
     ip           = "10.17.4.21"
     name_dominio = "master1.cefaslocalserver.com"
@@ -12,7 +12,7 @@ vm_definitions = {
     node_name    = "master1"
   }
   master2 = {
-    cpus         = 2
+    cpus         = 4
     memory       = 4096
     ip           = "10.17.4.22"
     name_dominio = "master2.cefaslocalserver.com"
@@ -20,7 +20,7 @@ vm_definitions = {
     node_name    = "master2"
   }
   master3 = {
-    cpus         = 2
+    cpus         = 4
     memory       = 4096
     ip           = "10.17.4.23"
     name_dominio = "master3.cefaslocalserver.com"
