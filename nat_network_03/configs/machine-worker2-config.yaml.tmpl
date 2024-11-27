@@ -128,3 +128,19 @@ systemd:
 
     - name: systemd-timesyncd.service
       enabled: true
+
+    # Unidad de systemd para crear el swap
+    - name: swapfile.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Create swap file
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c 'fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
