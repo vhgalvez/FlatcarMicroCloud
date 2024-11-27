@@ -16,7 +16,7 @@ variable "cluster_domain" {
 }
 
 variable "rocky9_image" {
-  description = "Path to the Rocky Linux 9 image"
+  description = "Path to the AlmaLinux 9 image"
   type        = string
 }
 
