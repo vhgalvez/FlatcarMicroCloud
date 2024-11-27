@@ -1,6 +1,6 @@
 # br0_network/terraform.tfvars
 
-rocky9_image = "/mnt/lv_data/organized_storage/images/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2"
+rocky9_image = "/mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 
 vm_rockylinux_definitions = {
   bastion1 = {

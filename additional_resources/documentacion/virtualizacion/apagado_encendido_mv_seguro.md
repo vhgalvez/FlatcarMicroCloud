@@ -134,3 +134,22 @@ sudo systemctl restart libvirtd
 [victory@physical1 ~]$ sudo sysctl net.ipv4.ip_forward
 net.ipv4.ip_forward = 1
 [victory@physical1 ~]$
+
+curl -o /mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2 https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
+
+1. Cambiar el propietario a qemu (si es necesario para la VM)
+Si estás utilizando Libvirt o alguna otra herramienta como qemu para manejar la imagen, lo ideal sería cambiar el propietario a qemu:
+
+sudo chown qemu:qemu /mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
+Esto cambiará el propietario y el grupo del archivo a qemu, que es el usuario bajo el que Libvirt y otros servicios de virtualización suelen operar.
+
+2. Cambiar los permisos para permitir acceso de escritura
+Si prefieres que el archivo sea accesible para todos los usuarios (no solo root), puedes cambiar los permisos para que todos tengan acceso de lectura y escritura:
+
+sudo chmod 664 /mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
+Esto da permisos de lectura y escritura al propietario y al grupo, y solo permisos de lectura a otros usuarios.
+
+3. Verificar los cambios
+Para asegurarte de que los permisos se aplicaron correctamente, puedes verificarlo con el siguiente comando:
+
+ls -l /mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
