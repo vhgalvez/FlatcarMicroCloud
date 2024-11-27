@@ -9,6 +9,15 @@ growpart:
 
 resize_rootfs: true
 
+chpasswd:
+  list: |
+    core:$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/
+    root:$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/
+  expire: false
+
+ssh_pwauth: true
+disable_root: false
+
 users:
   - default
   - name: core
@@ -17,17 +26,20 @@ users:
     groups: [adm, wheel]
     lock_passwd: false
     ssh_authorized_keys: ${ssh_keys}
-    passwd: $6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/
-
   - name: root
     ssh_authorized_keys: ${ssh_keys}
-    passwd: $6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/
 
 write_files:
   - encoding: b64
     content: U0VMSU5VWD1kaXNhYmxlZApTRUxJTlVYVFlQRT10YXJnZXRlZCAKIyAK
     owner: root:root
     path: /etc/sysconfig/selinux
+    permissions: "0644"
+
+  - encoding: b64
+    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXJ2ZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDguOC44Ljg=
+    owner: root:root
+    path: /etc/resolv.conf
     permissions: "0644"
 
   - path: /etc/systemd/network/10-static-en.network
@@ -41,19 +53,6 @@ write_files:
       DNS=${dns1}
       DNS=${dns2}
 
-  - path: /etc/NetworkManager/conf.d/dns.conf
-    content: |
-      [main]
-      dns=none
-
-  - path: /usr/local/bin/set-dns.sh
-    content: |
-      #!/bin/bash
-      echo "search cefaslocalserver.com" > /etc/resolv.conf
-      echo "nameserver ${dns1}" >> /etc/resolv.conf
-      echo "nameserver ${dns2}" >> /etc/resolv.conf
-    permissions: "0755"
-
   - path: /usr/local/bin/set-hosts.sh
     content: |
       #!/bin/bash
@@ -62,16 +61,23 @@ write_files:
       echo "${ip}  ${hostname} ${short_hostname}" >> /etc/hosts
     permissions: "0755"
 
+  - path: /etc/sysctl.conf
+    content: |
+      net.ipv4.ip_forward = 1
+
 runcmd:
-  - chmod +x /usr/local/bin/set-dns.sh
-  - chmod +x /usr/local/bin/set-hosts.sh
-  - /usr/local/bin/set-dns.sh
-  - /usr/local/bin/set-hosts.sh
+  - sudo fallocate -l 1G /swapfile               # Crear archivo swap de 1GB
+  - sudo chmod 600 /swapfile                      # Ajustar permisos de seguridad
+  - sudo mkswap /swapfile                         # Configurar el archivo swap
+  - sudo swapon /swapfile                         # Activar el swap
+  - echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab # Hacer swap persistente
+  - sudo ip route add 10.17.3.0/24 via 192.168.0.18 dev eth0
+  - sudo ip route add 10.17.4.0/24 via 192.168.0.18 dev eth0
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
-  - ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
-  - ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
-  - dnf install -y firewalld
-  - systemctl enable --now firewalld
-  - systemctl restart NetworkManager.service
+  - ["dnf", "install", "-y", "firewalld"]
+  - ["systemctl", "enable", "--now", "firewalld"]
+  - ["systemctl", "restart", "NetworkManager.service"]
+  - /usr/local/bin/set-hosts.sh
+  - sysctl -p
 
 timezone: ${timezone}
