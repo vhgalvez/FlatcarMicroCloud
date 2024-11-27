@@ -106,7 +106,7 @@ sudo virsh start worker1
 sudo virsh start worker2
 sudo virsh start worker3
 
-sudo virsh start rc-storage1
+sudo virsh start storage1
 sudo virsh start freeipa1
 sudo virsh start load_balancer1
 sudo virsh start load_balancer2
