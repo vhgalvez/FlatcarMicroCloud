@@ -2,7 +2,7 @@
 
 ## Descripción General del Proyecto
 
-FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Rocky Linux 9.4. Permite desplegar aplicaciones en contenedores utilizando herramientas como K3s para Kubernetes ligero, Rook y Ceph para almacenamiento persistente, monitoreo avanzado con Prometheus y Grafana, y Apache Kafka y MQTT Mosquitto para comunicación entre microservicios.
+FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Alma Linux9.4. Permite desplegar aplicaciones en contenedores utilizando herramientas como K3s para Kubernetes ligero, Rook y Ceph para almacenamiento persistente, monitoreo avanzado con Prometheus y Grafana, y Apache Kafka y MQTT Mosquitto para comunicación entre microservicios.
 
 ## Hardware del Servidor
 
@@ -16,7 +16,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ## Sistemas Operativos y Virtualización
 
-- **Sistemas Operativos**: Rocky Linux 9.4 y Flatcar Container Linux
+- **Sistemas Operativos**: Alma Linux9.4 y Flatcar Container Linux
 - **Virtualización**: KVM con Libvirt y Virt-Manager
 - **Configuración de Red**: VPN con WireGuard, DHCP, firewall, y configuraciones de redes virtuales (NAT y Bridge) con KVM.
 - **Switch y Router**: Facilitan la comunicación y conectividad del clúster.
@@ -40,14 +40,14 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 | Nodo               | Sistema Operativo       | Función                                    | Cantidad |
 | ------------------ | ----------------------- | ------------------------------------------ | -------- |
-| Bastion Node       | Rocky Linux             | Acceso seguro y conexiones SSH al clúster  | 1        |
-| Load Balancer Node | Rocky Linux             | Balanceo de tráfico con Traefik            | 1        |
-| FreeIPA Node       | Rocky Linux             | DNS y autenticación                        | 1        |
-| PostgreSQL Node    | Rocky Linux             | Base de datos central para microservicios  | 1        |
+| Bastion Node       | Alma Linux              | Acceso seguro y conexiones SSH al clúster  | 1        |
+| Load Balancer Node | Alma Linux              | Balanceo de tráfico con Traefik            | 1        |
+| FreeIPA Node       | Alma Linux              | DNS y autenticación                        | 1        |
+| PostgreSQL Node    | Alma Linux              | Base de datos central para microservicios  | 1        |
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
 | Bootstrap Node     | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
-| rc-storage1        | Rocky Linux             | almacenacenamiento                         | 1        |
+| rc-storage1        | Alma Linux              | almacenacenamiento                         | 1        |
 
 ## Explicación de Roles de las VMs
 
@@ -277,7 +277,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
 | kube_network_02 | loadbalancer2 | 10.17.3.13   | Balanceo de carga para el clúster        |
 | kube_network_02 | postgresql1   | 10.17.3.14   | Gestión de bases de datos                |
-| kube_network_02 | rc-storage1   | 10.17.3.15   | alamacenamiento                          |
+| kube_network_02 | storage1      | 10.17.3.15   | alamacenamiento                          |
 | kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
 | kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |

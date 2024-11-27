@@ -89,5 +89,3 @@ Asegúrate de que el nodo Bastion tiene conectividad de red hacia el balanceador
 Verifica que el puerto 6443 (puerto de la API de Kubernetes) esté accesible desde el nodo Bastion.
 Si encuentras problemas, verifica los logs en el nodo maestro (/var/log/k3s-server.log) o la conectividad con ping y telnet.
 ¡Con esto tendrás kubectl configurado en tu nodo Bastion y listo para gestionar tu clúster! 🚀
-
-
