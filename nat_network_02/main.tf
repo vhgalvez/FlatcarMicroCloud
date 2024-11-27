@@ -98,13 +98,6 @@ resource "libvirt_domain" "vm_nat_02" {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
 
-# Bloque dinámico para añadir el disco adicional a rc-storage1
-  dynamic "disk" {
-    for_each = each.key == "storage1" ? [libvirt_volume.additional_disk_rc_storage1.id] : []
-    content {
-      volume_id = disk.value
-    }
-  }
 
   graphics {
     type        = "vnc"

@@ -1,0 +1,146 @@
+variant: flatcar
+version: 1.1.0
+
+ignition:
+  version: 3.4.0
+
+passwd:
+  users:
+    - name: core
+      shell: /bin/bash
+      sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+      groups: [adm, wheel]
+      lock_passwd: false
+      ssh_authorized_keys:
+        - ${ssh_keys}
+    - name: root
+      shell: /bin/bash
+      ssh_authorized_keys:
+        - ${ssh_keys}
+      password_hash: "$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/"
+
+storage:
+  directories:
+    - path: /etc/systemd/timesyncd.conf.d
+      filesystem: root
+      mode: 0755
+
+  files:
+    - path: /etc/hostname
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: ${host_name}
+
+    - path: /etc/systemd/network/10-eth0.network
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          [Match]
+          Name=eth0
+
+          [Network]
+          Address=${ip}/24
+          Gateway=${gateway}
+          DNS=${dns1}
+          DNS=${dns2}
+
+    - path: /etc/tmpfiles.d/hosts.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          f /etc/hosts 0644 - - - -
+          127.0.0.1   localhost
+          ::1         localhost
+          ${ip}  ${host_name} ${node_name}
+
+    - path: /run/systemd/resolve/resolv.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          nameserver ${dns1}
+          nameserver ${dns2}
+
+    - path: /etc/tmpfiles.d/resolv.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          L /etc/resolv.conf - - - - /run/systemd/resolve/resolv.conf
+
+    - path: /etc/systemd/timesyncd.conf.d/custom-ntp.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          [Time]
+          NTP=10.17.3.11
+          FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org
+
+systemd:
+  units:
+    - name: set-timezone.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set timezone to ${timezone}
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/timedatectl set-timezone ${timezone}
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: apply-network-routes.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Apply custom network routes
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: set-hosts.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set /etc/hosts file
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: systemd-timesyncd.service
+      enabled: true
+
+    # Unidad de systemd para crear el swap
+    - name: swapfile.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Create swap file
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c 'fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target

@@ -394,8 +394,8 @@ resource "libvirt_network" "kube_network_03" {
     |                           |                           |                           |
     v                           v                           v                           v
 +------------------+   +---------------------------+   +---------------------------+   +---------------------------+
-| Bastion Node     |   |     FreeIPA Node          |   |    PostgreSQL Node        |   |   Storage Node (Rook-Ceph)|
-| SSH Access       |   | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento distribuido|
+| Bastion Node     |   |     FreeIPA Node          |   |    PostgreSQL Node        |   |   Storage Node            |
+| SSH Access       |   | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento            |
 | IP: 192.168.0.20 |   | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.3.15            |
 +------------------+   +---------------------------+   +---------------------------+   +---------------------------+
                                          |
@@ -467,3 +467,10 @@ curl -sfL https://get.k3s.io | K3S_URL=https://K105285ff598aec61abdf70c75ece64e5
 sudo curl -sfL https://get.k3s.io | K3S_URL=https://10.17.4.21:6443 K3S_TOKEN=K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7 sh -
 
 curl -sfL https://get.k3s.io | sh -s - server --node-ip "10.17.4.21" --tls-san "10.17.4.21"
+
+
+
+
+
+Usuario: admin
+Contraseña: prom-operator

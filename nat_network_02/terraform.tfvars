@@ -59,21 +59,6 @@ vm_rockylinux_definitions = {
     domain_memory  = "4096",
     short_hostname = "postgresql1"
   },
-  "storage1" = {
-    cpus           = 2,
-    memory         = 2048,
-    ip             = "10.17.3.15",
-    hostname       = "storage1.cefaslocalserver.com",
-    volume_name    = "storage1_volume",
-    volume_format  = "qcow2",
-    volume_pool    = "default",
-    volume_size    = "32212254720", # 32 GB
-    cloudinit_disk = "rocky9_cloudinit_disk.iso",
-    cloudinit_pool = "default",
-    domain_memory  = "4096",
-    short_hostname = "storage1"
-  }
-}
 
 cluster_name        = "cluster_cefaslocalserver"
 cluster_domain      = "cefaslocalserver.com"
@@ -86,11 +71,3 @@ ssh_keys = [
 ]
 timezone = "Europe/Madrid"
 
-
-# Variables para el disco adicional disk_rc_storage1 de rc-storage1
-additional_disk_rc_storage1 = {
-  name   = "rc-storage1-disk2.qcow2"
-  pool   = "cluster_cefaslocalserver_nat_02"
-  format = "qcow2"
-  size   = 64424509440 # Tamaño en MB (60GB)
-}

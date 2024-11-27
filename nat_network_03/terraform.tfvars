@@ -1,4 +1,3 @@
-
 # nat_network_03\terraform.tfvars
 
 base_image = "/mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img"
@@ -51,6 +50,20 @@ vm_definitions = {
     name_dominio = "worker3.cefaslocalserver.com"
     disk_size    = 51200 # 50 GB in MB
     node_name    = "worker3"
+  }
+  storage1 = {
+    cpus         = 2
+    memory       = 4096
+    ip           = "10.17.4.27"
+    name_dominio = "storage1.cefaslocalserver.com"
+    disk_size    = 10240  # 10 GB for the system disk
+    additional_disks = [  # Add extra disks for storage
+      {
+        size = 61440  # 60 GB in MB for persistent storage
+        type = "qcow2" # Use qcow2 as the disk format
+      }
+    ]
+    node_name    = "storage1"
   }
 }
 
