@@ -80,18 +80,6 @@ storage:
           NTP=10.17.3.11
           FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org
 
-    # Agregar configuración para el swap
-    - path: /swapfile
-      filesystem: root
-      mode: 0600
-      contents:
-        inline: |
-          # Crea un archivo swap de 2GB
-          fallocate -l 2G /swapfile
-          chmod 600 /swapfile
-          mkswap /swapfile
-          swapon /swapfile
-
 systemd:
   units:
     - name: set-timezone.service
@@ -140,3 +128,19 @@ systemd:
 
     - name: systemd-timesyncd.service
       enabled: true
+
+    # Unidad de systemd para crear el swap
+    - name: swapfile.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Create swap file
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c 'fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
