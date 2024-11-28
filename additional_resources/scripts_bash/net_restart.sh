@@ -18,4 +18,8 @@ sudo systemctl restart firewalld && echo "firewalld reiniciado y habilitado con 
 sudo firewall-cmd --reload && echo "firewalld recargado con éxito."
 sleep 5
 
+# habilitar iptables
+sudo systemctl start iptables && echo "iptables reiniciado con éxito."
+sleep 5
+
 echo "Todos los servicios han sido reiniciados con éxito."
