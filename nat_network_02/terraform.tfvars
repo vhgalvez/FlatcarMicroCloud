@@ -58,7 +58,8 @@ vm_rockylinux_definitions = {
     cloudinit_pool = "default",
     domain_memory  = "4096",
     short_hostname = "postgresql1"
-  },
+  }
+}
 
 cluster_name        = "cluster_cefaslocalserver"
 cluster_domain      = "cefaslocalserver.com"
