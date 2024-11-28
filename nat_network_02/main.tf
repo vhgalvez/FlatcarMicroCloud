@@ -28,7 +28,9 @@ resource "libvirt_network" "kube_network_02" {
 resource "libvirt_pool" "volumetmp_nat_02" {
   name = "${var.cluster_name}_nat_02"
   type = "dir"
-  path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_nat_02"
+  target {
+    path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_nat_02"
+  }
 }
 
 resource "libvirt_volume" "rocky9_image" {
