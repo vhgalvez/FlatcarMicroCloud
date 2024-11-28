@@ -18,15 +18,15 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Crear red NAT
+# Crear la red NAT
 resource "libvirt_network" "kube_network_02" {
-  name      = "kube_network_02"
+  name      = var.rocky9_network_name
   mode      = "nat"
   autostart = true
   addresses = ["10.17.3.0/24"]
 }
 
-# Crear pool de almacenamiento
+# Crear el pool de almacenamiento
 resource "libvirt_pool" "volumetmp_nat_02" {
   name = "${var.cluster_name}_nat_02"
   type = "dir"
@@ -36,24 +36,28 @@ resource "libvirt_pool" "volumetmp_nat_02" {
   }
 }
 
-# Imagen base de Rocky Linux
+# Crear el volumen base de la imagen
 resource "libvirt_volume" "rocky9_image" {
+  depends_on = [libvirt_pool.volumetmp_nat_02]
+
   name   = "${var.cluster_name}_rocky9_image"
   source = var.rocky9_image
   pool   = libvirt_pool.volumetmp_nat_02.name
   format = "qcow2"
 }
 
-# Crear discos adicionales (opcional)
+# Crear disco adicional para storage1 (si aplica)
 resource "libvirt_volume" "additional_disk_rc_storage1" {
+  depends_on = [libvirt_pool.volumetmp_nat_02]
+
   name   = var.additional_disk_rc_storage1.name
   pool   = libvirt_pool.volumetmp_nat_02.name
   format = var.additional_disk_rc_storage1.format
   size   = var.additional_disk_rc_storage1.size
 }
 
-# Configuración de Cloud-init
-data "template_file" "vm-configs" {
+# Configurar los datos de Cloud-Init
+data "template_file" "vm_configs" {
   for_each = var.vm_rockylinux_definitions
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
@@ -69,26 +73,29 @@ data "template_file" "vm-configs" {
   }
 }
 
+# Crear disco de Cloud-Init
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_rockylinux_definitions
 
   name      = "${each.key}_cloudinit.iso"
   pool      = libvirt_pool.volumetmp_nat_02.name
-  user_data = data.template_file.vm-configs[each.key].rendered
+  user_data = data.template_file.vm_configs[each.key].rendered
 }
 
-# Crear disco para las VMs
+# Crear los discos de las máquinas virtuales
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_rockylinux_definitions
+
+  depends_on = [libvirt_volume.rocky9_image]
 
   name           = "${each.key}-${var.cluster_name}.qcow2"
   base_volume_id = libvirt_volume.rocky9_image.id
   pool           = libvirt_pool.volumetmp_nat_02.name
   format         = "qcow2"
-  size           = max(each.value.volume_size * 1024 * 1024 * 1024, libvirt_volume.rocky9_image.virtual_size)
+  size           = max(each.value.volume_size * 1024 * 1024 * 1024, libvirt_volume.rocky9_image.size)
 }
 
-# Crear dominios para las VMs
+# Crear las máquinas virtuales
 resource "libvirt_domain" "vm_nat_02" {
   for_each = var.vm_rockylinux_definitions
 
@@ -106,12 +113,12 @@ resource "libvirt_domain" "vm_nat_02" {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
 
+  cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
+
   graphics {
     type        = "vnc"
     listen_type = "address"
   }
-
-  cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
 
   cpu {
     mode = "host-passthrough"
