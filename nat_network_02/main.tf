@@ -33,7 +33,7 @@ resource "libvirt_pool" "volumetmp_bastion" {
   }
 }
 
-# Define el volumen de la imagen base
+# Define la imagen base
 resource "libvirt_volume" "rocky9_image" {
   depends_on = [libvirt_pool.volumetmp_bastion]
 
@@ -41,6 +41,34 @@ resource "libvirt_volume" "rocky9_image" {
   source = var.rocky9_image
   pool   = libvirt_pool.volumetmp_bastion.name
   format = "qcow2"
+}
+
+# Define la red
+resource "libvirt_network" "kube_network_02" {
+  name      = "kube_network_02"
+  mode      = "nat"
+  autostart = true
+  addresses = ["10.17.3.0/24"]
+}
+
+# Define los volúmenes adicionales para cada VM
+resource "libvirt_volume" "vm_disk" {
+  for_each = var.vm_rockylinux_definitions
+
+  name           = each.value.volume_name
+  base_volume_id = libvirt_volume.rocky9_image.id
+  pool           = libvirt_pool.volumetmp_bastion.name
+  format         = each.value.volume_format
+  size           = each.value.volume_size
+}
+
+# Define los discos cloud-init
+resource "libvirt_cloudinit_disk" "vm_cloudinit" {
+  for_each = var.vm_rockylinux_definitions
+
+  name      = each.value.cloudinit_disk
+  pool      = libvirt_pool.volumetmp_bastion.name
+  user_data = file("${path.module}/config/${each.key}-user-data.tpl")
 }
 
 # Define las máquinas virtuales
@@ -77,12 +105,4 @@ resource "libvirt_domain" "vm" {
   cpu {
     mode = "host-passthrough"
   }
-}
-
-# Define la red
-resource "libvirt_network" "kube_network_02" {
-  name      = "kube_network_02"
-  mode      = "nat"
-  autostart = true
-  addresses = ["10.17.3.0/24"]
 }
