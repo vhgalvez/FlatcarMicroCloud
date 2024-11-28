@@ -2,7 +2,7 @@
 
 ## Descripción General del Proyecto
 
-FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Alma Linux9.4. Permite desplegar aplicaciones en contenedores utilizando herramientas como K3s para Kubernetes ligero, Rook y Ceph para almacenamiento persistente, monitoreo avanzado con Prometheus y Grafana, y Apache Kafka y MQTT Mosquitto para comunicación entre microservicios.
+FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Alma Linux9.4. Permite desplegar aplicaciones en contenedores utilizando herramientas como K3s para Kubernetes ligero, Longhorn y NFS para almacenamiento persistente, monitoreo avanzado con Prometheus y Grafana, y Apache Kafka y MQTT Mosquitto para comunicación entre microservicios.
 
 ## Hardware del Servidor
 
@@ -173,12 +173,12 @@ Provisionar y configurar VMs según especificaciones en la tabla de recursos, as
   - Configurar K3s en los nodos Master.
   - Desplegar Traefik para el balanceo de carga.
 - **FreeIPA Node**: Configurar para DNS y autenticación.
-- **Load Balancer1 Load Balancer2**: Configurar con Traefik para distribución de tráfico.
+- **Load Balancer1 Load Balancer2**: Configurar con Traefik para distribución de tráfico y controlador de ingress de k3s.
 - **PostgreSQL Node**: Configurar permisos y definir políticas de respaldo.
 
 ### Paso 5: Configuración de Almacenamiento Persistente
 
-Instalar y configurar Rook y Ceph en el clúster de Kubernetes para almacenamiento persistente.
+Instalar y configurar Longhorn y NFS en el clúster de Kubernetes para almacenamiento persistente.
 
 ### Paso 6: Configuración de Monitoreo y Visualización
 
@@ -221,7 +221,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 #### Microservicios de Servicios de Aplicaciones
 
-- **Nginx**: Servidor web y proxy inverso para aplicaciones web.
+- **Nginx**: Servidor web aplicaciones web.
 - **Apache Kafka**: Plataforma de mensajería utilizada para la comunicación entre microservicios.
 - **Redis**: Almacenamiento en caché y base de datos en memoria para mejorar el rendimiento de las aplicaciones.
 
@@ -466,7 +466,7 @@ https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
 
 
 
-# Configuración de K3s en el Clúster de Kubernetes
+### Configuración de K3s en el Clúster de Kubernetes
 
 curl -sfL https://get.k3s.io | K3S_URL=https://K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7:6443 K3S_TOKEN=<NODE_TOKEN> sh -
 
@@ -476,7 +476,7 @@ sudo curl -sfL https://get.k3s.io | K3S_URL=https://10.17.4.21:6443 K3S_TOKEN=K1
 curl -sfL https://get.k3s.io | sh -s - server --node-ip "10.17.4.21" --tls-san "10.17.4.21"
 
 
-# acceso a grafana
+### acceso a grafana
 
 
 http://master1.cefaslocalserver.com:3000
