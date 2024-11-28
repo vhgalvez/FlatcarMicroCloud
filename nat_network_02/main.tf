@@ -14,7 +14,7 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Crea el directorio para el pool si no existe
+# Crea el directorio necesario para el pool
 resource "null_resource" "create_pool_directory" {
   provisioner "local-exec" {
     command = "sudo mkdir -p /mnt/lv_data/organized_storage/volumes/${var.cluster_name}_bastion && sudo chown qemu:qemu /mnt/lv_data/organized_storage/volumes/${var.cluster_name}_bastion"
@@ -33,7 +33,7 @@ resource "libvirt_pool" "volumetmp_bastion" {
   }
 }
 
-# Define la imagen base
+# Define el volumen de la imagen base
 resource "libvirt_volume" "rocky9_image" {
   depends_on = [libvirt_pool.volumetmp_bastion]
 
@@ -43,7 +43,7 @@ resource "libvirt_volume" "rocky9_image" {
   format = "qcow2"
 }
 
-# Define la red
+# Define la red NAT
 resource "libvirt_network" "kube_network_02" {
   name      = "kube_network_02"
   mode      = "nat"
@@ -51,11 +51,11 @@ resource "libvirt_network" "kube_network_02" {
   addresses = ["10.17.3.0/24"]
 }
 
-# Define los volúmenes adicionales para cada VM
+# Define los volúmenes adicionales para las VMs
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_rockylinux_definitions
 
-  name           = each.value.volume_name
+  name           = "${each.key}_volume"
   base_volume_id = libvirt_volume.rocky9_image.id
   pool           = libvirt_pool.volumetmp_bastion.name
   format         = each.value.volume_format
