@@ -233,7 +233,8 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ## Almacenamiento Persistente
 
-- **Rook y Ceph**: Orquestar Ceph en Kubernetes para almacenamiento persistente.
+- **Longhorn**: Orquestar Longhorn en Kubernetes para almacenamiento persistente.
+- **NFS**: Configurar NFS para almacenamiento compartido entre nodos para base de datos postgresql.
 
 ## Kubernetes Operaciones
 
@@ -277,7 +278,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
 | kube_network_02 | loadbalancer2 | 10.17.3.13   | Balanceo de carga para el clúster        |
 | kube_network_02 | postgresql1   | 10.17.3.14   | Gestión de bases de datos                |
-| kube_network_02 | storage1      | 10.17.3.15   | alamacenamiento                          |
+| kube_network_02 | storage1      | 10.17.4.27   | alamacenamiento                          |
 | kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
 | kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
@@ -396,7 +397,7 @@ resource "libvirt_network" "kube_network_03" {
 +------------------+   +---------------------------+   +---------------------------+   +---------------------------+
 | Bastion Node     |   |     FreeIPA Node          |   |    PostgreSQL Node        |   |   Storage Node            |
 | SSH Access       |   | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento            |
-| IP: 192.168.0.20 |   | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.3.15            |
+| IP: 192.168.0.20 |   | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.4.27            |
 +------------------+   +---------------------------+   +---------------------------+   +---------------------------+
                                          |
                                          v
