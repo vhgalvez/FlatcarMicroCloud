@@ -34,7 +34,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
 | loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
 | postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
-| rc-storage1   | 2   | 2048         | 10.17.3.14 | rc-storage1.cefaslocalserver.com   | 80                   | rc-storage1   |
+| rc-storage1   | 2   | 2048         | 10.17.3.14 | storage1.cefaslocalserver.com      | 80                   | storage1      |
 
 ## Máquinas Virtuales y Roles
 
@@ -47,7 +47,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
 | Bootstrap Node     | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
-| rc-storage1        | Alma Linux              | almacenacenamiento                         | 1        |
+| storage1           | Alma Linux              | almacenacenamiento                         | 1        |
 
 ## Explicación de Roles de las VMs
 
@@ -278,7 +278,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
 | kube_network_02 | loadbalancer2 | 10.17.3.13   | Balanceo de carga para el clúster        |
 | kube_network_02 | postgresql1   | 10.17.3.14   | Gestión de bases de datos                |
-| kube_network_02 | storage1      | 10.17.4.27   | alamacenamiento                          |
+| kube_network_03 | storage1      | 10.17.4.27   | alamacenamiento                          |
 | kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
 | kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
@@ -296,6 +296,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
   - Fedora CoreOS: `/mnt/lv_data/organized_storage/images/fedora-coreos-40.20240906.3.0-qemu.x86_64.qcow2`
   - Rocky Linux: `/mnt/lv_data/organized_storage/images/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2`
+  - Alma Linux: `/mnt/lv_data/organized_storage/images/AlmaLinux-9.4-x86_64.qcow2`
 
 - **Red Gateway**:
 
@@ -463,15 +464,22 @@ https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
 
 https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
 
+
+
+# Configuración de K3s en el Clúster de Kubernetes
+
 curl -sfL https://get.k3s.io | K3S_URL=https://K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7:6443 K3S_TOKEN=<NODE_TOKEN> sh -
+
 
 sudo curl -sfL https://get.k3s.io | K3S_URL=https://10.17.4.21:6443 K3S_TOKEN=K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7 sh -
 
 curl -sfL https://get.k3s.io | sh -s - server --node-ip "10.17.4.21" --tls-san "10.17.4.21"
 
 
+# acceso a grafana
 
 
+http://master1.cefaslocalserver.com:3000
 
 Usuario: admin
 Contraseña: prom-operator
