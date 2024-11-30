@@ -203,3 +203,8 @@ AllowedIPs = 10.0.0.0/24, 192.168.0.0/24
 ```
 
 Con estos pasos, tendrás configurada una VPN funcional en tu red LAN con acceso a las máquinas virtuales y mantendrás acceso a Internet y la red local desde el cliente Windows.
+
+
+
+
+sudo docker run --rm -it ghcr.io/wg-easy/wg-easy wgpw '123456'
