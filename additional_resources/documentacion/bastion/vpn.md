@@ -208,3 +208,10 @@ Con estos pasos, tendrás configurada una VPN funcional en tu red LAN con acceso
 
 
 sudo docker run --rm -it ghcr.io/wg-easy/wg-easy wgpw '123456'
+
+
+# WireGuard
+-A FORWARD -i wg0 -o enp4s0f0 -j ACCEPT
+-A FORWARD -i enp4s0f0 -o wg0 -j ACCEPT
+-A POSTROUTING -s 10.8.0.0/24 -o enp4s0f0 -j MASQUERADE
+
