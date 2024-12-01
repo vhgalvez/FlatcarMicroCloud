@@ -215,3 +215,38 @@ sudo docker run --rm -it ghcr.io/wg-easy/wg-easy wgpw '123456'
 -A FORWARD -i enp4s0f0 -o wg0 -j ACCEPT
 -A POSTROUTING -s 10.8.0.0/24 -o enp4s0f0 -j MASQUERADE
 
+
+sudo setenforce 0
+sudo systemctl restart libvirtd
+
+sudo modprobe nft_nat
+sudo modprobe nf_nat
+sudo modprobe ip_tables
+
+
+
+sudo modprobe iptable_nat
+sudo modprobe nf_nat
+
+
+sudo systemctl restart iptables
+sudo systemctl status iptables
+
+
+sudo modprobe iptable_nat
+sudo modprobe nf_conntrack
+sudo modprobe nf_conntrack_netlink
+sudo modprobe nf_conntrack_ipv4
+
+sudo systemctl restart iptables
+sudo systemctl status iptables
+
+
+windows:
+route add 192.168.0.0 mask 255.255.255.0 10.8.0.1
+route add 10.17.3.0 mask 255.255.255.0 10.8.0.1
+route add 10.17.4.0 mask 255.255.255.0 10.8.0.1
+
+
+sudo podman-compose up -d
+sudo podman-compose down
