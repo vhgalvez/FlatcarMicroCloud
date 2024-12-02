@@ -262,3 +262,9 @@ sudo ip route add default via 192.168.0.1 dev enp4s0f0
 sudo ip route del default via 192.168.0.1 dev enp3s0f1
 sudo ip route del default via 192.168.0.1 dev enp4s0f1
 sudo ip route del default via 192.168.0.1 dev br0
+
+
+
+# importante
+ route add 192.168.0.0 mask 255.255.255.0 10.8.0.1 metric 1
+ route -p add 192.168.0.0 mask 255.255.255.0 10.8.0.1 metric 1

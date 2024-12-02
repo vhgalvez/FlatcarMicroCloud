@@ -33,6 +33,8 @@ sudo firewall-cmd --reload
 ```
 
 
+
+
 ### Reiniciar 
 
 ```bash
@@ -40,7 +42,6 @@ sudo firewall-cmd --reload
 sudo setenforce 0
 sudo systemctl restart libvirtd
 
-sudo systemctl restart firewalld
 sudo systemctl restart iptables 
 sudo systemctl restart NetworkManager
 ```
