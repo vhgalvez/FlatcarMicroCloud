@@ -252,6 +252,9 @@ sudo podman-compose up -d
 sudo podman-compose down
 
 
+sudo podman-compose up -d
+
+
 route add 192.168.0.0 mask 255.255.255.0 10.8.0.1 metric 10
 
 sudo ip route add default via 192.168.0.1 dev enp4s0f0
