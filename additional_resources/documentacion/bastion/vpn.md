@@ -268,3 +268,6 @@ sudo ip route del default via 192.168.0.1 dev br0
 # importante
  route add 192.168.0.0 mask 255.255.255.0 10.8.0.1 metric 1
  route -p add 192.168.0.0 mask 255.255.255.0 10.8.0.1 metric 1
+
+ route add 10.17.3.0 mask 255.255.255.0 10.8.0.1 metric 1
+ route add 10.17.4.0 mask 255.255.255.0 10.8.0.1 metric 1
