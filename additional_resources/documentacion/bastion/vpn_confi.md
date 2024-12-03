@@ -1,10 +1,13 @@
 
 
 
+
+
 sudo git clone https://github.com/wg-easy/wg-easy.git
 
 
-[victory@physical1 wg-easy]$ cat docker-compose.yml
+
+docker-compose.yml
 services:
   wg-easy:
     image: ghcr.io/wg-easy/wg-easy:latest
@@ -31,6 +34,8 @@ services:
 
 
 
+sudo iptables -t nat -L -v
+sudo iptables -L -v
 
 
 
@@ -95,3 +100,81 @@ AllowedIPs = 10.8.0.0/24, 192.168.0.0/24, 10.89.0.0/24, 10.17.3.0/24, 10.17.4.0/
 PersistentKeepalive = 25
 Endpoint = 192.168.0.18:51820
 ```
+
+
+[victory@physical1 ~]$ sudo systemctl status iptables
+● iptables.service - IPv4 firewall with iptables
+     Loaded: loaded (/usr/lib/systemd/system/iptables.service; enabled; preset: disabled)
+     Active: active (exited) since Tue 2024-12-03 13:05:59 CET; 43min ago
+    Process: 32965 ExecStart=/usr/libexec/iptables/iptables.init start (code=exited, status=0/SUCCESS)
+   Main PID: 32965 (code=exited, status=0/SUCCESS)
+        CPU: 24ms
+
+dic 03 13:05:59 physical1.cefaslocalserver.com systemd[1]: Starting IPv4 firewall with iptables...
+dic 03 13:05:59 physical1.cefaslocalserver.com iptables.init[32965]: iptables: Applying firewall rules: [  OK  ]
+dic 03 13:05:59 physical1.cefaslocalserver.com systemd[1]: Finished IPv4 firewall with iptables.
+[victory@physical1 ~]$ cat /usr/lib/systemd/system/iptables.service
+[Unit]
+Description=IPv4 firewall with iptables
+AssertPathExists=/etc/sysconfig/iptables
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/libexec/iptables/iptables.init start
+ExecReload=/usr/libexec/iptables/iptables.init reload
+ExecStop=/usr/libexec/iptables/iptables.init stop
+Environment=BOOTUP=serial
+Environment=CONSOLETYPE=serial
+
+[Install]
+WantedBy=multi-user.target
+[victory@physical1 ~]$ cat /etc/sysconfig/iptables
+*filter
+# Políticas predeterminadas para las cadenas INPUT, FORWARD y OUTPUT
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# Permitir tráfico VPN
+-A INPUT -p udp --dport 51820 -j ACCEPT
+-A FORWARD -i wg0 -j ACCEPT
+-A FORWARD -o wg0 -j ACCEPT
+
+# Permitir tráfico entre LAN, NAT y VPN
+-A FORWARD -s 10.8.0.0/24 -d 192.168.0.0/24 -j ACCEPT
+-A FORWARD -s 10.8.0.0/24 -d 10.17.3.0/24 -j ACCEPT
+-A FORWARD -s 10.8.0.0/24 -d 10.17.4.0/24 -j ACCEPT
+-A FORWARD -s 192.168.0.0/24 -d 10.8.0.0/24 -j ACCEPT
+-A FORWARD -s 10.17.3.0/24 -d 10.8.0.0/24 -j ACCEPT
+-A FORWARD -s 10.17.4.0/24 -d 10.8.0.0/24 -j ACCEPT
+
+# Asegurar que el tráfico entre las redes NAT y LAN esté permitido
+-A FORWARD -s 10.17.3.0/24 -d 192.168.0.0/24 -j ACCEPT
+-A FORWARD -s 10.17.4.0/24 -d 192.168.0.0/24 -j ACCEPT
+-A FORWARD -s 192.168.0.0/24 -d 10.17.3.0/24 -j ACCEPT
+-A FORWARD -s 192.168.0.0/24 -d 10.17.4.0/24 -j ACCEPT
+
+COMMIT
+
+*nat
+# Políticas predeterminadas para las cadenas NAT
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+
+# NAT para VPN
+-A POSTROUTING -s 10.8.0.0/24 -o br0 -j MASQUERADE
+-A POSTROUTING -s 10.8.0.0/24 -o virbr0 -j MASQUERADE
+-A POSTROUTING -s 10.8.0.0/24 -o virbr1 -j MASQUERADE
+-A POSTROUTING -s 10.8.0.0/24 -o virbr2 -j MASQUERADE
+
+# NAT para LAN y NAT
+-A POSTROUTING -s 192.168.0.0/24 -o br0 -j MASQUERADE
+-A POSTROUTING -s 10.17.3.0/24 -o br0 -j MASQUERADE
+-A POSTROUTING -s 10.17.4.0/24 -o br0 -j MASQUERADE
+
+COMMIT
