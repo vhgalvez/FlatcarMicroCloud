@@ -33,6 +33,8 @@ services:
       - ./wireguard:/etc/wireguard
 
 
+sudo docker-compose up -d
+
 
 sudo iptables -t nat -L -v
 sudo iptables -L -v
@@ -178,3 +180,104 @@ COMMIT
 -A POSTROUTING -s 10.17.4.0/24 -o br0 -j MASQUERADE
 
 COMMIT
+
+
+[victory@physical1 ~]$ ip route
+default via 192.168.0.1 dev enp4s0f0 proto dhcp src 192.168.0.18 metric 101
+default via 192.168.0.1 dev enp3s0f1 proto dhcp src 192.168.0.21 metric 102
+default via 192.168.0.1 dev enp4s0f1 proto dhcp src 192.168.0.16 metric 103
+default via 192.168.0.1 dev br0 proto dhcp src 192.168.0.24 metric 425
+10.17.3.0/24 dev virbr1 proto kernel scope link src 10.17.3.1 linkdown
+10.17.4.0/24 dev virbr2 proto kernel scope link src 10.17.4.1 linkdown
+10.89.0.0/24 dev podman1 proto kernel scope link src 10.89.0.1
+192.168.0.0/24 dev enp4s0f0 proto kernel scope link src 192.168.0.18 metric 101
+192.168.0.0/24 dev enp3s0f1 proto kernel scope link src 192.168.0.21 metric 102
+192.168.0.0/24 dev enp4s0f1 proto kernel scope link src 192.168.0.16 metric 103
+192.168.0.0/24 dev br0 proto kernel scope link src 192.168.0.24 metric 425
+192.168.122.0/24 dev virbr0 proto kernel scope link src 192.168.122.1 linkdown
+[victory@physical1 ~]$
+
+
+(base) PS C:\Users\vhgal> route print
+===========================================================================
+ILista de interfaces
+ 84...........................WireGuard Tunnel
+ 23...74 56 3c 6e a7 13 ......Realtek Gaming 2.5GbE Family Controller
+  4...0a 00 27 00 00 04 ......VirtualBox Host-Only Ethernet Adapter
+ 18...00 ff a1 95 4a 5a ......Phantom TAP-Windows Adapter V9
+ 10...48 22 54 1c 64 4b ......TP-Link Wireless USB Adapter
+ 21...4a 22 54 1c 64 4b ......Microsoft Wi-Fi Direct Virtual Adapter
+  2...48 22 54 1c 64 4b ......Microsoft Wi-Fi Direct Virtual Adapter #2
+  1...........................Software Loopback Interface 1
+ 32...00 15 5d bc 57 c0 ......Hyper-V Virtual Ethernet Adapter
+ 89...00 15 5d 6a bd 0b ......Hyper-V Virtual Ethernet Adapter #2
+===========================================================================
+
+IPv4 Tabla de enrutamiento
+===========================================================================
+Rutas activas:
+Destino de red        Máscara de red   Puerta de enlace   Interfaz  Métrica
+          0.0.0.0          0.0.0.0      192.168.0.1     192.168.0.13     25
+          0.0.0.0          0.0.0.0      En vínculo          10.8.0.2      0
+         10.8.0.0    255.255.255.0      En vínculo          10.8.0.2    256
+         10.8.0.2  255.255.255.255      En vínculo          10.8.0.2    256
+       10.8.0.255  255.255.255.255      En vínculo          10.8.0.2    256
+        127.0.0.0        255.0.0.0      En vínculo         127.0.0.1    331
+        127.0.0.1  255.255.255.255      En vínculo         127.0.0.1    331
+  127.255.255.255  255.255.255.255      En vínculo         127.0.0.1    331
+      169.254.0.0      255.255.0.0      En vínculo     169.254.240.2    281
+    169.254.240.2  255.255.255.255      En vínculo     169.254.240.2    281
+  169.254.255.255  255.255.255.255      En vínculo     169.254.240.2    281
+      172.25.80.0    255.255.240.0      En vínculo       172.25.80.1   5256
+      172.25.80.1  255.255.255.255      En vínculo       172.25.80.1   5256
+    172.25.95.255  255.255.255.255      En vínculo       172.25.80.1   5256
+      192.168.0.0    255.255.255.0      En vínculo      192.168.0.13    281
+      192.168.0.0    255.255.255.0         10.8.0.1         10.8.0.2      1
+     192.168.0.13  255.255.255.255      En vínculo      192.168.0.13    281
+    192.168.0.255  255.255.255.255      En vínculo      192.168.0.13    281
+    192.168.240.0    255.255.240.0      En vínculo     192.168.240.1   5256
+    192.168.240.1  255.255.255.255      En vínculo     192.168.240.1   5256
+  192.168.255.255  255.255.255.255      En vínculo     192.168.240.1   5256
+        224.0.0.0        240.0.0.0      En vínculo         127.0.0.1    331
+        224.0.0.0        240.0.0.0      En vínculo     169.254.240.2    281
+        224.0.0.0        240.0.0.0      En vínculo      192.168.0.13    281
+        224.0.0.0        240.0.0.0      En vínculo     192.168.240.1   5256
+        224.0.0.0        240.0.0.0      En vínculo       172.25.80.1   5256
+  255.255.255.255  255.255.255.255      En vínculo         127.0.0.1    331
+  255.255.255.255  255.255.255.255      En vínculo     169.254.240.2    281
+  255.255.255.255  255.255.255.255      En vínculo      192.168.0.13    281
+  255.255.255.255  255.255.255.255      En vínculo     192.168.240.1   5256
+  255.255.255.255  255.255.255.255      En vínculo       172.25.80.1   5256
+===========================================================================
+Rutas persistentes:
+  Dirección de red  Máscara de red  Dirección de puerta de enlace  Métrica
+      192.168.0.0    255.255.255.0         10.8.0.1       1
+===========================================================================
+
+IPv6 Tabla de enrutamiento
+===========================================================================
+Rutas activas:
+ Cuando destino de red métrica      Puerta de enlace
+ 84      0 ::/0                     En vínculo
+  1    331 ::1/128                  En vínculo
+  4    281 fe80::/64                En vínculo
+ 23    281 fe80::/64                En vínculo
+ 32   5256 fe80::/64                En vínculo
+ 89   5256 fe80::/64                En vínculo
+  4    281 fe80::56b:1a34:9012:e0fb/128
+                                    En vínculo
+ 23    281 fe80::21f4:8d4:b255:da12/128
+                                    En vínculo
+ 32   5256 fe80::2b00:8e59:980d:f8a0/128
+                                    En vínculo
+ 89   5256 fe80::60e0:c127:4342:eb64/128
+                                    En vínculo
+  1    331 ff00::/8                 En vínculo
+  4    281 ff00::/8                 En vínculo
+ 23    281 ff00::/8                 En vínculo
+ 32   5256 ff00::/8                 En vínculo
+ 89   5256 ff00::/8                 En vínculo
+===========================================================================
+Rutas persistentes:
+  Ninguno
+(base) PS C:\Users\vhgal>
