@@ -19,7 +19,7 @@ vm_rockylinux_definitions = {
   },
   "load_balancer1" = {
     cpus           = 2,
-    memory         = 2048,
+    memory         = 1024,
     ip             = "10.17.3.12",
     hostname       = "loadbalancer1.cefaslocalserver.com",
     volume_name    = "loadbalancer1_volume",
@@ -33,7 +33,7 @@ vm_rockylinux_definitions = {
   },
   "load_balancer2" = {
     cpus           = 2,
-    memory         = 2048,
+    memory         = 1024,
     ip             = "10.17.3.13",
     hostname       = "loadbalancer2.cefaslocalserver.com",
     volume_name    = "loadbalancer1_volume",
