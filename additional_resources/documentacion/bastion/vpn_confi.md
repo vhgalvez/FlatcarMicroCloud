@@ -1,8 +1,3 @@
-
-
-
-
-
 sudo git clone https://github.com/wg-easy/wg-easy.git
 
 sudo docker run --rm -it ghcr.io/wg-easy/wg-easy wgpw '123456'

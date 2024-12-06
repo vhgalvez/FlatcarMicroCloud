@@ -153,3 +153,28 @@ Esto da permisos de lectura y escritura al propietario y al grupo, y solo permis
 Para asegurarte de que los permisos se aplicaron correctamente, puedes verificarlo con el siguiente comando:
 
 ls -l /mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
+
+
+sudo virsh net-list --all
+
+sudo virsh net-autostart default
+sudo virsh net-autostart kube_network_02
+sudo virsh net-autostart kube_network_03
+sudo virsh net-autostart br0
+
+sudo virsh net-start default
+sudo virsh net-start kube_network_02
+sudo virsh net-start kube_network_03
+sudo virsh net-start br0
+
+
+
+[victory@physical1 ~]$ sudo virsh net-list --all
+ Nombre            Estado     Inicio automático   Persistente
+---------------------------------------------------------------
+ br0               activo     si                  si
+ default           inactivo   si                  si
+ kube_network_02   inactivo   si                  si
+ kube_network_03   inactivo   si                  si
+
+[victory@physical1 ~]$

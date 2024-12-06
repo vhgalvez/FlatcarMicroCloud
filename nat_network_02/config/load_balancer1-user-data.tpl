@@ -71,8 +71,8 @@ runcmd:
   - sudo mkswap /swapfile                         # Configurar el archivo swap
   - sudo swapon /swapfile                         # Activar el swap
   - echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab # Hacer swap persistente
-  - sudo ip route add 10.17.3.0/24 via 192.168.0.18 dev eth0
-  - sudo ip route add 10.17.4.0/24 via 192.168.0.18 dev eth0
+  - ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
+  - ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
   - ["dnf", "install", "-y", "firewalld"]
   - ["systemctl", "enable", "--now", "firewalld"]
