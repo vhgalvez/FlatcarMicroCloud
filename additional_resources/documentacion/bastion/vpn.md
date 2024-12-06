@@ -218,6 +218,7 @@ sudo docker run --rm -it ghcr.io/wg-easy/wg-easy wgpw '123456'
 
 sudo setenforce 0
 sudo systemctl restart libvirtd
+
 sudo systemctl restart iptables
 sudo systemctl restart NetworkManager
 
