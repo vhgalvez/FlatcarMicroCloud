@@ -276,3 +276,13 @@ sudo ip route del default via 192.168.0.1 dev br0
 
  route add 10.17.3.0 mask 255.255.255.0 10.8.0.1 metric 1
  route add 10.17.4.0 mask 255.255.255.0 10.8.0.1 metric 1
+
+
+# servidor fisico
+sudo ip route add 10.8.0.0/24 dev podman1
+sudo ip route add 10.17.3.0/24 via 10.17.3.1
+sudo ip route add 10.17.4.0/24 via 10.17.4.1
+
+
+# servidor master1
+sudo ip route add 10.17.3.0/24 via 10.17.4.1
