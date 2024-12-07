@@ -66,7 +66,7 @@ write_files:
       net.ipv4.ip_forward = 1
 
 runcmd:
-  - sudo fallocate -l 2G /swapfile                # Crear archivo swap de 1GB
+  - sudo fallocate -l 2G /swapfile                # Crear archivo swap de 2GB
   - sudo chmod 600 /swapfile                      # Ajustar permisos de seguridad
   - sudo mkswap /swapfile                         # Configurar el archivo swap
   - sudo swapon /swapfile                         # Activar el swap
