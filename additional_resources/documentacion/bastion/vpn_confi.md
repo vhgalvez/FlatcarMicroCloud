@@ -308,6 +308,7 @@ traceroute 10.17.3.1
 traceroute 10.17.3.11
 traceroute 10.17.4.21
 traceroute 10.17.4.1
+
 ping -c 4 10.17.3.11
 ping -c 4 192.168.0.20
 ping -c 4 192.168.0.1
@@ -320,8 +321,6 @@ ip route
 ip a
 hostnamectl
 ip route show
-
-
 
 hostname -f
 hostname -I
