@@ -40,6 +40,11 @@ variable "dns2" {
   type        = string
 }
 
+variable "cluster_domain" {
+  description = "Domain of the cluster"
+  type        = string
+}
+
 variable "vm_rockylinux_definitions" {
   description = "Definitions of virtual machines including CPU and memory configuration"
   type = map(object({
