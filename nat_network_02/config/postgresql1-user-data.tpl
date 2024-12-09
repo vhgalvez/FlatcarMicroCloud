@@ -79,18 +79,14 @@ runcmd:
   - ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
   - ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
-  - ["dnf", "install", "-y", "firewalld"]
+  - ["dnf", "install", "-y", "firewalld", "resolvconf"]
   - ["systemctl", "enable", "--now", "firewalld"]
   - ["systemctl", "restart", "NetworkManager.service"]
   - /usr/local/bin/set-hosts.sh
   - sysctl -p
-  - echo "nameserver ${dns1}" > /etc/resolv.conf
-  - echo "nameserver ${dns2}" >> /etc/resolv.conf
-  - echo "search ${cluster_domain}" >> /etc/resolv.conf
-  - systemctl restart NetworkManager
-  - sleep 5
-  - echo "nameserver ${dns1}" > /etc/resolv.conf
-  - echo "nameserver ${dns2}" >> /etc/resolv.conf
-  - echo "search ${cluster_domain}" >> /etc/resolv.conf
+  - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
+  - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
+  - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
+  - resolvconf -u
 
 timezone: ${timezone}
