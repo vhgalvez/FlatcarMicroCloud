@@ -299,31 +299,39 @@ default via 10.17.3.1 dev eth0 proto dhcp src 10.17.3.11 metric 100
 sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
 
 
-# server fisico
+# Server fisico
+
 vpn-Wireguard
 
 sudo ip route add 10.8.0.0/24 via 192.168.0.1 dev enp4s0f0
+
+
+ping -c 4 192.168.0.20
+ping -c 4 192.168.0.1
+
+ping -c 4 10.17.3.11
+ping -c 4 10.17.3.1
+
+ping -c 4 10.17.4.21
+ping -c 4 10.17.4.1
+ping -c 4 8.8.8.8
+ping -c 4 1.1.1.1
+ping -c 4 google.com
+
+ip route show
+ip route
+ip a
+
+hostnamectl
+hostname -f
 
 traceroute 10.17.3.1
 traceroute 10.17.3.11
 traceroute 10.17.4.21
 traceroute 10.17.4.1
 
-ping -c 4 10.17.3.11
-ping -c 4 192.168.0.20
-ping -c 4 192.168.0.1
-ping -c 4 10.17.3.1
-ping -c 4 10.17.4.1
-ping -c 4 10.17.4.21
-ping -c 4 192.168.0.20
-ping -c 4 8.8.8.8
-ip route
-ip a
-hostnamectl
-ip route show
-
-hostname -f
 hostname -I
+
 
 ping -c 4 10.17.3.1
 ping -c 4 10.17.3.11 
@@ -339,6 +347,18 @@ ping -c 4 google.com
 ip route show
 ip addr show eth0
 
+sudo nft flush ruleset
+sudo nft -f /etc/sysconfig/nftables.conf
+sudo systemctl restart nftables
+sudo nft list ruleset
+
+sudo systemctl restart libvirtd
+
+
+
+sudo systemctl enable nftables
+sudo systemctl start nftables
+sudo systemctl status nftables
 
 # master1
 sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
