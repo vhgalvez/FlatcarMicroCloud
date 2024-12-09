@@ -70,6 +70,24 @@ write_files:
       [main]
       dns=none
 
+  - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+    content: |
+      [connection]
+      id=eth0
+      type=ethernet
+      interface-name=eth0
+      permissions=
+
+      [ipv4]
+      method=manual
+      addresses1=${ip}/24,${gateway}
+      dns=${dns1};${dns2};
+      dns-search=${cluster_domain}
+      may-fail=false
+
+      [ipv6]
+      method=ignore
+
 runcmd:
   - sudo fallocate -l 2G /swapfile                # Crear archivo swap de 1GB
   - sudo chmod 600 /swapfile                      # Ajustar permisos de seguridad
