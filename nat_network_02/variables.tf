@@ -9,11 +9,6 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_domain" {
-  description = "Domain of the cluster"
-  type        = string
-}
-
 variable "rocky9_image" {
   description = "Path to the Rocky Linux 9 image"
   type        = string
