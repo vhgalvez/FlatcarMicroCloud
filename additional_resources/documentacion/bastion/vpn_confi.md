@@ -369,15 +369,14 @@ sudo systemctl status nftables
 
 # master1
 sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
-
-
 sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
 
 sudo ip addr add 10.17.3.21/24 dev eth0
 sudo ip link set eth0 up
 
 
-
+sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
+sudo ip route add 192.168.0.0/24 via 10.17.4.1 dev eth0
 
 
 # freeipa1
