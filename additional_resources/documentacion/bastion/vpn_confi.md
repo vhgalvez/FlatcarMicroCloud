@@ -354,7 +354,8 @@ sudo nft list ruleset
 
 sudo systemctl restart libvirtd
 
-
+sudo setenforce 0
+sudo systemctl restart libvirtd
 
 sudo systemctl enable nftables
 sudo systemctl start nftables
