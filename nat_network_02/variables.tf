@@ -63,6 +63,6 @@ variable "vm_rockylinux_definitions" {
   }))
 }
 variable "cluster_domain" {
-  default = "cefaslocalserver.com"
+  type        = string
   description = "Dominio del clúster."
 }
