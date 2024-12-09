@@ -79,5 +79,8 @@ runcmd:
   - ["systemctl", "restart", "NetworkManager.service"]
   - /usr/local/bin/set-hosts.sh
   - sysctl -p
+  - echo "nameserver ${dns1}" > /etc/resolv.conf
+  - echo "nameserver ${dns2}" >> /etc/resolv.conf
+  - echo "search ${cluster_domain}" >> /etc/resolv.conf
 
 timezone: ${timezone}
