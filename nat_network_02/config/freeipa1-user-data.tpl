@@ -65,6 +65,11 @@ write_files:
     content: |
       net.ipv4.ip_forward = 1
 
+  - path: /etc/NetworkManager/conf.d/dns.conf
+    content: |
+      [main]
+      dns=none
+
 runcmd:
   - sudo fallocate -l 2G /swapfile                # Crear archivo swap de 2GB
   - sudo chmod 600 /swapfile                      # Ajustar permisos de seguridad
@@ -82,5 +87,6 @@ runcmd:
   - echo "nameserver ${dns1}" > /etc/resolv.conf
   - echo "nameserver ${dns2}" >> /etc/resolv.conf
   - echo "search ${cluster_domain}" >> /etc/resolv.conf
+  - systemctl restart NetworkManager
 
 timezone: ${timezone}
