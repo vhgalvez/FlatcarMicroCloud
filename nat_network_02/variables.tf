@@ -62,7 +62,3 @@ variable "vm_rockylinux_definitions" {
     short_hostname = string
   }))
 }
-variable "cluster_domain" {
-  type        = string
-  description = "Dominio del clúster."
-}
