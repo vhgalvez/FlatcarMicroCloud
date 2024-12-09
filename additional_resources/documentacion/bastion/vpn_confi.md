@@ -325,6 +325,8 @@ ip a
 hostnamectl
 hostname -f
 
+cat /etc/resolv.conf
+
 traceroute 10.17.3.1
 traceroute 10.17.3.11
 traceroute 10.17.4.21
