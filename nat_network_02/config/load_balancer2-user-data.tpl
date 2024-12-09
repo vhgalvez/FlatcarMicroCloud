@@ -88,5 +88,9 @@ runcmd:
   - echo "nameserver ${dns2}" >> /etc/resolv.conf
   - echo "search ${cluster_domain}" >> /etc/resolv.conf
   - systemctl restart NetworkManager
+  - sleep 5
+  - echo "nameserver ${dns1}" > /etc/resolv.conf
+  - echo "nameserver ${dns2}" >> /etc/resolv.conf
+  - echo "search ${cluster_domain}" >> /etc/resolv.conf
 
 timezone: ${timezone}
