@@ -315,23 +315,25 @@ ping -c 4 10.17.3.1
 ping -c 4 10.17.4.21
 ping -c 4 10.17.4.1
 ping -c 4 8.8.8.8
-ping -c 4 1.1.1.1
 ping -c 4 google.com
 
 ip route show
-ip route
 ip a
 
 hostnamectl
 hostname -f
 
-cat /etc/resolv.conf
 
 traceroute 8.8.8.8
 traceroute 10.17.3.1
 traceroute 10.17.3.11
 traceroute 10.17.4.21
 traceroute 10.17.4.1
+traceroute 192.168.0.20
+traceroute 192.168.0.1
+
+cat /etc/resolv.conf
+
 
 hostname -I
 
@@ -432,3 +434,26 @@ sudo ip route add default via 10.17.4.1 dev eth0
 
 sudo ip route add default via 10.17.4.1 dev eth0
 sudo ip route add 10.8.0.0/24 via 10.17.4.1 dev eth0
+
+
+
+Comandos IP Route por Nodo
+
+# master1
+
+bash
+Copy code
+sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
+sudo ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
+
+# bastion1
+bash
+Copy code
+sudo ip route add 10.17.3.0/24 via 192.168.0.18 dev eth0
+sudo ip route add 10.17.4.0/24 via 192.168.0.18 dev eth0
+
+# freeipa1
+bash
+Copy code
+sudo ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
+sudo ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
