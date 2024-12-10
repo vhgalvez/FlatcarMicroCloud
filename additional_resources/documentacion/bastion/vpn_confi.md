@@ -365,10 +365,27 @@ sudo systemctl restart NetworkManager
 sudo systemctl restart nftables
 
 
-
 sudo systemctl enable nftables
 sudo systemctl start nftables
 sudo systemctl status nftables
+
+
+
+sudo nft flush ruleset
+sudo iptables -F
+sudo iptables -t nat -F
+sudo ip6tables -F
+sudo ip6tables -t nat -F
+
+
+sudo nft flush ruleset
+sudo nft list tables | grep -oP "(?<=table )\S+" | xargs -I {} sudo nft delete table {}
+
+
+# master1
+sudo ip route add default via 10.17.4.1 dev eth0
+sudo ip route add default via 10.17.4.1 dev eth0
+sudo ip route add 10.8.0.0/24 via 10.17.4.1 dev eth0
 
 # master1
 sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
@@ -380,7 +397,6 @@ sudo ip link set eth0 up
 
 sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
 sudo ip route add 192.168.0.0/24 via 10.17.4.1 dev eth0
-
 
 # freeipa1
 sudo ip addr add 10.17.4.21/24 dev eth0
@@ -400,60 +416,26 @@ sudo ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
 
 
 
-sudo ip6tables -L
-sudo ip6tables -L -v
 
-
-sudo ip6tables -F
-sudo ip6tables -t nat -F
-sudo ip6tables -t mangle -F
-sudo ip6tables -X
-
-sudo iptables -L
-sudo iptables -F
-sudo iptables -t nat -F
-sudo iptables -t mangle -F
-sudo iptables -X
-
-
-
-sudo nft flush ruleset
-sudo iptables -F
-sudo iptables -t nat -F
-sudo ip6tables -F
-sudo ip6tables -t nat -F
-
-
-sudo nft flush ruleset
-sudo nft list tables | grep -oP "(?<=table )\S+" | xargs -I {} sudo nft delete table {}
-
-
-# master1
-sudo ip route add default via 10.17.4.1 dev eth0
-
-
-sudo ip route add default via 10.17.4.1 dev eth0
-sudo ip route add 10.8.0.0/24 via 10.17.4.1 dev eth0
-
-
-
-Comandos IP Route por Nodo
+# Comandos IP Route por Nodo Version de Desarrollo
 
 # master1
 
-bash
-Copy code
+```bash
 sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
 sudo ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
+```
 
 # bastion1
-bash
-Copy code
+
+```bash
 sudo ip route add 10.17.3.0/24 via 192.168.0.18 dev eth0
 sudo ip route add 10.17.4.0/24 via 192.168.0.18 dev eth0
-
+```
 # freeipa1
-bash
-Copy code
+
+```bash
 sudo ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
 sudo ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
+```
+
