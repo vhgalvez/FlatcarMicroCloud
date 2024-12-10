@@ -327,6 +327,7 @@ hostname -f
 
 cat /etc/resolv.conf
 
+traceroute 8.8.8.8
 traceroute 10.17.3.1
 traceroute 10.17.3.11
 traceroute 10.17.4.21
@@ -415,3 +416,17 @@ sudo iptables -X
 
 sudo nft flush ruleset
 sudo nft list tables | grep -oP "(?<=table )\S+" | xargs -I {} sudo nft delete table {}
+
+sudo nft flush ruleset
+sudo iptables -F
+sudo iptables -t nat -F
+sudo ip6tables -F
+sudo ip6tables -t nat -F
+
+
+# master1
+sudo ip route add default via 10.17.4.1 dev eth0
+
+
+sudo ip route add default via 10.17.4.1 dev eth0
+sudo ip route add 10.8.0.0/24 via 10.17.4.1 dev eth0

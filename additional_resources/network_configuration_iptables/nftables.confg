@@ -1,0 +1,64 @@
+table ip nat {
+    chain postrouting {
+        type nat hook postrouting priority srcnat; policy accept;
+
+        # NAT para redes internas y VPN hacia Internet
+        ip saddr {10.8.0.0/24, 10.17.3.0/24, 10.17.4.0/24, 192.168.0.0/24} oifname "enp4s0f0" masquerade;
+    }
+}
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Permitir tráfico local (loopback)
+        iifname "lo" accept;
+
+        # Permitir conexiones establecidas y relacionadas
+        ct state established,related accept;
+
+        # Permitir ICMP (ping) desde redes internas y VPN
+        ip saddr {10.8.0.0/24, 10.17.3.0/24, 10.17.4.0/24, 192.168.0.0/24} icmp type echo-request accept;
+
+        # Permitir tráfico IPv6 ICMP
+        ip6 nexthdr ipv6-icmp accept;
+
+        # Permitir tráfico WireGuard VPN
+        udp dport 51820 accept;
+
+        # Permitir tráfico DNS (UDP y TCP)
+        udp dport 53 accept;
+        tcp dport 53 accept;
+
+        # Permitir SSH desde redes internas y VPN
+        tcp dport 22 ip saddr {10.8.0.0/24, 192.168.0.0/24} accept;
+
+        # Permitir acceso a puertos VNC
+        tcp dport 5900-5999 accept;
+
+        # Permitir tráfico desde redes internas y VPN
+        ip saddr {10.8.0.0/24, 10.17.3.0/24, 10.17.4.0/24, 192.168.0.0/24} accept;
+
+        # Registrar y bloquear tráfico no permitido
+        log prefix "INPUT-DROP: " limit rate 3/second burst 5 packets drop;
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+
+        # Permitir conexiones establecidas y relacionadas
+        ct state established,related accept;
+
+        # Permitir tráfico entre redes internas, VPN e Internet
+        ip saddr {10.8.0.0/24, 10.17.3.0/24, 10.17.4.0/24, 192.168.0.0/24} accept;
+        ip saddr {10.8.0.0/24, 10.17.3.0/24, 10.17.4.0/24, 192.168.0.0/24} oifname "enp4s0f0" accept;
+
+        # Registrar y bloquear tráfico no permitido
+        log prefix "FORWARD-DROP: " limit rate 3/second burst 5 packets drop;
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+        # Permitir todo el tráfico de salida
+    }
+}
