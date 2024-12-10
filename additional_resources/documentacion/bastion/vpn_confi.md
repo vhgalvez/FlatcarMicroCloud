@@ -414,14 +414,16 @@ sudo iptables -t mangle -F
 sudo iptables -X
 
 
-sudo nft flush ruleset
-sudo nft list tables | grep -oP "(?<=table )\S+" | xargs -I {} sudo nft delete table {}
 
 sudo nft flush ruleset
 sudo iptables -F
 sudo iptables -t nat -F
 sudo ip6tables -F
 sudo ip6tables -t nat -F
+
+
+sudo nft flush ruleset
+sudo nft list tables | grep -oP "(?<=table )\S+" | xargs -I {} sudo nft delete table {}
 
 
 # master1
