@@ -323,7 +323,6 @@ ip a
 hostnamectl
 hostname -f
 
-
 traceroute 8.8.8.8
 traceroute 10.17.3.1
 traceroute 10.17.3.11
@@ -352,10 +351,7 @@ ping -c 4 google.com
 ip route show
 ip addr show eth0
 
-sudo nft flush ruleset
-sudo nft -f /etc/sysconfig/nftables.conf
-sudo systemctl restart nftables
-sudo nft list ruleset
+
 
 sudo systemctl restart libvirtd
 
@@ -369,6 +365,13 @@ sudo systemctl enable nftables
 sudo systemctl start nftables
 sudo systemctl status nftables
 
+
+
+
+sudo nft flush ruleset
+sudo nft -f /etc/sysconfig/nftables.conf
+sudo systemctl restart nftables
+sudo nft list ruleset
 
 
 sudo nft flush ruleset
