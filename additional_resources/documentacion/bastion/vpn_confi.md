@@ -306,6 +306,36 @@ vpn-Wireguard
 sudo ip route add 10.8.0.0/24 via 192.168.0.1 dev enp4s0f0
 
 
+core@master1 ~ $ sudo ip route add default via 10.17.4.1 dev eth0
+sudo ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0
+sudo ip route add 192.168.0.0/24 via 10.17.4.1 dev eth0
+sudo ip route add 10.89.0.0/24 via 10.17.4.1 dev eth0
+RTNETLINK answers: File exists
+core@master1 ~ $
+
+[core@freeipa1 ~]$  sudo ip route add default via 10.17.3.1 dev eth0
+sudo ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
+sudo ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
+sudo ip route add 10.89.0.0/24 via 10.17.3.1 dev eth0
+RTNETLINK answers: File exists
+RTNETLINK answers: File exists
+[core@freeipa1 ~]$
+
+
+[core@bastion1 ~]$ sudo ip route add default via 192.168.0.1 dev eth0
+sudo ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0
+sudo ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0
+sudo ip route add 10.89.0.0/24 via 192.168.0.1 dev eth0
+RTNETLINK answers: File exists
+RTNETLINK answers: File exists
+[core@bastion1 ~]$
+
+
+
+
+
+
+
 ping -c 4 192.168.0.20
 ping -c 4 192.168.0.1
 
