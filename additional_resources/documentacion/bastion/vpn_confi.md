@@ -331,11 +331,9 @@ traceroute 10.17.4.1
 traceroute 192.168.0.20
 traceroute 192.168.0.1
 
-cat /etc/resolv.conf
-
-
 hostname -I
 
+cat /etc/resolv.conf
 
 ping -c 4 10.17.3.1
 ping -c 4 10.17.3.11 
@@ -442,3 +440,7 @@ sudo ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
 sudo ip route add 192.168.0.0/24 via 10.17.3.1 dev eth0
 ```
 
+
+
+sudo iptables -A FORWARD -i wg0 -o br0 -j ACCEPT
+sudo iptables -A FORWARD -i br0 -o wg0 -j ACCEPT
