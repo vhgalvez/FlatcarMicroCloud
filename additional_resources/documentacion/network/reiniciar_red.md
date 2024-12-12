@@ -48,4 +48,21 @@ sudo systemctl restart NetworkManager
 
 
 
+### VNC mobaxterm
 
+
+
+```bash 
+~/.vnc/xstartup
+```
+
+cat /etc/systemd/system/vncserver@:1.service
+
+sudo systemctl start vncserver@:1.service
+sudo systemctl enable vncserver@:1.service
+sudo systemctl status vncserver@:1.service
+
+__
+
+sudo systemctl status vncserver@:3.service
+cat /usr/lib/systemd/system/vncserver@.service
