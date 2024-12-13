@@ -20,7 +20,7 @@ resource "libvirt_network" "br0" {
   mode      = "bridge"
   bridge    = "br0"
   autostart = true
-  addresses = ["192.168.0.0/24"]
+  addresses = ["192.168.0.1/24"]
 }
 
 # Configuración del pool de almacenamiento
