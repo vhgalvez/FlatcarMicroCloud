@@ -336,7 +336,7 @@ RTNETLINK answers: File exists
 
 
 
-ping -c 4 192.168.0.20
+ping -c 4 192.168.0.200
 ping -c 4 192.168.0.1
 
 ping -c 4 10.17.3.11
