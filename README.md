@@ -388,7 +388,7 @@ resource "libvirt_network" "kube_network_03" {
                                                                      v
                                                           +---------------------------+
                              servidor  fisico             | Red Interna Local (LAN)   |
-                                                          | 192.168.0.0/24            |
+                             red lan fisica               | 192.168.0.0/24            |
                                                           +---------------------------+
                                                                      |
                                                                      v
