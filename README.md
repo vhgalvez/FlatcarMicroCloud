@@ -290,7 +290,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 | Red NAT | Nodo     | Dirección IP | Rol del Nodo                               |
 | ------- | -------- | ------------ | ------------------------------------------ |
-| br0     | bastion1 | 192.168.0.20 | Acceso seguro, Punto de conexión de bridge |
+| br0     | bastion1 | 192.168.0.101 | Acceso seguro, Punto de conexión de bridge |
 
 ## Detalles de Configuración
 
@@ -388,7 +388,7 @@ resource "libvirt_network" "kube_network_03" {
 +---------------------------+                                  +---------------------------+
                                                                      |
                                                                      v
-                                                          +---------------------------+
+                            WireGuard VPN Gateway         +---------------------------+
                              servidor  fisico             | Red Interna Local (LAN)   |
                              red lan fisica               | 192.168.0.0/24            |
                                                           +---------------------------+
