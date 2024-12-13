@@ -23,18 +23,20 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ## Resumen de Recursos para Máquinas Virtuales
 
-| Nombre de VM  | CPU | Memoria (MB) | IP         | Nombre de Dominio                  | Tamaño de Disco (GB) | Hostname      |
-| ------------- | --- | ------------ | ---------- | ---------------------------------- | -------------------- | ------------- |
-| master1       | 2   | 4096         | 10.17.4.21 | master1.cefaslocalserver.com       | 50                   | master1       |
-| master2       | 2   | 4096         | 10.17.4.22 | master2.cefaslocalserver.com       | 50                   | master2       |
-| master3       | 2   | 4096         | 10.17.4.23 | master3.cefaslocalserver.com       | 50                   | master3       |
-| worker1       | 2   | 4096         | 10.17.4.24 | worker1.cefaslocalserver.com       | 50                   | worker1       |
-| worker2       | 2   | 4096         | 10.17.4.25 | worker2.cefaslocalserver.com       | 50                   | worker2       |
-| worker3       | 2   | 4096         | 10.17.4.26 | worker3.cefaslocalserver.com       | 50                   | worker3       |
-| freeipa1      | 2   | 2048         | 10.17.3.11 | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
-| loadbalancer1 | 2   | 2048         | 10.17.3.12 | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
-| postgresql1   | 2   | 2048         | 10.17.3.13 | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
-| storage1      | 2   | 2048         | 10.17.3.14 | storage1.cefaslocalserver.com      | 80                   | storage1      |
+| Nombre de VM  | CPU | Memoria (MB) | IP            | Nombre de Dominio                  | Tamaño de Disco (GB) | Hostname      |
+| ------------- | --- | ------------ | ------------- | ---------------------------------- | -------------------- | ------------- |
+| master1       | 2   | 4096         | 10.17.4.21    | master1.cefaslocalserver.com       | 50                   | master1       |
+| master2       | 2   | 4096         | 10.17.4.22    | master2.cefaslocalserver.com       | 50                   | master2       |
+| master3       | 2   | 4096         | 10.17.4.23    | master3.cefaslocalserver.com       | 50                   | master3       |
+| worker1       | 2   | 4096         | 10.17.4.24    | worker1.cefaslocalserver.com       | 50                   | worker1       |
+| worker2       | 2   | 4096         | 10.17.4.25    | worker2.cefaslocalserver.com       | 50                   | worker2       |
+| worker3       | 2   | 4096         | 10.17.4.26    | worker3.cefaslocalserver.com       | 50                   | worker3       |
+| freeipa1      | 2   | 2048         | 10.17.3.11    | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
+| loadbalancer1 | 2   | 2048         | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
+| postgresql1   | 2   | 2048         | 10.17.3.13    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
+| storage1      | 2   | 2048         | 10.17.3.14    | storage1.cefaslocalserver.com      | 80                   | storage1      |
+| bation1       | 2   | 2048         | 192.168.0.101 | bation1.cefaslocalserver.com       | 80                   | bation1       |
+
 
 ## Máquinas Virtuales y Roles
 
