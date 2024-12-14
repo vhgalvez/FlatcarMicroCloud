@@ -35,14 +35,14 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | loadbalancer1 | 2   | 2048         | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
 | postgresql1   | 2   | 2048         | 10.17.3.13    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
 | storage1      | 2   | 2048         | 10.17.3.14    | storage1.cefaslocalserver.com      | 80                   | storage1      |
-| bation1       | 2   | 2048         | 192.168.0.101 | bation1.cefaslocalserver.com       | 80                   | bation1       |
+| bation1       | 2   | 2048         | 10.17.5.2     | bation1.cefaslocalserver.com       | 80                   | bation1       |
 
 
 ## Máquinas Virtuales y Roles
 
 | Nodo               | Sistema Operativo       | Función                                    | Cantidad |
 | ------------------ | ----------------------- | ------------------------------------------ | -------- |
-| Bastion Node       | Alma Linux              | Acceso seguro y conexiones SSH al clúster  | 1        |
+| Bastion Node       | Alma Linux              | gestion y seguridad                        | 1        |
 | Load Balancer Node | Alma Linux              | Balanceo de tráfico con Traefik            | 1        |
 | FreeIPA Node       | Alma Linux              | DNS y autenticación                        | 1        |
 | PostgreSQL Node    | Alma Linux              | Base de datos central para microservicios  | 1        |
@@ -267,7 +267,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 - **FreeIPA**: DNS y gestión de autenticación.
 - **Prometheus y Grafana**: Monitoreo avanzado y visualización de métricas.
-- **Rook y Ceph**: Almacenamiento persistente en Kubernetes.
+- **Longhorn y NFS**: Almacenamiento persistente en Kubernetes.
 - **Firewall y Fail2Ban**: Seguridad del entorno.
 
 ## Redes Virtuales y Arquitectura de Red
@@ -286,11 +286,11 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
 | kube_network_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
 
-### Red br0 - Bridge Network
+### Red br0 
 
 | Red NAT | Nodo     | Dirección IP | Rol del Nodo                               |
 | ------- | -------- | ------------ | ------------------------------------------ |
-| br0     | bastion1 | 192.168.0.101 | Acceso seguro, Punto de conexión de bridge |
+| br0     | bastion1 | 10.17.5.2    | seguridad                                  |
 
 ## Detalles de Configuración
 
@@ -322,15 +322,14 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ## Configuración de Redes Virtuales
 
-### Red br0 - Bridge Network
+### Red br0 - 
 
 ```hcl
 resource "libvirt_network" "br0" {
   name      = var.rocky9_network_name
-  mode      = "bridge"
-  bridge    = "br0"
+   mode      = "nat"
   autostart = true
-  addresses = ["192.168.0.0/24"]
+  addresses = ["10.17.5.0/24"]
 }
 ```
 
@@ -408,8 +407,8 @@ resource "libvirt_network" "kube_network_03" {
         v                           v                           v
 +------------------+   +---------------------------+   +---------------------------+
 | Bastion Node     |   |     FreeIPA Node          |   |    PostgreSQL Node        |   
-| SSH Access       |   | DNS/Auth (FreeIPA)        |   | Base de Datos             |  
-| IP: 192.168.0.20 |   | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   
+| seguridad,gestion|   | DNS/Auth (FreeIPA)        |   | Base de Datos             |  
+| IP: 10.17.5.2    |   | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   
 +------------------+   +---------------------------+   +---------------------------+   
                                 |
                                 v
