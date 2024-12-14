@@ -17,10 +17,9 @@ provider "libvirt" {
 # Configuración de la red br0
 resource "libvirt_network" "br0" {
   name      = var.rocky9_network_name
-  mode      = "bridge"
-  bridge    = "br0"
+  mode      = "nat"
   autostart = true
-  addresses = ["192.168.0.1/24"]
+  addresses = ["10.17.5.0/24"]
 }
 
 # Configuración del pool de almacenamiento
