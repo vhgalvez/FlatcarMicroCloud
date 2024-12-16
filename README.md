@@ -493,3 +493,18 @@ http://master1.cefaslocalserver.com:3000
 
 Usuario: admin
 Contraseña: prom-operator
+
+https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
+
+
+
+
+
+## Configuración de Redes Virtuales con pfSense y NIC passthrough en KVM
+
+- Verificar si la CPU soporta virtualización
+ 
+  grep -E '(vmx|svm)' /proc/cpuinfo
+  
+- Verificar si la CPU soporta VT-x o AMD-V
+- 
