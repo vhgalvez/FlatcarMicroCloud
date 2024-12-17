@@ -1,3 +1,4 @@
+# pfsense\variables.tf
 variable "ssh_keys" {
   description = "SSH keys for the VMs"
   type        = list(string)

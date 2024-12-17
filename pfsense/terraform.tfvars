@@ -1,6 +1,6 @@
 
-
-pfsense_image      = "/mnt/lv_data/organized_storage/isos/netgate-installer-amd64.iso"
+# pfsense\terraform.tfvars
+pfsense_image      = "/mnt/lv_data/organized_storage/images/netgate-installer-amd64.iso"
 pfsense_pool_path  = "/mnt/lv_data/organized_storage/volumes/pfsense"
 wan_subnet         = "192.168.100.0/24"
 lan_subnet         = "192.168.1.0/24"
