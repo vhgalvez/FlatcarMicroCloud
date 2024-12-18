@@ -59,12 +59,13 @@ resource "libvirt_domain" "pfsense" {
   memory = var.pfsense_vm_config.memory
   vcpu   = var.pfsense_vm_config.cpus
 
-  # Interfaces de red
+  # Interfaz de red WAN
   network_interface {
     network_id = libvirt_network.wan.id
     mac        = var.pfsense_vm_config.wan_mac
   }
 
+  # Interfaz de red LAN
   network_interface {
     network_id = libvirt_network.lan.id
     mac        = var.pfsense_vm_config.lan_mac
@@ -75,7 +76,7 @@ resource "libvirt_domain" "pfsense" {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
-  # ISO como CDROM
+  # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
   }
