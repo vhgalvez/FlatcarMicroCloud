@@ -10,7 +10,6 @@ terraform {
   }
 }
 
-# Proveedor libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
@@ -70,24 +69,19 @@ resource "libvirt_domain" "pfsense" {
     mac        = var.pfsense_vm_config.lan_mac
   }
 
-  # Disco principal (virtio bus para mejor rendimiento)
+  # Disco principal
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
-    scsi      = false
   }
 
-  # Disco ISO configurado explícitamente como CD-ROM
+  # Disco ISO configurado como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    scsi      = false
   }
 
-  # Orden de arranque (primero CD-ROM, luego disco duro)
+  # Orden de arranque (CD-ROM primero, luego HD)
   boot_device {
-    dev = "cdrom"
-  }
-  boot_device {
-    dev = "hd"
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC para acceso remoto
@@ -97,7 +91,7 @@ resource "libvirt_domain" "pfsense" {
     autoport    = true
   }
 
-  # Consola Serial para depuración
+  # Consola Serial
   console {
     type        = "pty"
     target_type = "serial"
