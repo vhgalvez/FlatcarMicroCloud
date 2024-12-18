@@ -10,9 +10,6 @@ pfsense_vm_config = {
   disk_size_gb = 20
   wan_mac      = "52:54:00:11:22:33"
   lan_mac      = "52:54:00:44:55:66"
-  wan_ip       = "192.168.0.10"
+  wan_ip       = "192.168.0.200"
   lan_ip       = "192.168.1.1"
 }
-
-
-timezone = "Europe/London"

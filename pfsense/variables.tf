@@ -18,5 +18,7 @@ variable "pfsense_vm_config" {
     disk_size_gb = number
     wan_mac      = string
     lan_mac      = string
+    wan_ip       = string
+    lan_ip       = string
   })
 }

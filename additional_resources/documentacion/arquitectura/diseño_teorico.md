@@ -119,3 +119,36 @@ Redundancia: Conexión administrativa interna y remota.
 Seguridad: Separación clara entre usuarios administrativos y públicos.
 Flexibilidad: Soporte para usuarios internos y externos con acceso controlado.
 Escalabilidad: Facilidad para añadir nuevos usuarios o servicios.
+
+
+
++-----------------------------+                               
+| Usuarios Públicos           |                               
++-----------------------------+                               
+              |                                                   
+              v                                                   
++-----------------------------+                               
+| Router Físico               |                               
+| DHCP: 192.168.0.100-254     |                               
+| Gateway: 192.168.0.1        |                               
++-----------------------------+                               
+              |                                                   
+              v                                                   
++-----------------------------+                                
+| br0: 192.168.0.20           |                                
+| (WAN del servidor físico)   |                                
++-----------------------------+                                
+              |                                                   
+              v                                                   
++-----------------------------+                                
+| pfSense (VM)                |                                
+| WAN: 192.168.0.200          |                                
+| LAN: 192.168.1.1            |                                
+| DHCP: 192.168.1.100-200     |                                
++-----------------------------+                                
+              |                                                   
+              v                                                   
++-----------------------------+                                
+| br1: LAN Virtual            |                                
+| Subred: 192.168.1.0/24      |                                
++-----------------------------+   

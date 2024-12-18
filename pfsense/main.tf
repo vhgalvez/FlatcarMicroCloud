@@ -1,5 +1,4 @@
 # pfsense\main.tf
-
 terraform {
   required_version = ">= 1.4.0"
 
@@ -21,14 +20,12 @@ resource "libvirt_network" "wan" {
   name   = "wan_network"
   mode   = "bridge"
   bridge = "br0"
-  autostart = true
 }
 
 resource "libvirt_network" "lan" {
   name   = "lan_network"
   mode   = "bridge"
   bridge = "br1"
-  autostart = true
 }
 
 # Pool de almacenamiento
@@ -62,7 +59,6 @@ resource "libvirt_domain" "pfsense" {
   memory = var.pfsense_vm_config.memory
   vcpu   = var.pfsense_vm_config.cpus
 
-  # Configuración de red
   network_interface {
     network_id = libvirt_network.wan.id
     mac        = var.pfsense_vm_config.wan_mac
@@ -73,28 +69,25 @@ resource "libvirt_domain" "pfsense" {
     mac        = var.pfsense_vm_config.lan_mac
   }
 
-  # Configuración de discos
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    scsi      = true
   }
 
-  # Orden de arranque: CD-ROM primero
   boot_device {
     dev = ["cdrom", "hd"]
   }
 
-  # Configuración de gráficos
   graphics {
     type        = "vnc"
     listen_type = "address"
     autoport    = true
   }
 
-  # Consola de acceso
   console {
     type        = "pty"
     target_type = "serial"

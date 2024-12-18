@@ -1,5 +1,4 @@
 # pfsense\outputs.tf
-
 output "wan_ip" {
   description = "Dirección IP WAN de pfSense"
   value       = var.pfsense_vm_config.wan_ip
