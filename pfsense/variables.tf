@@ -1,5 +1,4 @@
 # pfsense\variables.tf
-
 variable "pfsense_image" {
   description = "Ruta a la ISO de pfSense"
   type        = string

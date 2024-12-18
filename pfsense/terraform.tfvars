@@ -13,6 +13,3 @@ pfsense_vm_config = {
   wan_ip       = "192.168.0.10"
   lan_ip       = "192.168.1.1"
 }
-
-
-timezone = "Europe/London"
