@@ -1,3 +1,4 @@
+# pfsense\main.tf
 terraform {
   required_version = ">= 1.4.0"
 
@@ -11,6 +12,22 @@ terraform {
 
 provider "libvirt" {
   uri = "qemu:///system"
+}
+
+# Configuración de la red WAN (puente)
+resource "libvirt_network" "wan" {
+  name      = "wan_network"
+  mode      = "bridge"
+  bridge    = "br0"
+  autostart = true
+}
+
+# Configuración de la red LAN (puente)
+resource "libvirt_network" "lan" {
+  name      = "lan_network"
+  mode      = "bridge"
+  bridge    = "br1"
+  autostart = true
 }
 
 # Pool de almacenamiento
@@ -44,16 +61,16 @@ resource "libvirt_domain" "pfsense" {
   memory = var.pfsense_vm_config.memory
   vcpu   = var.pfsense_vm_config.cpus
 
-  # Red WAN: Bridge físico (br0)
+  # Red WAN
   network_interface {
-    bridge = "br0"
-    mac    = var.pfsense_vm_config.wan_mac
+    network_id = libvirt_network.wan.id
+    mac        = var.pfsense_vm_config.wan_mac
   }
 
-  # Red LAN: Bridge físico (br1)
+  # Red LAN
   network_interface {
-    bridge = "br1"
-    mac    = var.pfsense_vm_config.lan_mac
+    network_id = libvirt_network.lan.id
+    mac        = var.pfsense_vm_config.lan_mac
   }
 
   # Disco principal
@@ -61,9 +78,10 @@ resource "libvirt_domain" "pfsense" {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
-  # ISO de instalación
-  cdrom {
+  # ISO de instalación montada como un disco
+  disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    readonly  = true
   }
 
   # Consola gráfica para instalación manual
