@@ -75,7 +75,9 @@ resource "libvirt_domain" "pfsense" {
 
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    scsi      = true
+    device    = "cdrom"
+    bus       = "ide"
+    readonly  = true
   }
 
   boot_device {
