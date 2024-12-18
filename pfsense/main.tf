@@ -10,18 +10,18 @@ terraform {
   }
 }
 
+# Proveedor Libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Red WAN
+# Configuración de Redes
 resource "libvirt_network" "wan" {
   name   = "wan_network"
   mode   = "bridge"
   bridge = "br0"
 }
 
-# Red LAN
 resource "libvirt_network" "lan" {
   name   = "lan_network"
   mode   = "bridge"
@@ -37,7 +37,7 @@ resource "libvirt_pool" "pfsense_pool" {
   }
 }
 
-# ISO de pfSense
+# Volumen de la ISO de pfSense
 resource "libvirt_volume" "pfsense_iso" {
   name   = "pfsense_installer.iso"
   pool   = libvirt_pool.pfsense_pool.name
@@ -72,15 +72,17 @@ resource "libvirt_domain" "pfsense" {
 
   # Disco principal
   disk {
-    volume_id = libvirt_volume.pfsense_disk.id
+    volume_id   = libvirt_volume.pfsense_disk.id
+    target_bus  = "virtio"
+    target_device = "vda"
   }
 
   # Disco ISO como CD-ROM
   disk {
-    volume_id = libvirt_volume.pfsense_iso.id
-    target_bus = "ide"
-    target_device = "hdc"  # Forzar como CD-ROM
-    readonly  = true
+    volume_id    = libvirt_volume.pfsense_iso.id
+    target_bus   = "ide"
+    target_device = "hdc"  # Forzar dispositivo CD-ROM
+    readonly     = true
   }
 
   # Orden de arranque (CD-ROM primero)
