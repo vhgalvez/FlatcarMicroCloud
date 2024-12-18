@@ -78,10 +78,10 @@ resource "libvirt_domain" "pfsense" {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
-  # ISO de instalación montada como CD-ROM
+  # Montar la ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    device    = "cdrom"
+    scsi      = true
   }
 
   # Consola gráfica para instalación manual
