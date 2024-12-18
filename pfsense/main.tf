@@ -1,4 +1,4 @@
-# Requerimientos de Terraform
+# pfsense\main.tf
 terraform {
   required_version = ">= 1.4.0"
 
@@ -20,63 +20,60 @@ provider "libvirt" {
 }
 
 
-# Configuración de la red WAN
+# Configuración de Redes
 resource "libvirt_network" "wan" {
   name   = "wan_network"
   mode   = "bridge"
   bridge = "br0"
 }
 
-# Configuración de la red LAN
 resource "libvirt_network" "lan" {
   name   = "lan_network"
   mode   = "bridge"
   bridge = "br1"
 }
 
-# Pool de almacenamiento para pfSense
+# Pool de almacenamiento
 resource "libvirt_pool" "pfsense_pool" {
   name = "pfsense_storage"
   type = "dir"
   target {
-    path = "/var/lib/libvirt/images"
+    path = var.pfsense_pool_path
   }
 }
 
-# Cargar la ISO de pfSense
+# Volumen de la ISO
 resource "libvirt_volume" "pfsense_iso" {
   name   = "pfsense_installer.iso"
   pool   = libvirt_pool.pfsense_pool.name
-  source = "/ruta/a/la/iso/pfsense.iso" # Reemplaza con la ruta correcta
+  source = var.pfsense_image
   format = "raw"
 }
 
-# Disco principal para pfSense
+# Disco principal
 resource "libvirt_volume" "pfsense_disk" {
   name   = "pfsense_disk.qcow2"
   pool   = libvirt_pool.pfsense_pool.name
   format = "qcow2"
-  size   = 20 * 1024 * 1024 * 1024
+  size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
 }
 
-# Máquina virtual de pfSense
+# Máquina Virtual pfSense
 resource "libvirt_domain" "pfsense" {
   name   = "pfsense-firewall"
-  memory = 2048
-  vcpu   = 2
+  memory = var.pfsense_vm_config.memory
+  vcpu   = var.pfsense_vm_config.cpus
 
-  # Configuración de interfaces de red
   network_interface {
     network_id = libvirt_network.wan.id
-    mac        = "52:54:00:11:22:33"
+    mac        = var.pfsense_vm_config.wan_mac
   }
 
   network_interface {
     network_id = libvirt_network.lan.id
-    mac        = "52:54:00:44:55:66"
+    mac        = var.pfsense_vm_config.lan_mac
   }
 
-  # Disco de instalación
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
   }
@@ -87,12 +84,10 @@ resource "libvirt_domain" "pfsense" {
     readonly  = true
   }
 
-  # Dispositivo de arranque
   boot_device {
     dev = ["cdrom", "hd"]
   }
 
-  # Configuración de gráficos (acceso VNC)
   graphics {
     type        = "vnc"
     listen_type = "address"

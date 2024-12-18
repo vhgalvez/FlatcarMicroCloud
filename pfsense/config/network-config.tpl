@@ -3,9 +3,7 @@ ethernets:
   eth0:
     dhcp4: false
     addresses:
-      - ${ip}/24
-    gateway4: ${gateway}
+      - ${pfsense_vm_config.wan_ip}/24
+    gateway4: ${pfsense_vm_config.gateway}
     nameservers:
-      addresses:
-        - ${dns1}
-        - ${dns2}
+      addresses: ${pfsense_vm_config.dns}

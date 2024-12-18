@@ -18,9 +18,12 @@ Subredes Segmentadas:
 
 Redes dedicadas para cada servicio: LAN física, servicios internos, Kubernetes, seguridad, y acceso remoto mediante VPN.
 Mapa de Infraestructura de Red
+
+
 plaintext
-Copy code
-                     +----------------------------------+                               
+
+
++----------------------------------+                               
                      |    Usuarios Públicos            |                                
                      +----------------------------------+                               
                                      |                                                   
@@ -42,7 +45,7 @@ Copy code
             v                                                 v                         
 +-----------------------+                          +----------------------------+        
 | WireGuard VPN Gateway |                          |  Red LAN Física (br1)      |        
-| IP: 10.17.0.1         |                          |  Subred: 192.168.0.0/24    |        
+| IP: 10.17.0.1         |                          |  Subred: 192.168.1.0/24    |        
 +-----------------------+                          |  Gateway: 192.168.1.1      |        
             |                                      +----------------------------+        
             |                                                    |                    
@@ -82,6 +85,10 @@ Copy code
         | Worker Node 1            |       | Storage Node              |              
         | IP: 10.17.4.24           |       | IP: 10.17.4.27            |              
         +--------------------------+       +---------------------------+              
+
+
+
+
 Explicación por Componentes
 Router Físico (Fibra Óptica):
 
