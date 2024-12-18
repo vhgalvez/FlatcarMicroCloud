@@ -76,7 +76,6 @@ resource "libvirt_domain" "pfsense" {
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
     scsi      = true
-    readonly  = true
   }
 
   boot_device {
@@ -92,10 +91,12 @@ resource "libvirt_domain" "pfsense" {
   console {
     type        = "pty"
     target_type = "serial"
+    target_port = "0"
   }
 
   console {
     type        = "pty"
     target_type = "virtio"
+    target_port = "1"
   }
 }
