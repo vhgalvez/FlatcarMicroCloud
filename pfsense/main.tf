@@ -10,7 +10,6 @@ terraform {
   }
 }
 
-# Proveedor Libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
@@ -37,7 +36,7 @@ resource "libvirt_pool" "pfsense_pool" {
   }
 }
 
-# Volumen de la ISO de pfSense
+# Volumen de la ISO
 resource "libvirt_volume" "pfsense_iso" {
   name   = "pfsense_installer.iso"
   pool   = libvirt_pool.pfsense_pool.name
@@ -78,9 +77,11 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    device    = "cdrom"   # Configura el dispositivo como CD-ROM
+    bus       = "ide"     # CD-ROM debe usar IDE como bus
   }
 
-  # Orden de arranque (CD-ROM primero)
+  # Orden de arranque
   boot_device {
     dev = ["cdrom", "hd"]
   }
