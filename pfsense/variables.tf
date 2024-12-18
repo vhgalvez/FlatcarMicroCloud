@@ -33,4 +33,3 @@ variable "api_client_token" {
   description = "Token del cliente para API de pfSense"
   type        = string
 }
-
