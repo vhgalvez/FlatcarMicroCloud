@@ -19,36 +19,27 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Configuración del proveedor de pfSense
-provider "pfsense" {
-  url               = "https://<direccion_ip_o_hostname_de_pfsense>" # Reemplaza con tu IP/hostname
-  api_client_id     = "<tu_id_de_cliente_api>"
-  api_client_token  = "<tu_token_de_cliente_api>"
-  allow_insecure    = true  # Configurar solo si no tienes certificado SSL válido
-}
 
-# Configuración de la red WAN (puente)
+# Configuración de la red WAN
 resource "libvirt_network" "wan" {
-  name      = "wan_network"
-  mode      = "bridge"
-  bridge    = "br0"
-  autostart = true
+  name   = "wan_network"
+  mode   = "bridge"
+  bridge = "br0"
 }
 
-# Configuración de la red LAN (puente)
+# Configuración de la red LAN
 resource "libvirt_network" "lan" {
-  name      = "lan_network"
-  mode      = "bridge"
-  bridge    = "br1"
-  autostart = true
+  name   = "lan_network"
+  mode   = "bridge"
+  bridge = "br1"
 }
 
-# Pool de almacenamiento
+# Pool de almacenamiento para pfSense
 resource "libvirt_pool" "pfsense_pool" {
   name = "pfsense_storage"
   type = "dir"
   target {
-    path = var.pfsense_pool_path
+    path = "/var/lib/libvirt/images"
   }
 }
 
@@ -56,84 +47,55 @@ resource "libvirt_pool" "pfsense_pool" {
 resource "libvirt_volume" "pfsense_iso" {
   name   = "pfsense_installer.iso"
   pool   = libvirt_pool.pfsense_pool.name
-  source = var.pfsense_image
+  source = "/ruta/a/la/iso/pfsense.iso" # Reemplaza con la ruta correcta
   format = "raw"
 }
 
-# Crear el disco principal para pfSense
+# Disco principal para pfSense
 resource "libvirt_volume" "pfsense_disk" {
   name   = "pfsense_disk.qcow2"
   pool   = libvirt_pool.pfsense_pool.name
   format = "qcow2"
-  size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
+  size   = 20 * 1024 * 1024 * 1024
 }
 
-# Máquina virtual para pfSense
+# Máquina virtual de pfSense
 resource "libvirt_domain" "pfsense" {
   name   = "pfsense-firewall"
-  memory = var.pfsense_vm_config.memory
-  vcpu   = var.pfsense_vm_config.cpus
+  memory = 2048
+  vcpu   = 2
 
-  # Red WAN
+  # Configuración de interfaces de red
   network_interface {
     network_id = libvirt_network.wan.id
-    mac        = var.pfsense_vm_config.wan_mac
+    mac        = "52:54:00:11:22:33"
   }
 
-  # Red LAN
   network_interface {
     network_id = libvirt_network.lan.id
-    mac        = var.pfsense_vm_config.lan_mac
+    mac        = "52:54:00:44:55:66"
   }
 
-  # Disco principal
+  # Disco de instalación
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
-  # Montar la ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
     scsi      = true
+    readonly  = true
   }
 
-  # Consola gráfica para instalación manual
+  # Dispositivo de arranque
+  boot_device {
+    dev = ["cdrom", "hd"]
+  }
+
+  # Configuración de gráficos (acceso VNC)
   graphics {
     type        = "vnc"
     listen_type = "address"
     autoport    = true
-  }
-
-  # Consola serial
-  console {
-    type        = "pty"
-    target_type = "serial"
-    target_port = "0"
-  }
-
-  # Configuración de CPU
-  cpu {
-    mode = "host-passthrough"
-  }
-}
-
-# Configuración de una regla de firewall en pfSense
-resource "pfsense_firewall_rule" "allow_http" {
-  interface = "wan"
-  protocol  = "tcp"
-  source    = "any"
-  destination {
-    address = "any"
-    port    = "80"
-  }
-  action      = "pass"
-  description = "Permitir tráfico HTTP entrante"
-}
-
-# Salida de las direcciones IP relevantes
-output "pfsense_networks" {
-  value = {
-    wan = var.pfsense_vm_config.wan_ip
-    lan = var.pfsense_vm_config.lan_ip
   }
 }
