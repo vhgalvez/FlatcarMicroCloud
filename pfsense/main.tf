@@ -52,6 +52,34 @@ resource "libvirt_volume" "pfsense_disk" {
   size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
 }
 
+# Cloud-init configuration
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name           = "commoninit.iso"
+  pool           = libvirt_pool.pfsense_pool.name
+  user_data      = data.template_file.user_data.rendered
+  network_config = data.template_file.network_config.rendered
+}
+
+data "template_file" "user_data" {
+  template = <<EOF
+#cloud-config
+password: pfsense
+chpasswd: { expire: False }
+ssh_pwauth: True
+EOF
+}
+
+data "template_file" "network_config" {
+  template = <<EOF
+version: 2
+ethernets:
+  eth0:
+    dhcp4: true
+  eth1:
+    dhcp4: true
+EOF
+}
+
 # Máquina Virtual pfSense
 resource "libvirt_domain" "pfsense" {
   name   = "pfsense-firewall"
@@ -77,16 +105,17 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    scsi      = false
+    scsi      = true
   }
 
-  # Orden de arranque (CD-ROM primero, luego disco duro)
-  boot_device {
-    dev = ["cdrom"]
+  # Cloud-init disk
+  disk {
+    volume_id = libvirt_cloudinit_disk.commoninit.id
   }
 
+  # Orden de arranque
   boot_device {
-    dev = ["hd"]
+    dev = var.pfsense_boot_order
   }
 
   # Configuración de gráficos VNC
