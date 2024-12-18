@@ -10,6 +10,7 @@ terraform {
   }
 }
 
+# Proveedor libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
@@ -36,7 +37,7 @@ resource "libvirt_pool" "pfsense_pool" {
   }
 }
 
-# Volumen de la ISO
+# Volumen de la ISO de pfSense
 resource "libvirt_volume" "pfsense_iso" {
   name   = "pfsense_installer.iso"
   pool   = libvirt_pool.pfsense_pool.name
@@ -69,33 +70,37 @@ resource "libvirt_domain" "pfsense" {
     mac        = var.pfsense_vm_config.lan_mac
   }
 
-  # Disco principal
+  # Disco principal (virtio bus para mejor rendimiento)
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
+    scsi      = false
   }
 
-  # Disco ISO como CD-ROM
+  # Disco ISO configurado explícitamente como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    scsi      = false
   }
 
-  # Orden de arranque (CD-ROM primero)
+  # Orden de arranque (primero CD-ROM, luego disco duro)
   boot_device {
-    dev = ["cdrom", "hd"]
+    dev = "cdrom"
+  }
+  boot_device {
+    dev = "hd"
   }
 
-  # Gráficos VNC
+  # Gráficos VNC para acceso remoto
   graphics {
     type        = "vnc"
     listen_type = "address"
     autoport    = true
   }
 
-  # Consola Serial
+  # Consola Serial para depuración
   console {
     type        = "pty"
     target_type = "serial"
     target_port = "0"
   }
 }
-
