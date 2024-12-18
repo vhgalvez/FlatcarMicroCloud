@@ -48,6 +48,33 @@ resource "libvirt_volume" "pfsense_disk" {
   size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
 }
 
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name           = "commoninit.iso"
+  pool           = libvirt_pool.pfsense_pool.name
+  user_data      = data.template_file.user_data.rendered
+  network_config = data.template_file.network_config.rendered
+}
+
+data "template_file" "user_data" {
+  template = <<EOF
+#cloud-config
+password: pfsense
+chpasswd: { expire: False }
+ssh_pwauth: True
+EOF
+}
+
+data "template_file" "network_config" {
+  template = <<EOF
+version: 2
+ethernets:
+  eth0:
+    dhcp4: true
+  eth1:
+    dhcp4: true
+EOF
+}
+
 resource "libvirt_domain" "pfsense" {
   name   = "pfsense-firewall"
   memory = var.pfsense_vm_config.memory
@@ -70,6 +97,10 @@ resource "libvirt_domain" "pfsense" {
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
     scsi      = true
+  }
+
+  disk {
+    volume_id = libvirt_cloudinit_disk.commoninit.id
   }
 
   boot_device {
