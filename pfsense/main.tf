@@ -77,8 +77,7 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    device    = "cdrom"
-    bus       = "ide"
+    scsi      = false
   }
 
   # Orden de arranque (CD-ROM primero, luego disco duro)
