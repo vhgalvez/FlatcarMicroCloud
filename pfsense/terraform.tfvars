@@ -1,4 +1,3 @@
-
 # pfsense\terraform.tfvars
 
 pfsense_image      = "/mnt/lv_data/organized_storage/images/netgate-installer-amd64.iso"
@@ -13,3 +12,5 @@ pfsense_vm_config = {
   wan_ip       = "192.168.0.200"
   lan_ip       = "192.168.1.1"
 }
+
+pfsense_boot_order = ["cdrom", "disk"]

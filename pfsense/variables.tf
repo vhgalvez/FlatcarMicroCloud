@@ -22,3 +22,9 @@ variable "pfsense_vm_config" {
     lan_ip       = string
   })
 }
+
+variable "pfsense_boot_order" {
+  description = "Orden de arranque para la VM de pfSense"
+  type        = list(string)
+  default     = ["cdrom", "disk"]
+}

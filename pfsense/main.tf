@@ -73,7 +73,7 @@ resource "libvirt_domain" "pfsense" {
   }
 
   boot_device {
-    dev = ["cdrom", "hd"]
+    dev = var.pfsense_boot_order
   }
 
   graphics {
