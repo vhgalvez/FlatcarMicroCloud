@@ -26,5 +26,5 @@ variable "pfsense_vm_config" {
 variable "pfsense_boot_order" {
   description = "Orden de arranque para la VM de pfSense"
   type        = list(string)
-  default     = ["cdrom", "disk"]
+  default     = ["cdrom", "hd"]
 }

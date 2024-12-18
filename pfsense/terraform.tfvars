@@ -13,4 +13,4 @@ pfsense_vm_config = {
   lan_ip       = "192.168.1.1"
 }
 
-pfsense_boot_order = ["cdrom", "disk"]
+pfsense_boot_order = ["cdrom", "hd"]
