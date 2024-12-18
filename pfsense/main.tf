@@ -74,17 +74,23 @@ resource "libvirt_domain" "pfsense" {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
-  # Disco ISO configurado como CD-ROM
+  # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    device    = "cdrom"
+    bus       = "ide"
   }
 
-  # Orden de arranque (CD-ROM primero, luego HD)
+  # Orden de arranque (CD-ROM primero, luego disco duro)
   boot_device {
-    dev = ["cdrom", "hd"]
+    dev = ["cdrom"]
   }
 
-  # Gráficos VNC para acceso remoto
+  boot_device {
+    dev = ["hd"]
+  }
+
+  # Configuración de gráficos VNC
   graphics {
     type        = "vnc"
     listen_type = "address"
