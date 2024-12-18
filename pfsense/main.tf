@@ -1,5 +1,4 @@
-# pfsense\main.tf
-
+# Requerimientos de Terraform
 terraform {
   required_version = ">= 1.4.0"
 
@@ -8,11 +7,24 @@ terraform {
       source  = "dmacvicar/libvirt"
       version = "0.8.1"
     }
+    pfsense = {
+      source  = "marshallford/pfsense"
+      version = "0.7.2"
+    }
   }
 }
 
+# Configuración de libvirt
 provider "libvirt" {
   uri = "qemu:///system"
+}
+
+# Configuración del proveedor de pfSense
+provider "pfsense" {
+  url               = "https://<direccion_ip_o_hostname_de_pfsense>" # Reemplaza con tu IP/hostname
+  api_client_id     = "<tu_id_de_cliente_api>"
+  api_client_token  = "<tu_token_de_cliente_api>"
+  allow_insecure    = true  # Configurar solo si no tienes certificado SSL válido
 }
 
 # Configuración de la red WAN (puente)
@@ -48,7 +60,7 @@ resource "libvirt_volume" "pfsense_iso" {
   format = "raw"
 }
 
-# Crear el disco para pfSense
+# Crear el disco principal para pfSense
 resource "libvirt_volume" "pfsense_disk" {
   name   = "pfsense_disk.qcow2"
   pool   = libvirt_pool.pfsense_pool.name
@@ -105,7 +117,20 @@ resource "libvirt_domain" "pfsense" {
   }
 }
 
-# Salida de direcciones IP relevantes
+# Configuración de una regla de firewall en pfSense
+resource "pfsense_firewall_rule" "allow_http" {
+  interface = "wan"
+  protocol  = "tcp"
+  source    = "any"
+  destination {
+    address = "any"
+    port    = "80"
+  }
+  action      = "pass"
+  description = "Permitir tráfico HTTP entrante"
+}
+
+# Salida de las direcciones IP relevantes
 output "pfsense_networks" {
   value = {
     wan = var.pfsense_vm_config.wan_ip
