@@ -7,18 +7,13 @@ terraform {
       source  = "dmacvicar/libvirt"
       version = "0.8.1"
     }
-    pfsense = {
-      source  = "marshallford/pfsense"
-      version = "0.7.2"
-    }
   }
 }
 
-# Configuración de libvirt
+# Proveedor libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
-
 
 # Configuración de Redes
 resource "libvirt_network" "wan" {
@@ -47,7 +42,7 @@ resource "libvirt_volume" "pfsense_iso" {
   name   = "pfsense_installer.iso"
   pool   = libvirt_pool.pfsense_pool.name
   source = var.pfsense_image
-  format = "raw"
+  format = "iso"
 }
 
 # Disco principal
@@ -92,5 +87,15 @@ resource "libvirt_domain" "pfsense" {
     type        = "vnc"
     listen_type = "address"
     autoport    = true
+  }
+
+  console {
+    type        = "pty"
+    target_type = "serial"
+  }
+
+  console {
+    type        = "pty"
+    target_type = "virtio"
   }
 }

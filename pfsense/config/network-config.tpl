@@ -7,3 +7,7 @@ ethernets:
     gateway4: ${pfsense_vm_config.gateway}
     nameservers:
       addresses: ${pfsense_vm_config.dns}
+  eth1:
+    dhcp4: false
+    addresses:
+      - ${pfsense_vm_config.lan_ip}/24
