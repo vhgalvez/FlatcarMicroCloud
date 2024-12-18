@@ -72,17 +72,12 @@ resource "libvirt_domain" "pfsense" {
 
   # Disco principal
   disk {
-    volume_id   = libvirt_volume.pfsense_disk.id
-    target_bus  = "virtio"
-    target_device = "vda"
+    volume_id = libvirt_volume.pfsense_disk.id
   }
 
   # Disco ISO como CD-ROM
   disk {
-    volume_id    = libvirt_volume.pfsense_iso.id
-    target_bus   = "ide"
-    target_device = "hdc"  # Forzar dispositivo CD-ROM
-    readonly     = true
+    volume_id = libvirt_volume.pfsense_iso.id
   }
 
   # Orden de arranque (CD-ROM primero)
