@@ -25,9 +25,30 @@ provider "pfsense" {
   insecure = true # Permite conexiones HTTPS no verificadas
 }
 
+# Crear el directorio si no existe
+resource "null_resource" "create_directory" {
+  provisioner "local-exec" {
+    command = "mkdir -p /mnt/lv_data/organized_storage/volumes/pfsense && chown libvirt-qemu:kvm /mnt/lv_data/organized_storage/volumes/pfsense && chmod 775 /mnt/lv_data/organized_storage/volumes/pfsense"
+  }
+  triggers = {
+    always_run = timestamp()
+  }
+}
+
+# Configuración del pool de almacenamiento
+resource "libvirt_pool" "pfsense_pool" {
+  depends_on = [null_resource.create_directory] # Asegura que el directorio exista
+  name       = "pfsense-pool"
+  type       = "dir"
+  target {
+    path = "/mnt/lv_data/organized_storage/volumes/pfsense"
+  }
+}
+
+# Crear el volumen para pfSense
 resource "libvirt_volume" "pfsense_disk" {
   name   = "pfsense.qcow2"
-  pool   = var.pfsense_pool_path
+  pool   = libvirt_pool.pfsense_pool.name
   source = var.pfsense_image
   format = "qcow2"
 }

@@ -19,10 +19,10 @@ variable "pfsense_vm_config" {
 
 variable "wan_ip" {
   type    = string
-  default = "192.168.0.200"
+  default = ""
 }
 
 variable "lan_ip" {
   type    = string
-  default = "192.168.1.1"
+  default = ""
 }
