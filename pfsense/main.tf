@@ -51,7 +51,6 @@ resource "libvirt_volume" "pfsense_disk" {
   format = "qcow2"
   size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
 }
-
 # Máquina Virtual pfSense
 resource "libvirt_domain" "pfsense" {
   name   = "pfsense-firewall"
@@ -81,11 +80,7 @@ resource "libvirt_domain" "pfsense" {
 
   # Orden de arranque
   boot_device {
-    dev = "cdrom"
-  }
-
-  boot_device {
-    dev = "hd"
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC
