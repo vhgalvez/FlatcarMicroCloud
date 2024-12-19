@@ -1,100 +1,77 @@
 # pfsense\main.tf
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = "= 1.10.1"
 
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.7.0"
+      version = "0.8.1"
+    }
+    pfsense = {
+      source  = "marshallford/pfsense"
+      version = "0.7.2"
     }
   }
 }
 
 provider "libvirt" {
-  uri = "qemu:///system"
+  uri = "qemu:///system"  # Asegúrate de que tu máquina virtual esté ejecutándose en este URI
 }
 
-# Configuración de Redes
-resource "libvirt_network" "wan" {
-  name   = "wan_network"
-  mode   = "bridge"
-  bridge = "br0"
+provider "pfsense" {
+  hostname = "https://192.168.0.1"  # IP de pfSense
+  username = "admin"
+  password = "pfsense"
+  insecure = true                  # Permite conexiones HTTPS no verificadas
 }
 
-resource "libvirt_network" "lan" {
-  name   = "lan_network"
-  mode   = "bridge"
-  bridge = "br1"
-}
-
-# Pool de almacenamiento
-resource "libvirt_pool" "pfsense_pool" {
-  name = "pfsense_storage"
-  type = "dir"
-  path = var.pfsense_pool_path
-}
-
-# Volumen de la ISO de pfSense
-resource "libvirt_volume" "pfsense_iso" {
-  name   = "pfsense_installer.iso"
-  pool   = libvirt_pool.pfsense_pool.name
-  source = var.pfsense_image
-  format = "iso"
-}
-
-# Disco principal
 resource "libvirt_volume" "pfsense_disk" {
-  name   = "pfsense_disk.qcow2"
-  pool   = libvirt_pool.pfsense_pool.name
+  name   = "pfsense.qcow2"
+  pool   = var.pfsense_pool_path
+  source = var.pfsense_image
   format = "qcow2"
-  size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
 }
 
-# Máquina Virtual pfSense
-resource "libvirt_domain" "pfsense" {
-  name   = "pfsense-firewall"
+resource "libvirt_domain" "pfsense_vm" {
+  name   = "pfsense"
   memory = var.pfsense_vm_config.memory
   vcpu   = var.pfsense_vm_config.cpus
-
-  # Interfaces de Red
-  network_interface {
-    network_id = libvirt_network.wan.id
-    mac        = var.pfsense_vm_config.wan_mac
-  }
-
-  network_interface {
-    network_id = libvirt_network.lan.id
-    mac        = var.pfsense_vm_config.lan_mac
-  }
 
   # Disco principal
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
-  # Disco ISO como CD-ROM
-  disk {
-    volume_id = libvirt_volume.pfsense_iso.id
-    device    = "cdrom"
-    bus       = "ide"
+  # Interfaz WAN
+  network_interface {
+    bridge = "br0"  # Asegúrate de tener el puente br0 configurado para la WAN
   }
 
-  # Orden de arranque
+  # Interfaz LAN
+  network_interface {
+    bridge = "br1"  # Asegúrate de tener el puente br1 configurado para la LAN
+  }
+
+  # Configuración de arranque
   boot_device {
-    dev = ["cdrom", "hd"]
+    dev = ["hd"]
   }
 
-  # Gráficos VNC
   graphics {
-    type        = "vnc"
-    listen_type = "address"
-    autoport    = true
+    type            = "vnc"
+    listen_address  = "0.0.0.0"
+    listen_type     = "address"
   }
 
-  # Consola Serial
-  console {
-    type        = "pty"
-    target_type = "serial"
-    target_port = "0"
+  # Configuración de la dirección IP de la LAN y WAN
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'LAN IP: ${var.lan_ip}'",
+      "echo 'WAN IP: ${var.wan_ip}'"
+    ]
   }
+}
+
+output "pfSense_ip" {
+  value = "http://${libvirt_domain.pfsense_vm.network_interface[1].address}:80"
 }
