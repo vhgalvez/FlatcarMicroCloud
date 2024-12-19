@@ -15,14 +15,14 @@ terraform {
 }
 
 provider "libvirt" {
-  uri = "qemu:///system"  # Asegúrate de que tu máquina virtual esté ejecutándose en este URI
+  uri = "qemu:///system" # Asegúrate de que tu máquina virtual esté ejecutándose en este URI
 }
 
 provider "pfsense" {
-  hostname = "https://192.168.0.1"  # IP de pfSense
+  hostname = "https://192.168.0.1" # IP de pfSense
   username = "admin"
   password = "pfsense"
-  insecure = true                  # Permite conexiones HTTPS no verificadas
+  insecure = true # Permite conexiones HTTPS no verificadas
 }
 
 resource "libvirt_volume" "pfsense_disk" {
@@ -44,12 +44,12 @@ resource "libvirt_domain" "pfsense_vm" {
 
   # Interfaz WAN
   network_interface {
-    bridge = "br0"  # Asegúrate de tener el puente br0 configurado para la WAN
+    bridge = "br0" # Asegúrate de tener el puente br0 configurado para la WAN
   }
 
   # Interfaz LAN
   network_interface {
-    bridge = "br1"  # Asegúrate de tener el puente br1 configurado para la LAN
+    bridge = "br1" # Asegúrate de tener el puente br1 configurado para la LAN
   }
 
   # Configuración de arranque
@@ -58,9 +58,9 @@ resource "libvirt_domain" "pfsense_vm" {
   }
 
   graphics {
-    type            = "vnc"
-    listen_address  = "0.0.0.0"
-    listen_type     = "address"
+    type           = "vnc"
+    listen_address = "0.0.0.0"
+    listen_type    = "address"
   }
 
   # Configuración de la dirección IP de la LAN y WAN
@@ -73,5 +73,5 @@ resource "libvirt_domain" "pfsense_vm" {
 }
 
 output "pfSense_ip" {
-  value = "http://${libvirt_domain.pfsense_vm.network_interface[1].address}:80"
+  value = "http://${libvirt_domain.pfsense_vm.network_interface[1].addresses[0]}:80"
 }
