@@ -5,7 +5,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.13"
+      version = "0.7.0"
     }
   }
 }
@@ -31,7 +31,9 @@ resource "libvirt_network" "lan" {
 resource "libvirt_pool" "pfsense_pool" {
   name = "pfsense_storage"
   type = "dir"
-  path = var.pfsense_pool_path
+  target {
+    path = var.pfsense_pool_path
+  }
 }
 
 # Volumen de la ISO de pfSense
@@ -75,6 +77,8 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    device    = "cdrom"
+    bus       = "ide"
   }
 
   # Orden de arranque
