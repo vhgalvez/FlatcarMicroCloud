@@ -1,5 +1,4 @@
 # pfsense\main.tf
-# pfsense\main.tf
 
 terraform {
   required_version = ">= 1.4.0"
@@ -74,16 +73,27 @@ resource "libvirt_domain" "pfsense" {
   # Disco principal
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
+    target {
+      dev = "vda"
+      bus = "virtio"
+    }
   }
 
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    target {
+      dev = "hda"
+      bus = "ide"
+    }
   }
 
-  # Orden de arranque
-  boot_device {
-    dev = ["cdrom", "hd"]
+  # Configuración del sistema operativo y firmware
+  os {
+    type = "hvm"
+    boot_device {
+      dev = ["cdrom", "hd"]
+    }
   }
 
   # Gráficos VNC
@@ -100,3 +110,4 @@ resource "libvirt_domain" "pfsense" {
     target_port = "0"
   }
 }
+
