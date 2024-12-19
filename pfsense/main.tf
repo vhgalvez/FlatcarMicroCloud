@@ -77,14 +77,11 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    scsi      = false
-    bus       = "ide"
   }
 
   # Orden de arranque
-  os {
-    type = "hvm"
-    boot_order = ["cdrom", "hd"]
+  boot_device {
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC
