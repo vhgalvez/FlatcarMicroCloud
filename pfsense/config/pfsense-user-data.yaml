@@ -1,0 +1,4 @@
+#cloud-config
+password: pfsense
+chpasswd: { expire: False }
+ssh_pwauth: True
