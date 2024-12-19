@@ -81,20 +81,8 @@ resource "libvirt_domain" "pfsense" {
   }
 
   # Orden de arranque
-  xml {
-    xslt = <<EOF
-      <?xml version="1.0"?>
-      <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-        <xsl:template match="/">
-          <domain>
-            <os>
-              <boot dev="cdrom"/>
-              <boot dev="hd"/>
-            </os>
-          </domain>
-        </xsl:template>
-      </xsl:stylesheet>
-    EOF
+  boot_device {
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC
@@ -109,10 +97,5 @@ resource "libvirt_domain" "pfsense" {
     type        = "pty"
     target_type = "serial"
     target_port = "0"
-  }
-
-  # Configuración de Firmware (opcional para UEFI)
-  firmware {
-    type = "bios" # Cambiar a "uefi" si pfSense lo soporta
   }
 }
