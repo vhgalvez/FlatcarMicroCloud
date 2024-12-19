@@ -1,2 +1,2 @@
-instance-id: ${instance-id}
-local-hostname: ${local-hostname}
+instance-id: iid-local01
+local-hostname: pfsense
