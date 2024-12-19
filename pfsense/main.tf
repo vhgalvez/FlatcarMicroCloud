@@ -54,10 +54,9 @@ resource "libvirt_volume" "pfsense_disk" {
 
 # Máquina Virtual pfSense
 resource "libvirt_domain" "pfsense" {
-  name     = "pfsense-firewall"
-  memory   = var.pfsense_vm_config.memory
-  vcpu     = var.pfsense_vm_config.cpus
-  machine  = "q35"  # Modern machine type for compatibility
+  name   = "pfsense-firewall"
+  memory = var.pfsense_vm_config.memory
+  vcpu   = var.pfsense_vm_config.cpus
 
   # Interfaces de Red
   network_interface {
@@ -73,18 +72,17 @@ resource "libvirt_domain" "pfsense" {
   # Disco principal
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
-    boot      = 1  # Primary boot device
   }
 
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    boot      = 2  # Secondary boot device
+    readonly  = true
   }
 
-  # Configuración de Firmware (UEFI opcional)
-  firmware {
-    type = "uefi"  # Cambia a "bios" si no se soporta UEFI
+  # Orden de arranque (CD-ROM primero)
+  boot_device {
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC
