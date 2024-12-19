@@ -1,5 +1,4 @@
 # pfsense\main.tf
-
 terraform {
   required_version = ">= 1.4.0"
 
@@ -82,7 +81,11 @@ resource "libvirt_domain" "pfsense" {
 
   # Orden de arranque
   boot_device {
-    dev = ["cdrom", "hd"]
+    dev = "cdrom"
+  }
+
+  boot_device {
+    dev = "hd"
   }
 
   # Gráficos VNC
