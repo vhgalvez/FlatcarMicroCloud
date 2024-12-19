@@ -2,5 +2,3 @@ version: 2
 ethernets:
   eth0:
     dhcp4: true
-  eth1:
-    dhcp4: true
