@@ -51,6 +51,7 @@ resource "libvirt_volume" "pfsense_disk" {
   format = "qcow2"
   size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
 }
+
 # Máquina Virtual pfSense
 resource "libvirt_domain" "pfsense" {
   name   = "pfsense-firewall"
@@ -76,6 +77,12 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
+    scsi      = false
+    target {
+      dev = "hdc"
+      bus = "ide"
+    }
+    read_only = true
   }
 
   # Orden de arranque
