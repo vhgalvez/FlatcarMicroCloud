@@ -1,4 +1,5 @@
 # pfsense\main.tf
+
 terraform {
   required_version = "= 1.10.1"
 
@@ -14,21 +15,24 @@ terraform {
   }
 }
 
+# Configuración del proveedor libvirt para gestionar la VM
 provider "libvirt" {
-  uri = "qemu:///system" # Asegúrate de que tu máquina virtual esté ejecutándose en este URI
+  uri = "qemu:///system"
 }
 
+# Configuración inicial del proveedor pfSense
 provider "pfsense" {
-  hostname = "https://192.168.0.1" # IP de pfSense
-  username = "admin"
-  password = "pfsense"
-  insecure = true # Permite conexiones HTTPS no verificadas
+  depends_on = [libvirt_domain.pfsense_vm] # Asegura que pfSense VM esté creada
+  hostname   = "https://${var.wan_ip}"    # Dirección IP inicial de WAN
+  username   = "admin"
+  password   = "pfsense"
+  insecure   = true
 }
 
-# Crear el directorio si no existe
+# Crear directorio de almacenamiento si no existe
 resource "null_resource" "create_directory" {
   provisioner "local-exec" {
-    command = "mkdir -p /mnt/lv_data/organized_storage/volumes/pfsense && chown libvirt-qemu:kvm /mnt/lv_data/organized_storage/volumes/pfsense && chmod 775 /mnt/lv_data/organized_storage/volumes/pfsense"
+    command = "mkdir -p ${var.pfsense_pool_path} && chown libvirt-qemu:kvm ${var.pfsense_pool_path} && chmod 775 ${var.pfsense_pool_path}"
   }
   triggers = {
     always_run = timestamp()
@@ -37,11 +41,11 @@ resource "null_resource" "create_directory" {
 
 # Configuración del pool de almacenamiento
 resource "libvirt_pool" "pfsense_pool" {
-  depends_on = [null_resource.create_directory] # Asegura que el directorio exista
+  depends_on = [null_resource.create_directory]
   name       = "pfsense-pool"
   type       = "dir"
   target {
-    path = "/mnt/lv_data/organized_storage/volumes/pfsense"
+    path = var.pfsense_pool_path
   }
 }
 
@@ -53,6 +57,7 @@ resource "libvirt_volume" "pfsense_disk" {
   format = "qcow2"
 }
 
+# Crear la máquina virtual de pfSense
 resource "libvirt_domain" "pfsense_vm" {
   name   = "pfsense"
   memory = var.pfsense_vm_config.memory
@@ -65,12 +70,12 @@ resource "libvirt_domain" "pfsense_vm" {
 
   # Interfaz WAN
   network_interface {
-    bridge = "br0" # Asegúrate de tener el puente br0 configurado para la WAN
+    bridge = "br0"
   }
 
   # Interfaz LAN
   network_interface {
-    bridge = "br1" # Asegúrate de tener el puente br1 configurado para la LAN
+    bridge = "br1"
   }
 
   # Configuración de arranque
@@ -83,16 +88,35 @@ resource "libvirt_domain" "pfsense_vm" {
     listen_address = "0.0.0.0"
     listen_type    = "address"
   }
-
-  # Configuración de la dirección IP de la LAN y WAN
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'LAN IP: ${var.lan_ip}'",
-      "echo 'WAN IP: ${var.wan_ip}'"
-    ]
-  }
 }
 
-output "pfSense_ip" {
-  value = "http://${libvirt_domain.pfsense_vm.network_interface[1].addresses[0]}:80"
+# Configuración de VLANs usando el proveedor pfSense
+resource "pfsense_vlan" "vlan10" {
+  depends_on       = [libvirt_domain.pfsense_vm]
+  parent_interface = "br1"
+  vlan_tag         = 10
+  description      = "VLAN 10 (Management)"
+}
+
+resource "pfsense_vlan" "vlan20" {
+  depends_on       = [libvirt_domain.pfsense_vm]
+  parent_interface = "br1"
+  vlan_tag         = 20
+  description      = "VLAN 20 (Clients)"
+}
+
+resource "pfsense_vlan" "vlan30" {
+  depends_on       = [libvirt_domain.pfsense_vm]
+  parent_interface = "br1"
+  vlan_tag         = 30
+  description      = "VLAN 30 (IoT)"
+}
+
+# Salidas
+output "pfSense_WAN_IP" {
+  value = "http://${var.wan_ip}:80"
+}
+
+output "pfSense_LAN_IP" {
+  value = "http://${var.lan_ip}:80"
 }
