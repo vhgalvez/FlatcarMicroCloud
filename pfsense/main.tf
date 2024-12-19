@@ -29,11 +29,9 @@ resource "libvirt_network" "lan" {
 
 # Pool de almacenamiento
 resource "libvirt_pool" "pfsense_pool" {
-  name   = "pfsense_storage"
-  type   = "dir"
-  target {
-    path = var.pfsense_pool_path
-  }
+  name = "pfsense_storage"
+  type = "dir"
+  path = var.pfsense_pool_path
 }
 
 # Volumen de la ISO de pfSense
