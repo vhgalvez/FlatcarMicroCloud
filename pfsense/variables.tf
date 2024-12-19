@@ -1,5 +1,4 @@
 # pfsense\variables.tf
-
 variable "pfsense_image" {
   description = "Ruta a la ISO de pfSense"
   type        = string
@@ -21,10 +20,4 @@ variable "pfsense_vm_config" {
     wan_ip       = string
     lan_ip       = string
   })
-}
-
-variable "pfsense_boot_order" {
-  description = "Orden de arranque para la VM de pfSense"
-  type        = list(string)
-  default     = ["cdrom", "hd"]
 }
