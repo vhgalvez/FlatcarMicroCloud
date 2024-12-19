@@ -1,12 +1,12 @@
 # pfsense\variables.tf
 variable "pfsense_image" {
   type    = string
-  default = "/mnt/lv_data/organized_storage/images/pfSense-Base.qcow2"
+  default = " "
 }
 
 variable "pfsense_pool_path" {
   type    = string
-  default = "/mnt/lv_data/organized_storage/volumes/pfsense"
+  default = " " 
 }
 
 variable "pfsense_vm_config" {
