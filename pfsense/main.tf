@@ -53,31 +53,11 @@ resource "libvirt_volume" "pfsense_disk" {
 }
 
 # Cloud-init Disk
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name           = "commoninit.iso"
-  pool           = libvirt_pool.pfsense_pool.name
-  user_data      = data.template_file.user_data.rendered
-  network_config = data.template_file.network_config.rendered
-}
-
-data "template_file" "user_data" {
-  template = <<EOF
-#cloud-config
-password: pfsense
-chpasswd: { expire: False }
-ssh_pwauth: True
-EOF
-}
-
-data "template_file" "network_config" {
-  template = <<EOF
-version: 2
-ethernets:
-  eth0:
-    dhcp4: true
-  eth1:
-    dhcp4: true
-EOF
+resource "libvirt_volume" "cloudinit_iso" {
+  name   = "commoninit.iso"
+  pool   = libvirt_pool.pfsense_pool.name
+  source = "/mnt/lv_data/organized_storage/volumes/pfsense/commoninit.iso"
+  format = "iso"
 }
 
 # Máquina Virtual pfSense
@@ -110,7 +90,7 @@ resource "libvirt_domain" "pfsense" {
 
   # Cloud-init Disk
   disk {
-    volume_id = libvirt_cloudinit_disk.commoninit.id
+    volume_id = libvirt_volume.cloudinit_iso.id
   }
 
   # Orden de arranque
@@ -131,4 +111,25 @@ resource "libvirt_domain" "pfsense" {
     target_type = "serial"
     target_port = "0"
   }
+}
+
+# Cloud-init configuraciones
+data "template_file" "user_data" {
+  template = <<EOF
+#cloud-config
+password: pfsense
+chpasswd: { expire: False }
+ssh_pwauth: True
+EOF
+}
+
+data "template_file" "network_config" {
+  template = <<EOF
+version: 2
+ethernets:
+  eth0:
+    dhcp4: true
+  eth1:
+    dhcp4: true
+EOF
 }
