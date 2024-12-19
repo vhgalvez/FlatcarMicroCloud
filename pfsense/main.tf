@@ -52,6 +52,34 @@ resource "libvirt_volume" "pfsense_disk" {
   size   = var.pfsense_vm_config.disk_size_gb * 1024 * 1024 * 1024
 }
 
+# Cloud-init Disk
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name           = "commoninit.iso"
+  pool           = libvirt_pool.pfsense_pool.name
+  user_data      = data.template_file.user_data.rendered
+  network_config = data.template_file.network_config.rendered
+}
+
+data "template_file" "user_data" {
+  template = <<EOF
+#cloud-config
+password: pfsense
+chpasswd: { expire: False }
+ssh_pwauth: True
+EOF
+}
+
+data "template_file" "network_config" {
+  template = <<EOF
+version: 2
+ethernets:
+  eth0:
+    dhcp4: true
+  eth1:
+    dhcp4: true
+EOF
+}
+
 # Máquina Virtual pfSense
 resource "libvirt_domain" "pfsense" {
   name   = "pfsense-firewall"
@@ -80,21 +108,14 @@ resource "libvirt_domain" "pfsense" {
     scsi      = true
   }
 
+  # Cloud-init Disk
+  disk {
+    volume_id = libvirt_cloudinit_disk.commoninit.id
+  }
+
   # Orden de arranque
-  xml {
-    xslt = <<EOF
-      <?xml version="1.0"?>
-      <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-        <xsl:template match="/">
-          <domain>
-            <os>
-              <boot dev="cdrom"/>
-              <boot dev="hd"/>
-            </os>
-          </domain>
-        </xsl:template>
-      </xsl:stylesheet>
-    EOF
+  boot_device {
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC
@@ -109,10 +130,5 @@ resource "libvirt_domain" "pfsense" {
     type        = "pty"
     target_type = "serial"
     target_port = "0"
-  }
-
-  # Configuración de Firmware (opcional para UEFI)
-  firmware {
-    type = "bios" # Cambiar a "uefi" si pfSense lo soporta
   }
 }
