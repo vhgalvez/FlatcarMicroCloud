@@ -78,11 +78,7 @@ resource "libvirt_domain" "pfsense" {
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
     scsi      = false
-    target {
-      dev = "hdc"
-      bus = "ide"
-    }
-    read_only = true
+    bus       = "ide"
   }
 
   # Orden de arranque
