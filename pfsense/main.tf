@@ -1,11 +1,11 @@
 # pfsense\main.tf
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = ">= 0.13"
 
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.8.1"
+      version = "0.6.13"
     }
   }
 }
