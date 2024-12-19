@@ -1,5 +1,5 @@
 # pfsense\main.tf
-# pfsense\main.tf
+
 terraform {
   required_version = ">= 1.4.0"
 
@@ -73,29 +73,16 @@ resource "libvirt_domain" "pfsense" {
   # Disco principal
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
-    target {
-      bus = "virtio"
-    }
   }
 
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    target {
-      bus = "ide"
-      dev = "hdc"
-    }
   }
 
   # Orden de arranque
-  os {
-    type = "hvm"
-    boot {
-      dev = "cdrom"
-    }
-    boot {
-      dev = "hd"
-    }
+  boot_device {
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC
