@@ -1,15 +1,15 @@
 # pfsense\outputs.tf
 output "wan_ip" {
-  description = "Dirección IP WAN de pfSense"
+  description = "WAN IP for pfSense"
   value       = var.pfsense_vm_config.wan_ip
 }
 
 output "lan_ip" {
-  description = "Dirección IP LAN de pfSense"
+  description = "LAN IP for pfSense"
   value       = var.pfsense_vm_config.lan_ip
 }
 
 output "vnc_access" {
-  description = "Acceso VNC para pfSense"
+  description = "VNC Access for pfSense"
   value       = "Conéctate a la VM mediante VNC en el puerto asignado automáticamente."
 }

@@ -29,8 +29,8 @@ resource "libvirt_network" "lan" {
 
 # Pool de almacenamiento
 resource "libvirt_pool" "pfsense_pool" {
-  name = "pfsense_storage"
-  type = "dir"
+  name   = "pfsense_storage"
+  type   = "dir"
   target {
     path = var.pfsense_pool_path
   }
@@ -77,12 +77,11 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    scsi      = false
   }
 
   # Orden de arranque
   boot_device {
-    dev = var.pfsense_boot_order
+    dev = ["cdrom", "hd"]
   }
 
   # Gráficos VNC
@@ -98,9 +97,4 @@ resource "libvirt_domain" "pfsense" {
     target_type = "serial"
     target_port = "0"
   }
-}
-
-# Declaración de variables
-variable "pfsense_pool_path" {
-  default = "/mnt/lv_data/organized_storage/volumes/pfsense"
 }
