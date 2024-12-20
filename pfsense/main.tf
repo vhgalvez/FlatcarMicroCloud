@@ -14,21 +14,21 @@ terraform {
   }
 }
 
-# Configuración del proveedor libvirt para gestionar la VM
+# Configuración del proveedor libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Configuración inicial del proveedor pfSense
+# Configuración del proveedor pfSense
 provider "pfsense" {
-  depends_on = [libvirt_domain.pfsense_vm] # Asegura que pfSense VM esté creada
-  hostname   = "https://${var.wan_ip}"    # Dirección IP inicial de WAN
+  depends_on = [libvirt_domain.pfsense_vm] # La VM debe estar creada primero
+  hostname   = "https://${var.wan_ip}"     # Dirección inicial de WAN
   username   = "admin"
   password   = "pfsense"
   insecure   = true
 }
 
-# Crear directorio de almacenamiento si no existe
+# Crear directorio de almacenamiento
 resource "null_resource" "create_directory" {
   provisioner "local-exec" {
     command = "mkdir -p ${var.pfsense_pool_path} && chown libvirt-qemu:kvm ${var.pfsense_pool_path} && chmod 775 ${var.pfsense_pool_path}"
@@ -56,28 +56,25 @@ resource "libvirt_volume" "pfsense_disk" {
   format = "qcow2"
 }
 
-# Crear la máquina virtual de pfSense
+# Configuración de la máquina virtual de pfSense
 resource "libvirt_domain" "pfsense_vm" {
   name   = var.pfsense_vm_name
   memory = var.pfsense_vm_config.memory
   vcpu   = var.pfsense_vm_config.cpus
 
-  # Disco principal
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
-  # Interfaz WAN
+  # Configuración de interfaces de red
   network_interface {
-    bridge = "br0"
+    bridge = "br0" # WAN
   }
 
-  # Interfaz LAN
   network_interface {
-    bridge = "br1"
+    bridge = "br1" # LAN
   }
 
-  # Configuración de arranque
   boot_device {
     dev = ["hd"]
   }
@@ -89,7 +86,7 @@ resource "libvirt_domain" "pfsense_vm" {
   }
 }
 
-# Configuración de VLANs usando el proveedor pfSense
+# Configuración de VLANs
 resource "pfsense_vlan" "vlan10" {
   depends_on       = [libvirt_domain.pfsense_vm]
   parent_interface = "br1"
@@ -111,7 +108,7 @@ resource "pfsense_vlan" "vlan30" {
   description      = "VLAN 30 (IoT)"
 }
 
-# Salidas
+# Salidas de las direcciones IP
 output "pfSense_WAN_IP" {
   value = "http://${var.wan_ip}:80"
 }
