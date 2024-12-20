@@ -1,5 +1,4 @@
 # pfsense\main.tf
-
 terraform {
   required_version = "= 1.10.1"
 
@@ -59,7 +58,7 @@ resource "libvirt_volume" "pfsense_disk" {
 
 # Crear la máquina virtual de pfSense
 resource "libvirt_domain" "pfsense_vm" {
-  name   = "pfsense"
+  name   = var.pfsense_vm_name
   memory = var.pfsense_vm_config.memory
   vcpu   = var.pfsense_vm_config.cpus
 
