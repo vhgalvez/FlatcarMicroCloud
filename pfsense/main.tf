@@ -1,5 +1,4 @@
 # pfsense\main.tf
-# main.tf
 terraform {
   required_version = "= 1.10.1"
 
@@ -84,27 +83,6 @@ resource "libvirt_domain" "pfsense_vm" {
     listen_address = "0.0.0.0"
     listen_type    = "address"
   }
-}
-
-# Configuración de las interfaces pfSense
-resource "pfsense_interface" "wan" {
-  name        = "wan"
-  ipv4_address = var.wan_ip
-  ipv4_subnet  = 24
-  gateway      = "192.168.0.1"
-}
-
-resource "pfsense_interface" "lan" {
-  name        = "lan"
-  ipv4_address = var.lan_ip
-  ipv4_subnet  = 24
-}
-
-# Configuración de rutas estáticas
-resource "pfsense_static_route" "route_to_dmz" {
-  destination = "192.168.2.0/24"
-  gateway     = var.lan_ip
-  description = "Ruta a DMZ"
 }
 
 # Salidas de las direcciones IP
