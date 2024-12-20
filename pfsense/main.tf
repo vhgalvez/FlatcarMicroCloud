@@ -19,26 +19,32 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Crear el pool de almacenamiento para pfSense
+resource "null_resource" "create_directory" {
+  provisioner "local-exec" {
+    command = "mkdir -p ${var.pfsense_pool_path} && chmod 775 ${var.pfsense_pool_path}"
+  }
+  triggers = {
+    always_run = timestamp()
+  }
+}
+
 resource "libvirt_pool" "pfsense_pool" {
-  name   = "pfsense-pool"
-  type   = "dir"
+  depends_on = [null_resource.create_directory]
+  name       = "pfsense-pool"
+  type       = "dir"
   target {
     path = var.pfsense_pool_path
   }
 }
 
-# Crear el volumen de almacenamiento para pfSense
 resource "libvirt_volume" "pfsense_disk" {
   depends_on = [libvirt_pool.pfsense_pool]
   name       = "pfsense.qcow2"
   pool       = libvirt_pool.pfsense_pool.name
   source     = var.pfsense_image
   format     = "qcow2"
-  sparse     = true
 }
 
-# Configurar la máquina virtual de pfSense
 resource "libvirt_domain" "pfsense_vm" {
   depends_on = [libvirt_volume.pfsense_disk]
   name       = var.pfsense_vm_name
@@ -50,11 +56,11 @@ resource "libvirt_domain" "pfsense_vm" {
   }
 
   network_interface {
-    bridge = "br0" # Interfaz WAN
+    bridge = "br0" # WAN
   }
 
   network_interface {
-    bridge = "br1" # Interfaz LAN
+    bridge = "br1" # LAN
   }
 
   boot_device {
@@ -68,7 +74,6 @@ resource "libvirt_domain" "pfsense_vm" {
   }
 }
 
-# Salidas de las direcciones IP de pfSense
 output "pfSense_WAN_IP" {
   value = "http://${var.wan_ip}:80"
 }
