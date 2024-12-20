@@ -19,58 +19,42 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Configuración del proveedor pfSense
-provider "pfsense" {
-  url      = "https://${var.wan_ip}" # Dirección IP inicial de WAN
-  username = "admin"
-  password = "pfsense"
-  insecure = true
-}
-
-# Crear directorio de almacenamiento
-resource "null_resource" "create_directory" {
-  provisioner "local-exec" {
-    command = "mkdir -p ${var.pfsense_pool_path} && chmod 775 ${var.pfsense_pool_path}"
-  }
-  triggers = {
-    always_run = timestamp()
-  }
-}
-
-# Configuración del pool de almacenamiento
+# Crear el pool de almacenamiento para pfSense
 resource "libvirt_pool" "pfsense_pool" {
-  depends_on = [null_resource.create_directory]
-  name       = "pfsense-pool"
-  type       = "dir"
+  name   = "pfsense-pool"
+  type   = "dir"
   target {
     path = var.pfsense_pool_path
   }
 }
 
-# Crear el volumen para pfSense
+# Crear el volumen de almacenamiento para pfSense
 resource "libvirt_volume" "pfsense_disk" {
-  name   = "pfsense.qcow2"
-  pool   = libvirt_pool.pfsense_pool.name
-  source = var.pfsense_image
-  format = "qcow2"
+  depends_on = [libvirt_pool.pfsense_pool]
+  name       = "pfsense.qcow2"
+  pool       = libvirt_pool.pfsense_pool.name
+  source     = var.pfsense_image
+  format     = "qcow2"
+  sparse     = true
 }
 
-# Configuración de la máquina virtual de pfSense
+# Configurar la máquina virtual de pfSense
 resource "libvirt_domain" "pfsense_vm" {
-  name   = var.pfsense_vm_name
-  memory = var.pfsense_vm_config.memory
-  vcpu   = var.pfsense_vm_config.cpus
+  depends_on = [libvirt_volume.pfsense_disk]
+  name       = var.pfsense_vm_name
+  memory     = var.pfsense_vm_config.memory
+  vcpu       = var.pfsense_vm_config.cpus
 
   disk {
     volume_id = libvirt_volume.pfsense_disk.id
   }
 
   network_interface {
-    bridge = "br0" # WAN
+    bridge = "br0" # Interfaz WAN
   }
 
   network_interface {
-    bridge = "br1" # LAN
+    bridge = "br1" # Interfaz LAN
   }
 
   boot_device {
@@ -84,7 +68,7 @@ resource "libvirt_domain" "pfsense_vm" {
   }
 }
 
-# Salidas de las direcciones IP
+# Salidas de las direcciones IP de pfSense
 output "pfSense_WAN_IP" {
   value = "http://${var.wan_ip}:80"
 }
