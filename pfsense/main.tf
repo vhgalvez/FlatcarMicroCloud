@@ -19,13 +19,12 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Configuración del proveedor pfSense
+# Configuración inicial del proveedor pfSense
 provider "pfsense" {
-  depends_on = [libvirt_domain.pfsense_vm] # La VM debe estar creada primero
-  hostname   = "https://${var.wan_ip}"    # Dirección inicial de WAN
-  username   = "admin"
-  password   = "pfsense"
-  insecure   = true
+  hostname = "https://${var.wan_ip}" # Dirección IP inicial de WAN
+  username = "admin"
+  password = "pfsense"
+  insecure = true
 }
 
 # Crear directorio de almacenamiento
