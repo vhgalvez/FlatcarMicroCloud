@@ -22,7 +22,7 @@ provider "libvirt" {
 # Configuración del proveedor pfSense
 provider "pfsense" {
   depends_on = [libvirt_domain.pfsense_vm] # La VM debe estar creada primero
-  hostname   = "https://${var.wan_ip}"     # Dirección inicial de WAN
+  hostname   = "https://${var.wan_ip}"    # Dirección inicial de WAN
   username   = "admin"
   password   = "pfsense"
   insecure   = true
