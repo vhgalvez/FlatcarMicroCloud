@@ -1,17 +1,17 @@
 # pfsense\variables.tf
 variable "pfsense_vm_name" {
   type    = string
-  default = "pfsense" # Nombre predeterminado de la VM
+  default = "pfsense_clone"
 }
 
 variable "pfsense_image" {
   type    = string
-  default = "/mnt/lv_data/organized_storage/images/pfsense_base.qcow2" # Ruta de la imagen base de pfSense
+  default = "/mnt/lv_data/organized_storage/volumes/pfsense/pfsense_base.qcow2"
 }
 
 variable "pfsense_pool_path" {
   type    = string
-  default = "/mnt/lv_data/organized_storage/volumes/pfsense" # Ruta para el almacenamiento de la VM
+  default = "/mnt/lv_data/organized_storage/volumes/pfsense"
 }
 
 variable "pfsense_vm_config" {
@@ -21,18 +21,18 @@ variable "pfsense_vm_config" {
     disk_size_gb = number
   })
   default = {
-    cpus         = 2    # CPUs asignadas a la VM
-    memory       = 2048 # Memoria en MB
-    disk_size_gb = 40   # Tamaño del disco en GB
+    cpus         = 2
+    memory       = 2048
+    disk_size_gb = 40
   }
 }
 
 variable "wan_ip" {
   type    = string
-  default = "192.168.0.200" # Dirección IP de la interfaz WAN
+  default = "192.168.0.200"
 }
 
 variable "lan_ip" {
   type    = string
-  default = "192.168.1.1" # Dirección IP de la interfaz LAN
+  default = "192.168.1.1"
 }
