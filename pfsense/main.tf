@@ -21,11 +21,11 @@ provider "libvirt" {
 
 # Configuración inicial del proveedor pfSense
 provider "pfsense" {
-  hostname = "https://${var.wan_ip}" # Dirección IP inicial de WAN
+  url      = "https://${var.wan_ip}" # URL para conectarse al API de pfSense
   username = "admin"
   password = "pfsense"
-  insecure = true
 }
+
 
 # Crear directorio de almacenamiento
 resource "null_resource" "create_directory" {
