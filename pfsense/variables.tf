@@ -6,7 +6,7 @@ variable "pfsense_vm_name" {
 
 variable "pfsense_image" {
   type    = string
-  default = "/mnt/lv_data/organized_storage/volumes/pfsense/pfsense_base_optimized.qcow2"
+  default = "/mnt/lv_data/organized_storage/images/pfsense_base_optimized.qcow2"
 }
 
 variable "pfsense_pool_path" {
