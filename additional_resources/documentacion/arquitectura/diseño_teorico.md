@@ -162,3 +162,4 @@ Copy code
 sudo cp /var/lib/libvirt/images/pfsense_base.qcow2 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
 sudo chown libvirt-qemu:kvm /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
 sudo chmod 775 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
+

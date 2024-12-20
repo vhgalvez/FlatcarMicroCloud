@@ -61,7 +61,7 @@ plaintext
 +----------------------+                          +--------------------------------+    
 | pfSense VM           |                          | Redes Virtualizadas (KVM)      |    
 | Firewall Principal   |                          |                                |    
-| WAN: 192.168.0.10    |                          |  1. Cluster Interno (10.17.3.x)|    
+| WAN: 192.168.0.200   |                          |  1. Cluster Interno (10.17.3.x)|    
 | LAN: 192.168.1.1     |                          |  2. Cluster Kubernetes (10.17.4|    
 +----------------------+                          |  3. Gestión y Seguridad (10.5) |    
             |                                                    |                    
