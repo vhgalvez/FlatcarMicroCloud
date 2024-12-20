@@ -8,7 +8,8 @@ Utiliza `qemu-img` para generar una versión optimizada de la imagen QCOW2 origi
 qemu-img convert -O qcow2 /var/lib/libvirt/images/pfsense_base.qcow2 /var/lib/libvirt/images/pfsense_base_optimized.qcow2
 ```
 
-2. Verificar tamaños
+## 2. Verificar tamaños
+
 Comprueba el tamaño de ambas imágenes (original y optimizada) para confirmar que la optimización fue exitosa.
 
 ```bash
@@ -20,13 +21,14 @@ ls -lh /var/lib/libvirt/images/pfsense_base_optimized.qcow2
 Mantén la imagen original en su ubicación actual y copia ambas imágenes (original y optimizada) a la carpeta destinada para Terraform. Esto asegura que ambas versiones estén disponibles para diferentes propósitos.
 
 Copiar la imagen original:
+
 ```bash
 sudo cp /var/lib/libvirt/images/pfsense_base.qcow2 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
 ```
-## Mover la imagen optimizada:
+## Copiar la imagen optimizada:
 
 ```bash
-sudo cp /var/lib/libvirt/images/pfsense_base_optimized.qcow2 /mnt/lv_data/organized_storage/images/pfsense_base_optimized.qcow2
+sudo cp -R /var/lib/libvirt/images/pfsense_base_optimized.qcow2 /mnt/lv_data/organized_storage/images/pfsense_base_optimized.qcow2
 ```
 ## 4. Asignar permisos correctos
 
