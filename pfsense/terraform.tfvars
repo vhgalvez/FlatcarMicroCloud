@@ -1,7 +1,7 @@
 # pfsense\terraform.tfvars
 
 pfsense_vm_name   = "pfSense-Server"
-pfsense_image     = "/mnt/lv_data/organized_storage/images/pfsense_base.qcow2"
+pfsense_image     = "/mnt/lv_data/organized_storage/images/pfsense_base_optimized.qcow2"
 pfsense_pool_path = "/mnt/lv_data/organized_storage/volumes/pfsense"
 
 pfsense_vm_config = {
