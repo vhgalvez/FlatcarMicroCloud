@@ -21,9 +21,9 @@ variable "pfsense_vm_config" {
     disk_size_gb = number
   })
   default = {
-    cpus         = 2       # CPUs asignadas a la VM
-    memory       = 2048    # Memoria en MB
-    disk_size_gb = 40      # Tamaño del disco en GB
+    cpus         = 2    # CPUs asignadas a la VM
+    memory       = 2048 # Memoria en MB
+    disk_size_gb = 40   # Tamaño del disco en GB
   }
 }
 
