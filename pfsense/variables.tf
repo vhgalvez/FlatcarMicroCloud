@@ -1,4 +1,9 @@
 # pfsense\variables.tf
+variable "pfsense_vm_name" {
+  type    = string
+  default = "pfsense"
+}
+
 variable "pfsense_image" {
   type    = string
   default = "/mnt/lv_data/organized_storage/images/pfSense-Base.qcow2"
