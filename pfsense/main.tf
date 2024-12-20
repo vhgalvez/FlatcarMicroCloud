@@ -14,89 +14,82 @@ terraform {
   }
 }
 
-# Proveedor libvirt
+# Configuración del proveedor libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Proveedor pfSense
+# Configuración del proveedor pfSense
 provider "pfsense" {
   url      = "https://${var.wan_ip}" # Dirección IP inicial de WAN
   username = "admin"
   password = "pfsense"
 }
 
-# Crear VLANs
-resource "pfsense_vlan" "dmz_vlan" {
-  interface = "lan"
-  vlan_tag  = 20
-  vlan_desc = "DMZ VLAN"
+# Crear directorio de almacenamiento
+resource "null_resource" "create_directory" {
+  provisioner "local-exec" {
+    command = "mkdir -p ${var.pfsense_pool_path} && chmod 775 ${var.pfsense_pool_path}"
+  }
+  triggers = {
+    always_run = timestamp()
+  }
 }
 
-resource "pfsense_vlan" "vpn_vlan" {
-  interface = "lan"
-  vlan_tag  = 30
-  vlan_desc = "VPN VLAN"
+# Configuración del pool de almacenamiento
+resource "libvirt_pool" "pfsense_pool" {
+  depends_on = [null_resource.create_directory]
+  name       = "pfsense-pool"
+  type       = "dir"
+  target {
+    path = var.pfsense_pool_path
+  }
 }
 
-# Configurar DHCP para cada VLAN
-resource "pfsense_dhcp_range" "dmz_dhcp" {
-  interface = "dmz_vlan"
-  range {
-    start = "192.168.2.100"
-    end   = "192.168.2.200"
-  }
-  domain = "dmz.local"
-  dns    = ["192.168.2.1"]
+# Crear el volumen para pfSense
+resource "libvirt_volume" "pfsense_disk" {
+  depends_on = [libvirt_pool.pfsense_pool]
+  name       = "pfsense.qcow2"
+  pool       = libvirt_pool.pfsense_pool.name
+  source     = var.pfsense_image
+  format     = "qcow2"
 }
 
-resource "pfsense_dhcp_range" "vpn_dhcp" {
-  interface = "vpn_vlan"
-  range {
-    start = "10.17.0.100"
-    end   = "10.17.0.200"
+# Configuración de la máquina virtual de pfSense
+resource "libvirt_domain" "pfsense_vm" {
+  depends_on = [libvirt_volume.pfsense_disk]
+  name       = var.pfsense_vm_name
+  memory     = var.pfsense_vm_config.memory
+  vcpu       = var.pfsense_vm_config.cpus
+
+  disk {
+    volume_id = libvirt_volume.pfsense_disk.id
   }
-  domain = "vpn.local"
-  dns    = ["10.17.0.1"]
+
+  network_interface {
+    bridge = "br0" # WAN
+  }
+
+  network_interface {
+    bridge = "br1" # LAN
+  }
+
+  boot_device {
+    dev = ["hd"]
+  }
+
+  graphics {
+    type           = "vnc"
+    listen_address = "0.0.0.0"
+    listen_type    = "address"
+  }
 }
 
-# Configurar reglas de firewall
-resource "pfsense_firewall_rule" "allow_http_dmz" {
-  interface = "dmz_vlan"
-  protocol  = "tcp"
-  source {
-    network = "192.168.2.0/24"
-  }
-  destination {
-    port = "80"
-  }
-  action      = "pass"
-  description = "Allow HTTP traffic in DMZ VLAN"
+# Salidas de las direcciones IP
+output "pfSense_WAN_IP" {
+  value = "http://${var.wan_ip}:80"
 }
 
-resource "pfsense_firewall_rule" "allow_vpn_to_lan" {
-  interface = "vpn_vlan"
-  protocol  = "tcp"
-  source {
-    network = "10.17.0.0/24"
-  }
-  destination {
-    network = "192.168.1.0/24"
-  }
-  action      = "pass"
-  description = "Allow VPN clients to access LAN"
-}
-
-# Configurar VPN WireGuard
-resource "pfsense_wireguard" "vpn" {
-  interface   = "wg0"
-  address     = "10.17.0.1/24"
-  port        = 51820
-  private_key = "your_private_key_here"
-
-  peer {
-    public_key  = "peer_public_key_here"
-    allowed_ips = "10.17.0.100/32"
-    endpoint    = "peer_endpoint_here:51820"
-  }
+output "pfSense_LAN_IP" {
+  value = "http://${var.lan_ip}:80"
 }
