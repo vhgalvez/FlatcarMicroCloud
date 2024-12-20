@@ -85,6 +85,15 @@ resource "libvirt_domain" "pfsense_vm" {
   }
 }
 
+# Espera para inicialización de la VM
+resource "null_resource" "wait_for_vm" {
+  depends_on = [libvirt_domain.pfsense_vm]
+
+  provisioner "local-exec" {
+    command = "sleep 30" # Esperar 30 segundos para que pfSense inicialice completamente
+  }
+}
+
 # Salidas de las direcciones IP
 output "pfSense_WAN_IP" {
   value = "http://${var.wan_ip}:80"
