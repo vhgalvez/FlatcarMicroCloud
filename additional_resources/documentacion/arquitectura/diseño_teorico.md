@@ -154,12 +154,72 @@ Escalabilidad: Facilidad para añadir nuevos usuarios o servicios.
 +-----------------------------+   
 
 
-1. Copiar manualmente la imagen
-Ejecuta el comando cp en tu servidor para mover la imagen de la ubicación original a /mnt/lv_data/organized_storage/images.
 
-bash
-Copy code
-sudo cp /var/lib/libvirt/images/pfsense_base.qcow2 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
-sudo chown libvirt-qemu:kvm /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
-sudo chmod 775 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
 
+
+
+
++----------------------------------+
+|          Usuarios Públicos       |
++----------------------------------+
+              |
+              v
++----------------------------------+
+|       Cloudflare CDN             |
+|    (Protección y Cacheo)         |
++----------------------------------+
+              |
+              v
++----------------------------------+
+|         Router Físico            |
+| WAN: IP Dinámica/Estática        |
+| Subred: 192.168.0.0/24           |
+| DHCP: 192.168.0.100-254          |
++----------------------------------+
+              |
+              v
++----------------------------------+
+| Servidor Físico (Rocky Linux)    |
+| WAN: br0 (192.168.0.20)          |
+| LAN: br1 (192.168.1.x)           |
++----------------------------------+
+              |
+              v
++----------------------------------+
+| pfSense (VM)                     |
+| WAN: 192.168.0.200               |
+| LAN: 192.168.1.1                 |
+| DMZ: 192.168.2.1                 |
+| VPN: 10.17.0.1                   |
++----------------------------------+
+      |           |           |
+      |           |           v
+      |           |   +------------------+
+      v           v   | VPN Clients       |
++----------------+   +------------------+
+| LAN Interna    |   | DMZ              |
+| 192.168.1.0/24 |   | 192.168.2.0/24   |
++----------------+   +------------------+
+                         |
+                         v
+                  +-------------------+
+                  | Servidores Públicos|
+                  | (Web, Mail, etc.) |
+                  +-------------------+
+                         |
+                         v
+        +========================================+
+        | Redes Virtualizadas Internas (KVM)     |
+        +========================================+
+                         |
+                         v
+        +--------------------------+       +---------------------------+
+        | Cluster Interno          |       | Cluster Kubernetes        |
+        | IP: 10.17.3.x            |       | IP: 10.17.4.x             |
+        +--------------------------+       +---------------------------+
+                         |
+                         v
+        +--------------------------+
+        | Gestión y Seguridad      |
+        | IP: 10.5.x               |
+        +--------------------------+

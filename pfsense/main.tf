@@ -14,19 +14,19 @@ terraform {
   }
 }
 
-# Configuración del proveedor libvirt
+# Proveedor libvirt
 provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Configuración del proveedor pfSense
+# Proveedor pfSense
 provider "pfsense" {
-  url      = "https://${var.wan_ip}" # Dirección IP inicial de WAN
+  url      = "http://${var.wan_ip}"
   username = "admin"
   password = "pfsense"
 }
 
-# Crear directorio de almacenamiento
+# Crear el directorio de almacenamiento
 resource "null_resource" "create_directory" {
   provisioner "local-exec" {
     command = "mkdir -p ${var.pfsense_pool_path} && chmod 775 ${var.pfsense_pool_path}"
