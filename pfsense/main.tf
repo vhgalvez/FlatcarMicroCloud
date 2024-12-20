@@ -24,7 +24,6 @@ provider "pfsense" {
   url      = "https://${var.wan_ip}" # Dirección IP inicial de WAN
   username = "admin"
   password = "pfsense"
-  insecure = true
 }
 
 # Crear VLANs
