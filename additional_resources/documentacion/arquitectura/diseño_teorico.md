@@ -152,3 +152,13 @@ Escalabilidad: Facilidad para añadir nuevos usuarios o servicios.
 | br1: LAN Virtual            |                                
 | Subred: 192.168.1.0/24      |                                
 +-----------------------------+   
+
+
+1. Copiar manualmente la imagen
+Ejecuta el comando cp en tu servidor para mover la imagen de la ubicación original a /mnt/lv_data/organized_storage/images.
+
+bash
+Copy code
+sudo cp /var/lib/libvirt/images/pfsense_base.qcow2 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
+sudo chown libvirt-qemu:kvm /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
+sudo chmod 775 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
