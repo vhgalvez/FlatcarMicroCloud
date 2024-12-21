@@ -43,13 +43,11 @@ resource "libvirt_domain" "pfsense_vm" {
   # Interfaz WAN
   network_interface {
     bridge = "br0" # WAN
-    model  = "virtio"
   }
 
   # Interfaz LAN
   network_interface {
     bridge = "br1" # LAN
-    model  = "virtio"
   }
 
   # Configuración del dispositivo de arranque
