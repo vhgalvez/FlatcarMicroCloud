@@ -1,4 +1,4 @@
-# pfsense\main.tf
+# pfsense/main.tf
 terraform {
   required_providers {
     libvirt = {
@@ -43,25 +43,11 @@ resource "libvirt_domain" "pfsense_vm" {
   # Interfaz WAN
   network_interface {
     bridge = "br0" # WAN
-    xml    = <<-EOF
-      <interface type='bridge'>
-        <mac address='52:54:00:11:22:33'/>
-        <source bridge='br0'/>
-        <model type='virtio'/>
-      </interface>
-    EOF
   }
 
   # Interfaz LAN
   network_interface {
     bridge = "br1" # LAN
-    xml    = <<-EOF
-      <interface type='bridge'>
-        <mac address='52:54:00:44:55:66'/>
-        <source bridge='br1'/>
-        <model type='virtio'/>
-      </interface>
-    EOF
   }
 
   # Configuración del dispositivo de arranque
