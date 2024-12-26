@@ -59,3 +59,9 @@ ls -lh /mnt/lv_data/organized_storage/images/pfsense_base.qcow2
 ls -lh /mnt/lv_data/organized_storage/images/pfsense_base_optimized.qcow2
 ```
 
+## 6. Reiniciar el servicio sshd
+
+```bash
+service sshd restart    
+```
+
