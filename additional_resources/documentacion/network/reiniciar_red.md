@@ -47,7 +47,6 @@ sudo systemctl restart NetworkManager
 ```
 
 ```bash
-
 sudo setenforce 0
 sudo systemctl restart libvirtd
 sudo systemctl restart NetworkManager
@@ -62,8 +61,10 @@ sudo systemctl restart NetworkManager
 
 ```bash 
 ~/.vnc/xstartup
+
 ```
 
+```bash 
 cat /etc/systemd/system/vncserver@:1.service
 
 sudo systemctl start vncserver@:1.service
@@ -74,3 +75,5 @@ __
 
 sudo systemctl status vncserver@:3.service
 cat /usr/lib/systemd/system/vncserver@.service
+
+```
