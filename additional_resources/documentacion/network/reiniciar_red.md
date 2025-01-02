@@ -58,7 +58,6 @@ sudo systemctl restart NetworkManager
 ### VNC mobaxterm
 
 
-
 ```bash 
 ~/.vnc/xstartup
 
