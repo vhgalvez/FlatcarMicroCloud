@@ -65,3 +65,34 @@ ls -lh /mnt/lv_data/organized_storage/images/pfsense_base_optimized.qcow2
 service sshd restart    
 ```
 
+
+vi /usr/local/etc/pkg/repos/pfSense.conf
+
+FreeBSD: { enabled: no }
+
+pfSense-core: {
+  url: "https://pkg.pfsense.org/pfSense_v2_7_2_amd64-core",
+  mirror_type: "none",
+  signature_type: "fingerprints",
+  fingerprints: "/usr/local/share/pfSense/keys/pkg",
+  enabled: yes
+}
+
+pfSense: {
+  url: "https://pkg.pfsense.org/pfSense_v2_7_2_amd64-pfSense_v2_7_2",
+  mirror_type: "none",
+  signature_type: "fingerprints",
+  fingerprints: "/usr/local/share/pfSense/keys/pkg",
+  enabled: yes
+}
+
+certctl rehash
+pkg-static clean -ay
+pkg-static install -fy pkg pfSense-repo pfSense-upgrade
+
+
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+echo "nameserver 1.1.1.1" > /etc/resolv.conf
+
+
