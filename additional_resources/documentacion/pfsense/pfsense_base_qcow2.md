@@ -96,3 +96,8 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 echo "nameserver 1.1.1.1" > /etc/resolv.conf
 
 
+
+
+configuracion de red en pfsense 192.168.1.1
+
+ifconfig vtnet1 inet 192.168.1.1 netmask 255.255.255.0 up
