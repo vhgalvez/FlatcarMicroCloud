@@ -92,12 +92,26 @@ pkg-static install -fy pkg pfSense-repo pfSense-upgrade
 
 
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
-echo "nameserver 1.1.1.1" > /etc/resolv.conf
 
+
+
+
+nameserver 127.0.0.1
+nameserver 8.8.8.8
+nameserver 8.8.4.4
 
 
 
 configuracion de red en pfsense 192.168.1.1
 
 ifconfig vtnet1 inet 192.168.1.1 netmask 255.255.255.0 up
+
+
+ifconfig vtnet1 inet 192.168.1.1 netmask 255.255.255.0 up
+
+
+windows 
+route add 192.168.1.0 mask 255.255.255.0 192.168.0.200
