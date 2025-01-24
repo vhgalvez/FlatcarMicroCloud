@@ -86,11 +86,3 @@ resource "libvirt_domain" "pfsense_vm" {
   }
 }
 
-# Salidas de las direcciones IP
-output "pfSense_WAN_IP" {
-  value = "http://${var.wan_ip}:80"
-}
-
-output "pfSense_LAN_IP" {
-  value = "http://${var.lan_ip}:80"
-}
