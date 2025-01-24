@@ -14,3 +14,8 @@ pfsense_vm_config = {
 }
 
 pfsense_boot_order = ["cdrom", "hd"]
+
+
+
+
+pfsense_vm_name = "pfsense_net"
