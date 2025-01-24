@@ -1,6 +1,3 @@
-
-
-# pfsense\main.tf
 terraform {
   required_version = ">= 1.10.5"
 
@@ -77,7 +74,6 @@ resource "libvirt_domain" "pfsense" {
   # Disco ISO como CD-ROM
   disk {
     volume_id = libvirt_volume.pfsense_iso.id
-    scsi      = false
   }
 
   # Orden de arranque
