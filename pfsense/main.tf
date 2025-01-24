@@ -1,6 +1,6 @@
 # pfsense\main.tf
 terraform {
-  required_version = ">= 1.10.5"
+  required_version = ">= 1.4.0"
 
   required_providers {
     libvirt = {
@@ -74,13 +74,7 @@ resource "libvirt_domain" "pfsense" {
 
   # Disco ISO como CD-ROM
   disk {
-    volume_id  = libvirt_volume.pfsense_iso.id
-    target_bus = "ide"
-    readonly   = true
-    driver {
-      name = "qemu"
-      type = "raw"
-    }
+    volume_id = libvirt_volume.pfsense_iso.id
   }
 
   # Orden de arranque
