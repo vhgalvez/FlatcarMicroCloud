@@ -26,3 +26,6 @@ variable "pfsense_boot_order" {
   description = "Boot order for the pfSense VM"
   type        = list(string)
 }
+variable "pfsense_vm_name" {
+  type = string
+}
