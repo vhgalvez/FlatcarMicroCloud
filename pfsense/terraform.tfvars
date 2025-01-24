@@ -1,6 +1,6 @@
 # pfsense\terraform.tfvars
 
-pfsense_image     = "/mnt/lv_data/organized_storage/images/netgate-installer-amd64.iso"
+pfsense_image     = "/mnt/lv_data/organized_storage/images/pfsense_base_optimized.qcow2"
 pfsense_pool_path = "/mnt/lv_data/organized_storage/volumes/pfsense"
 
 pfsense_vm_config = {
