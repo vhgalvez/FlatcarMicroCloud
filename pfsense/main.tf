@@ -85,4 +85,3 @@ resource "libvirt_domain" "pfsense_vm" {
     listen_type    = "address"
   }
 }
-
