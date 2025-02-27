@@ -23,24 +23,36 @@ Ejecuta los siguientes comandos para eliminar todas las reglas y cadenas definid
 
 ```bash
 # Limpiar todas las reglas de iptables
-dudo iptables -F  # Flush de reglas de filtrado
-sudo iptables -X  # Eliminar cadenas personalizadas
-sudo iptables -t nat -F  # Flush de reglas de NAT
-sudo iptables -t nat -X  # Eliminar cadenas de NAT
-sudo iptables -t mangle -F  # Flush de reglas de mangle
-sudo iptables -t mangle -X  # Eliminar cadenas de mangle
+
+# Flush de reglas de filtrado
+sudo iptables -F  
+# Eliminar cadenas personalizadas
+sudo iptables -X  
+# Flush de reglas de NAT
+sudo iptables -t nat -F  
+# Eliminar cadenas de NAT
+sudo iptables -t nat -X
+# Flush de reglas de mangle
+sudo iptables -t mangle -F  
+# Eliminar cadenas de mangle
+sudo iptables -t mangle -X  
+
 ```
 
-### Establecer Políticas por Defecto
-Después de limpiar las reglas, establece las políticas predeterminadas en **ACCEPT** para evitar bloqueos:
-
 ```bash
+sudo iptables -F
+sudo iptables -X
+sudo iptables -t nat -F
+sudo iptables -t nat -X
+sudo iptables -t mangle -F
+sudo iptables -t mangle -X
 sudo iptables -P INPUT ACCEPT
 sudo iptables -P FORWARD ACCEPT
 sudo iptables -P OUTPUT ACCEPT
 ```
 
----
+
+
 
 ## 3. Flushear (Limpiar) Todas las Reglas de nftables
 Si el servidor usa **nftables**, debemos limpiarlo también:

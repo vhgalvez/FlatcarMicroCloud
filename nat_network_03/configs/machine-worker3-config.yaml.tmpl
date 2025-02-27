@@ -46,6 +46,14 @@ storage:
           DNS=${dns1}
           DNS=${dns2}
 
+          [Route]
+          Destination=10.17.4.0/24
+          Gateway=10.17.3.1
+
+          [Route]
+          Destination=10.17.3.0/24
+          Gateway=10.17.4.1
+
     - path: /etc/tmpfiles.d/hosts.conf
       filesystem: root
       mode: 0644
