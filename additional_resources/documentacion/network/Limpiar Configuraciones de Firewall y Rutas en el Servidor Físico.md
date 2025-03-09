@@ -66,6 +66,11 @@ Verifica que las reglas hayan sido eliminadas con:
 ```bash
 sudo iptables -L -v -n
 sudo nft list ruleset
+
+sudo setenforce 0
+sudo systemctl restart libvirtd
+sudo systemctl restart NetworkManager
+
 ```
 
 ---
