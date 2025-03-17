@@ -10,38 +10,38 @@
 
 1. Verificar si el reenvío de paquetes está activado:
    
-   ```bash
-   sudo sysctl -p
-   ```
+```bash
+sudo sysctl -p
+```
 
-   Salida esperada:
+Salida esperada:
 
-   ```bash
-   net.ipv4.ip_forward = 1
-   ```
+```bash
+net.ipv4.ip_forward = 1
+```
 2. Revisar si hay reglas activas en nftables:
    
-   ```bash
-   sudo nft list ruleset
-   ```
-   Si está vacío, significa que no hay reglas configuradas.
+```bash
+sudo nft list ruleset
+```
+Si está vacío, significa que no hay reglas configuradas.
 
 3. En `master1`, verificar conectividad a Internet:
    
-   ```bash
-   ping -c 4 8.8.8.8
-   ```
+```bash
+ping -c 4 8.8.8.8
+```
    Si hay pérdida del 100% de los paquetes, hay un problema de enrutamiento.
 
 
 4. Realizar un `traceroute` para ver en dónde se está perdiendo el tráfico:
    
 
-   ```bash
-   traceroute 8.8.8.8
-   ```
+```bash
+traceroute 8.8.8.8
+```
    
-   Si el tráfico se queda atascado en `10.17.4.1`, significa que no está haciendo NAT correctamente.
+Si el tráfico se queda atascado en `10.17.4.1`, significa que no está haciendo NAT correctamente.
 
 ## 2. Eliminación de reglas antiguas en nftables
 
@@ -119,4 +119,3 @@ sudo nft list ruleset
 ```
 
 Si después de reiniciar `physical1`, las reglas siguen activas y los nodos `master1` y `worker1` pueden salir a Internet, la configuración está completa. 🚀
-
