@@ -115,6 +115,7 @@ sudo systemctl enable nftables --now
 Ejecutar los siguientes comandos para confirmar que la configuración es persistente:
 
 ```bash
+sudo systemctl restart nftables
 sudo systemctl status nftables
 sudo nft list ruleset
 ```
