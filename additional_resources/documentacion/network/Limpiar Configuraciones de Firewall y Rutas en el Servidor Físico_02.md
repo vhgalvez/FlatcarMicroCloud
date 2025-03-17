@@ -31,7 +31,8 @@ Si está vacío, significa que no hay reglas configuradas.
 ```bash
 ping -c 4 8.8.8.8
 ```
-   Si hay pérdida del 100% de los paquetes, hay un problema de enrutamiento.
+
+Si hay pérdida del 100% de los paquetes, hay un problema de enrutamiento.
 
 
 4. Realizar un `traceroute` para ver en dónde se está perdiendo el tráfico:
