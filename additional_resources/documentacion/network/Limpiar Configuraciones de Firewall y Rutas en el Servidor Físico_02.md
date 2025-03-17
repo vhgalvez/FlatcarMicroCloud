@@ -1,42 +1,56 @@
 # Configuración de NAT con nftables en physical1
 
 ## 1. Diagnóstico Inicial
+
 ### Verificación de conectividad y reglas activas:
-1. Comprobar el estado de las rutas en `physical1`:
+
    ```bash
    ip route show
    ```
-2. Verificar si el reenvío de paquetes está activado:
+
+1. Verificar si el reenvío de paquetes está activado:
+   
    ```bash
    sudo sysctl -p
    ```
+
    Salida esperada:
-   ```
+
+   ```bash
    net.ipv4.ip_forward = 1
    ```
-3. Revisar si hay reglas activas en nftables:
+2. Revisar si hay reglas activas en nftables:
+   
    ```bash
    sudo nft list ruleset
    ```
    Si está vacío, significa que no hay reglas configuradas.
 
-4. En `master1`, verificar conectividad a Internet:
+3. En `master1`, verificar conectividad a Internet:
+   
    ```bash
    ping -c 4 8.8.8.8
    ```
    Si hay pérdida del 100% de los paquetes, hay un problema de enrutamiento.
 
-5. Realizar un `traceroute` para ver en dónde se está perdiendo el tráfico:
+
+4. Realizar un `traceroute` para ver en dónde se está perdiendo el tráfico:
+   
+
    ```bash
    traceroute 8.8.8.8
    ```
+   
    Si el tráfico se queda atascado en `10.17.4.1`, significa que no está haciendo NAT correctamente.
 
 ## 2. Eliminación de reglas antiguas en nftables
+
 Antes de agregar nuevas reglas, eliminamos todas las configuraciones previas:
+
 ```bash
 sudo nft flush ruleset
 ```
+
 Esto garantiza que no haya conflictos con reglas anteriores.
 
 ## 3. Configuración de NAT con nftables
@@ -58,7 +72,7 @@ sudo nft list ruleset
 
 Salida esperada:
 
-```nftables
+```bash
 table ip nat {
     chain postrouting {
         type nat hook postrouting priority srcnat; policy accept;
@@ -83,6 +97,7 @@ Si sigue sin funcionar, verificar si los paquetes están saliendo correctamente:
 ```bash
 sudo tcpdump -i enp4s0f0 icmp
 ```
+
 Si vemos tráfico saliendo hacia `8.8.8.8`, significa que el problema está en el ISP o en la configuración del gateway.
 
 ## 5. Hacer persistentes las reglas de nftables
