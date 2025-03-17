@@ -40,7 +40,9 @@ sudo nft flush ruleset
 Esto garantiza que no haya conflictos con reglas anteriores.
 
 ## 3. Configuración de NAT con nftables
+
 ### Agregar reglas de NAT en `physical1`
+
 ```bash
 sudo nft add table ip nat
 sudo nft add chain ip nat postrouting { type nat hook postrouting priority 100 \; }
@@ -49,10 +51,13 @@ sudo nft add rule ip nat postrouting ip saddr 10.17.3.0/24 oifname enp4s0f0 masq
 ```
 
 Verificamos que las reglas fueron aplicadas correctamente:
+
 ```bash
 sudo nft list ruleset
 ```
+
 Salida esperada:
+
 ```nftables
 table ip nat {
     chain postrouting {
@@ -64,30 +69,39 @@ table ip nat {
 ```
 
 ## 4. Pruebas de conectividad
+
 ### Verificar conectividad desde `master1`
+
 ```bash
 ping -c 4 8.8.8.8
 ```
+
 Si ya responde, el problema está resuelto.
 
 Si sigue sin funcionar, verificar si los paquetes están saliendo correctamente:
+
 ```bash
 sudo tcpdump -i enp4s0f0 icmp
 ```
 Si vemos tráfico saliendo hacia `8.8.8.8`, significa que el problema está en el ISP o en la configuración del gateway.
 
 ## 5. Hacer persistentes las reglas de nftables
+
 Para evitar que las reglas se pierdan tras un reinicio:
+
 ```bash
 sudo nft list ruleset | sudo tee /etc/sysconfig/nftables.conf
 sudo systemctl enable nftables --now
 ```
 
 ## 6. Verificación final
+
 Ejecutar los siguientes comandos para confirmar que la configuración es persistente:
+
 ```bash
 sudo systemctl status nftables
 sudo nft list ruleset
 ```
+
 Si después de reiniciar `physical1`, las reglas siguen activas y los nodos `master1` y `worker1` pueden salir a Internet, la configuración está completa. 🚀
 
