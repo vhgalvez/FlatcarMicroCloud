@@ -83,6 +83,16 @@ table ip nat {
 }
 ```
 
+### Agregar reglas de firewall en `physical1`
+
+```bash
+sudo iptables -A LIBVIRT_FWI -s 10.17.3.0/24 -d 10.17.4.0/24 -p icmp --icmp-type echo-request -j ACCEPT
+sudo iptables -A LIBVIRT_FWO -s 10.17.4.0/24 -d 10.17.3.0/24 -p icmp --icmp-type echo-request -j ACCEPT
+```
+
+
+
+
 ## 4. Pruebas de conectividad
 
 ### Verificar conectividad desde `master1`
@@ -121,3 +131,4 @@ sudo nft list ruleset
 ```
 
 Si después de reiniciar `physical1`, las reglas siguen activas y los nodos `master1` y `worker1` pueden salir a Internet, la configuración está completa. 🚀
+
