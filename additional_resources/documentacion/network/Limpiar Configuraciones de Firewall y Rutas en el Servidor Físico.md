@@ -1,11 +1,13 @@
 # Tutorial: Limpiar Configuraciones de Firewall y Rutas en el Servidor Físico
 
 ## Introducción
+
 Este tutorial detalla los pasos para limpiar y restablecer las configuraciones de firewall y rutas en un servidor físico que ejecuta Linux. Esto puede ser útil en situaciones donde las reglas de firewall bloquean el tráfico de red o hay configuraciones incorrectas que afectan la conectividad.
 
 ---
 
 ## 1. Respaldar las Reglas Actuales
+
 Antes de realizar cualquier cambio, es recomendable hacer un respaldo de las configuraciones actuales en caso de que necesitemos restaurarlas más tarde.
 
 ```bash
@@ -73,8 +75,6 @@ sudo systemctl restart NetworkManager
 
 ```
 
----
-
 ## 4. Deshabilitar iptables y nftables Temporalmente
 Si deseas asegurarte de que el firewall no está bloqueando nada, desactiva los servicios temporalmente:
 
@@ -96,9 +96,10 @@ Para asegurarte de que todos los cambios se aplican correctamente, reinicia el s
 sudo reboot
 ```
 
----
+
 
 ## Conclusión
+
 Después de seguir estos pasos, tu servidor físico estará sin reglas de firewall activas. Esto permitirá verificar la conectividad sin bloqueos. Si necesitas aplicar nuevas reglas, puedes configurarlas manualmente o utilizar herramientas de gestión de firewall como `firewalld`, `nftables` o `iptables`.
 
 Recuerda que dejar el servidor sin firewall lo expone a riesgos de seguridad, por lo que después de hacer las pruebas, es recomendable volver a activar y configurar reglas adecuadas.

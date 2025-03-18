@@ -83,7 +83,13 @@ table ip nat {
 }
 ```
 
-### Agregar reglas de firewall en `physical1`
+### Verificamos que el tráfico de red se está enrutando correctamente:
+
+```bash
+sudo tcpdump -i enp4s0f0 icmp
+```
+
+### Agregar reglas de firewall en `physical1` para permitir el tráfico ICMP si es necesario:
 
 ```bash
 sudo iptables -A LIBVIRT_FWI -s 10.17.3.0/24 -d 10.17.4.0/24 -p icmp --icmp-type echo-request -j ACCEPT
