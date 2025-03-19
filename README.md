@@ -36,7 +36,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | loadbalancer2 | 2   | 2048         | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 32                   | loadbalancer2 |
 | postgresql1   | 2   | 2048         | 10.17.3.14    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
 | storage1      | 2   | 2048         | 10.17.3.14    | storage1.cefaslocalserver.com      | 80                   | storage1      |
-| bation1       | 2   | 2048         | 10.17.5.2     | bation1.cefaslocalserver.com       | 80                   | bation1       |
+| bastion1      | 2   | 2048        | 10.17.5.2    | bation1.cefaslocalserver.com      | 80                  | bastion1      |
 
 ## Máquinas Virtuales y Roles
 
@@ -48,7 +48,6 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | PostgreSQL Node    | Alma Linux              | Base de datos central para microservicios  | 1        |
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
-| Bootstrap Node     | Flatcar Container Linux | Nodo inicial para configurar el clúster    | 1        |
 | storage1           | Alma Linux              | almacenacenamiento                         | 1        |
 
 ## Explicación de Roles de las VMs
