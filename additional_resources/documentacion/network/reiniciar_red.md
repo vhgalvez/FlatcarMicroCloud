@@ -32,9 +32,6 @@ sudo systemctl start firewalld
 sudo firewall-cmd --reload
 ```
 
-
-
-
 ### Reiniciar 
 
 ```bash
