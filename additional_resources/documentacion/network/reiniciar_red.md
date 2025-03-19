@@ -57,19 +57,18 @@ sudo systemctl restart NetworkManager
 
 ```bash 
 ~/.vnc/xstartup
-
 ```
 
 ```bash 
+
 cat /etc/systemd/system/vncserver@:1.service
 
 sudo systemctl start vncserver@:1.service
 sudo systemctl enable vncserver@:1.service
 sudo systemctl status vncserver@:1.service
+```
 
-__
-
+```bash
 sudo systemctl status vncserver@:3.service
 cat /usr/lib/systemd/system/vncserver@.service
-
 ```
