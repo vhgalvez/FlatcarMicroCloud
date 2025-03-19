@@ -524,7 +524,7 @@ Contraseña: prom-operator
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
 
 
-## Configuración de Redes Virtuales con pfSense y NIC passthrough en KVM
+## Configuración de Redes Virtuales con pfSense y NIC passthrough en KVM (opcional)
 
 - Verificar si la CPU soporta virtualización
  
