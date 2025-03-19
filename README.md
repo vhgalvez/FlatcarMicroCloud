@@ -384,16 +384,16 @@ resource "libvirt_network" "kube_network_03" {
 +---------------------------+                                  +---------------------------+
 | Cloudflare CDN            |                                  | VPS (IP Pública)          |
 | WAF + Proxy + DDoS Protect|                                  | Exposición de IP pública  |
-| (Ejemplo: example.com)    |                                  | Tunel VPN Seguro         |
-+---------------------------+                                  | WireGuard VPN Gateway    |
-                                   |                           | IP: 10.17.0.1            |
+| (Ejemplo: example.com)    |                                  | Tunel VPN Seguro          |
++---------------------------+                                  | WireGuard VPN Gateway     |
+                                   |                           | IP: 10.17.0.1             |
                                    |                           +---------------------------+
                                    v
                      +--------------------------------------+
                      |  WireGuard VPN (Servidor Físico)    |
-                     |  Seguridad y acceso interno        |
-                     |  Red LAN Física                    |
-                     |  192.168.0.0/24                    |
+                     |  Seguridad y acceso interno         |
+                     |  Red LAN Física                     |
+                     |  192.168.0.0/24                     |
                      +--------------------------------------+
                                    |
                                    v
@@ -411,7 +411,7 @@ resource "libvirt_network" "kube_network_03" {
 +---------------------------+         +---------------------------+
 |  Load Balancer 1 (Traefik)|         |  Load Balancer 2 (Traefik)|
 |      IP: 10.17.3.12       |         |      IP: 10.17.3.13       |
-|  (Ingress Controller)      |         |  (Ingress Controller)      |
+|  (Ingress Controller)     |         |  (Ingress Controller)     |
 +---------------------------+         +---------------------------+
                                    |
                                    |
@@ -419,8 +419,8 @@ resource "libvirt_network" "kube_network_03" {
           +--------------------------------------------------+
           |   HAProxy + Keepalived (Alta Disponibilidad)     |
           |           VIP: 10.17.3.10                        |
-          |  - Balanceo de la API de Kubernetes             |
-          |  - Failover automático entre Masters            |
+          |  - Balanceo de la API de Kubernetes              |
+          |  - Failover automático entre Masters             |
           +--------------------------------------------------+
                                    |
                                    v
@@ -531,4 +531,3 @@ https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14
 - grep -E '(vmx|svm)' /proc/cpuinfo
   
 - Verificar si la CPU soporta VT-x o AMD-V
-
