@@ -33,7 +33,8 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | worker3       | 2   | 4096         | 10.17.4.26    | worker3.cefaslocalserver.com       | 50                   | worker3       |
 | freeipa1      | 2   | 2048         | 10.17.3.11    | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
 | loadbalancer1 | 2   | 2048         | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
-| postgresql1   | 2   | 2048         | 10.17.3.13    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
+| loadbalancer2 | 2   | 2048         | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 32                   | loadbalancer2 |
+| postgresql1   | 2   | 2048         | 10.17.3.14    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
 | storage1      | 2   | 2048         | 10.17.3.14    | storage1.cefaslocalserver.com      | 80                   | storage1      |
 | bation1       | 2   | 2048         | 10.17.5.2     | bation1.cefaslocalserver.com       | 80                   | bation1       |
 
