@@ -3,19 +3,19 @@
 rocky9_image = "/mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 
 vm_rockylinux_definitions = {
-  bastion1 = {
+  k8s-api-lb = {
     cpus           = 2
     memory         = 1024
-    ip             = "10.17.5.2"
+    ip             = "10.17.5.10"
     volume_format  = "qcow2"
     volume_pool    = "default"
     volume_size    = 20 # Tamaño en GB (entero)
-    volume_name    = "bastion1-volume"
-    hostname       = "bastion1.cefaslocalserver.com"
+    volume_name    = "k8s-api-lb-volume"
+    hostname       = "k8s-api-lb.cefaslocalserver.com"
     gateway        = "192.168.0.1"
     dns1           = "8.8.8.8"
     dns2           = "8.8.4.4"
-    short_hostname = "bastion"
+    short_hostname = "k8s-api-lb"
   }
 }
 
@@ -28,3 +28,4 @@ ssh_keys = [
 ]
 
 timezone = "Europe/London"
+
