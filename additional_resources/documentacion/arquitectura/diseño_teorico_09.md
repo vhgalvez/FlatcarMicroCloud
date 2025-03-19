@@ -161,3 +161,42 @@ Editar
 
 PostgreSQL → 10.17.3.14 (Máquina virtual externa)
 Longhorn (Almacenamiento distribuido) → 10.17.4.27
+
+
+
+
+
+ Explicación de la Arquitectura
+✅ pfSense (192.168.0.200)
+
+Firewall central de la infraestructura.
+Controla tráfico interno y externo.
+IDS/IPS activado para monitoreo.
+✅ Load Balancers (Traefik - 10.17.3.12 y 10.17.3.13)
+
+Manejan el tráfico HTTP/S dentro del clúster.
+Integrados con Kubernetes como Ingress Controller.
+✅ HAProxy + Keepalived (VIP 10.17.3.10)
+
+Balancea las peticiones a la API de Kubernetes.
+Failover automático: Si un master falla, redirige tráfico a otro.
+✅ Master Nodes (etcd - 10.17.4.21, 10.17.4.22, 10.17.4.23)
+
+Kubernetes Control Plane.
+Alta disponibilidad con HAProxy.
+✅ Workers Nodes
+
+Ejecutan los workloads y servicios de Kubernetes.
+✅ FreeIPA (10.17.3.11), PostgreSQL (10.17.3.14), Storage (10.17.4.27)
+
+FreeIPA: DNS y autenticación.
+PostgreSQL: Base de datos principal.
+Storage Node: Almacenamiento distribuido.
+🔥 Resumen Técnico
+✅ Mejor organización de tráfico entre Ingress, API y workloads.
+✅ Separación lógica y seguridad mejorada con pfSense y HAProxy.
+✅ Alta disponibilidad (HA) con Keepalived en la API.
+✅ Optimización para Kubernetes, balanceo de carga y escalabilidad.
+Esta es la arquitectura óptima para seguridad, alta disponibilidad y rendimiento. 🚀
+
+Dime si quieres ajustes o mejoras. 🔥
