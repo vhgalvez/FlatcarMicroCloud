@@ -486,7 +486,7 @@ sudo curl -sfL https://get.k3s.io | K3S_URL=https://10.17.4.21:6443 K3S_TOKEN=K1
 curl -sfL https://get.k3s.io | sh -s - server --node-ip "10.17.4.21" --tls-san "10.17.4.21"
 
 
-### acceso a grafana
+### Acceso a Grafana
 
 
 http://master1.cefaslocalserver.com:3000
@@ -497,12 +497,11 @@ Contraseña: prom-operator
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
 
 
-
 ## Configuración de Redes Virtuales con pfSense y NIC passthrough en KVM
 
 - Verificar si la CPU soporta virtualización
  
-  grep -E '(vmx|svm)' /proc/cpuinfo
+- grep -E '(vmx|svm)' /proc/cpuinfo
   
 - Verificar si la CPU soporta VT-x o AMD-V
-- 
+
