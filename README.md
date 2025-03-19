@@ -38,7 +38,6 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | storage1      | 2   | 2048         | 10.17.3.14    | storage1.cefaslocalserver.com      | 80                   | storage1      |
 | bation1       | 2   | 2048         | 10.17.5.2     | bation1.cefaslocalserver.com       | 80                   | bation1       |
 
-
 ## Máquinas Virtuales y Roles
 
 | Nodo               | Sistema Operativo       | Función                                    | Cantidad |
@@ -496,8 +495,6 @@ Usuario: admin
 Contraseña: prom-operator
 
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
-
-
 
 
 
