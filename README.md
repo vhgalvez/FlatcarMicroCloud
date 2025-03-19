@@ -418,7 +418,7 @@ resource "libvirt_network" "kube_network_03" {
                                    v
           +--------------------------------------------------+
           |   HAProxy + Keepalived (Alta Disponibilidad)     |
-          |           VIP: 10.17.3.10                        |
+          |           k8s-api-lb - VIP: 10.17.5.10           |
           |  - Balanceo de la API de Kubernetes              |
           |  - Failover automático entre Masters             |
           +--------------------------------------------------+
