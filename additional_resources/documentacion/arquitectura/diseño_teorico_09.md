@@ -200,3 +200,32 @@ Storage Node: Almacenamiento distribuido.
 Esta es la arquitectura óptima para seguridad, alta disponibilidad y rendimiento. 🚀
 
 Dime si quieres ajustes o mejoras. 🔥
+
+
+
++--------------------+--------------------+
+          |                                         |
+          v                                         v
++---------------------------+         +---------------------------+
+|  Load Balancer 1 (Traefik)|         |  Load Balancer 2 (Traefik)|
+|      IP: 10.17.3.12       |         |      IP: 10.17.3.13       |
+|  (Ingress Controller)     |         |  (Ingress Controller)     |
++---------------------------+         +---------------------------+
+                                   |
+                                   v
+          +--------------------------------------------------+
+          |   HAProxy + Keepalived (Alta Disponibilidad)     |
+          |           k8s-api-lb - VIP: 10.17.5.10           |
+          |  - Balanceo de la API de Kubernetes              |
+          |  - Failover automático entre Masters             |
+          +--------------------------------------------------+
+                                   |
+                                   v
+                   +---------------------------+---------------------------+---------------------------+
+                   |                           |                           |
+                   v                           v                           v
+          +------------------+       +------------------+       +------------------+
+          |  Master Node 1   |       |  Master Node 2   |       |  Master Node 3   |
+          |       (etcd)     |       |       (etcd)     |       |       (etcd)     |
+          |    10.17.4.21    |       |    10.17.4.22    |       |    10.17.4.23    |
+          +------------------+       +------------------+       +------------------+
