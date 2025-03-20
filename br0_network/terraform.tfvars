@@ -12,9 +12,9 @@ vm_rockylinux_definitions = {
     volume_size    = 20 # Tamaño en GB (entero)
     volume_name    = "k8s-api-lb-volume"
     hostname       = "k8s-api-lb.cefaslocalserver.com"
-    gateway        = "192.168.0.1"
-    dns1           = "8.8.8.8"
-    dns2           = "8.8.4.4"
+    gateway        = "10.17.5.1"
+    dns1           = "10.17.3.11"
+    dns2           = "8.8.8.8"
     short_hostname = "k8s-api-lb"
   }
 }
