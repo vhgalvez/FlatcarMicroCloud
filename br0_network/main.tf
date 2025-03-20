@@ -23,11 +23,11 @@ resource "libvirt_network" "br0" {
 }
 
 # Configuración del pool de almacenamiento
-resource "libvirt_pool" "volumetmp_bastion" {
-  name = "${var.cluster_name}_bastion"
+resource "libvirt_pool" "volumetmp_k8s-api-lb" {
+  name = "${var.cluster_name}_k8s-api-lb"
   type = "dir"
   target {
-    path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_bastion"
+    path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_k8s-api-lb"
   }
 }
 
@@ -35,7 +35,7 @@ resource "libvirt_pool" "volumetmp_bastion" {
 resource "libvirt_volume" "rocky9_image" {
   name   = "${var.cluster_name}-rocky9_image"
   source = var.rocky9_image
-  pool   = libvirt_pool.volumetmp_bastion.name  # Usando el pool correcto
+  pool   = libvirt_pool.volumetmp_k8s-api-lb.name  # Usando el pool correcto
   format = "qcow2"
 }
 
@@ -61,7 +61,7 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_rockylinux_definitions
 
   name      = "${each.key}_cloudinit.iso"
-  pool      = libvirt_pool.volumetmp_bastion.name  # Usando el pool correcto
+  pool      = libvirt_pool.volumetmp_k8s-api-lb.name  # Usando el pool correcto
   user_data = data.template_file.vm_configs[each.key].rendered
   network_config = templatefile("${path.module}/config/network-config.tpl", {
     ip      = each.value.ip,
@@ -77,7 +77,7 @@ resource "libvirt_volume" "vm_disk" {
 
   name           = each.value.volume_name
   base_volume_id = libvirt_volume.rocky9_image.id
-  pool           = libvirt_pool.volumetmp_bastion.name  # Usando el pool correcto
+  pool           = libvirt_pool.volumetmp_k8s-api-lb.name  # Usando el pool correcto
   format         = each.value.volume_format
   size           = each.value.volume_size * 1024 * 1024 * 1024 # Convierte GB a bytes
 }
