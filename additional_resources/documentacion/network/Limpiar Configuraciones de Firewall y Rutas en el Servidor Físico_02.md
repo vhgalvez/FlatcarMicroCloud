@@ -61,6 +61,7 @@ Esto garantiza que no haya conflictos con reglas anteriores.
 ```bash
 sudo nft add table ip nat
 sudo nft add chain ip nat postrouting { type nat hook postrouting priority 100 \; }
+sudo nft add rule ip nat postrouting ip saddr 10.17.5.0/24 oifname enp4s0f0 masquerade
 sudo nft add rule ip nat postrouting ip saddr 10.17.4.0/24 oifname enp4s0f0 masquerade
 sudo nft add rule ip nat postrouting ip saddr 10.17.3.0/24 oifname enp4s0f0 masquerade
 ```
@@ -77,6 +78,7 @@ Salida esperada:
 table ip nat {
     chain postrouting {
         type nat hook postrouting priority srcnat; policy accept;
+        ip saddr 10.17.5.0/24 oifname "enp4s0f0" masquerade
         ip saddr 10.17.4.0/24 oifname "enp4s0f0" masquerade
         ip saddr 10.17.3.0/24 oifname "enp4s0f0" masquerade
     }
