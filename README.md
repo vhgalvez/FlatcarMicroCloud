@@ -475,7 +475,9 @@ resource "libvirt_network" "kube_network_03" {
 
 ## Homelab Server (Servidor Físico ProLiant DL380 G7)
 
-![Servidor en Rack](additional_resources/image/servidor_rack.jpg)
+![Servidor en Rack](additional_resources/image/servidor_rack_01.jpg)
+
+![Servidor en Rack](additional_resources/image/servidor_rack_02.jpg)
 
 ## Arquitectura de Red (Router fibra optica y Switch TP-Link LS1008G)
 
@@ -543,10 +545,23 @@ https://github.com/vhgalvez/kubernetes-infra-automation.git
 
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
 
-## Configuración de Redes Virtuales con pfSense y NIC passthrough en KVM (opcional)
+## Configuración de Redes Virtuales con pfSense y NIC Passthrough en KVM (Opcional)
 
-- Verificar si la CPU soporta virtualización
- 
-- grep -E '(vmx|svm)' /proc/cpuinfo
-  
-- Verificar si la CPU soporta VT-x o AMD-V
+Esta sección es útil si deseas optimizar el rendimiento de red de tu entorno virtualizado con **passthrough de interfaces físicas (NIC)** directamente a una máquina virtual, como **pfSense**.
+
+### 🔍 Verificar Compatibilidad de Virtualización en la CPU
+
+Antes de configurar NIC passthrough, asegúrate de que tu CPU soporte virtualización por hardware.
+
+#### ✅ Comprobar si la CPU soporta Intel VT-x o AMD-V:
+
+```bash
+grep -E '(vmx|svm)' /proc/cpuinfo
+```
+
+- vmx: Indica soporte para **Intel VT-x**.
+
+- svm: Indica soporte para **AMD-V**.
+
+
+![Cockpit en Rocky Linux - Login](additional_resources/image/cockpit-rocky-linux-dashboard-login.png)
