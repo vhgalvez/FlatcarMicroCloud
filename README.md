@@ -569,6 +569,3 @@ grep -E '(vmx|svm)' /proc/cpuinfo
 - vmx: Indica soporte para **Intel VT-x**.
 
 - svm: Indica soporte para **AMD-V**.
-
-
-![Cockpit en Rocky Linux - Login](additional_resources/image/cockpit-rocky-linux-dashboard-login.png)
