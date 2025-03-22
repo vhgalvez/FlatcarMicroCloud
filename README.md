@@ -473,7 +473,7 @@ resource "libvirt_network" "kube_network_03" {
 
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
 
-![Switch TP-Link LS1008G](additional_resources/image/Switch_TP-Link_20LS1008G.jpg)
+![Switch TP-Link LS1008G](additional_resources\image\switch-tplink-ls1008g.jpg)
 
 ![Servidor en Rack](additional_resources/image/servidor_rack.jpg)
 
