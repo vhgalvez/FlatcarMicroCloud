@@ -473,6 +473,10 @@ resource "libvirt_network" "kube_network_03" {
 
 ![alt text](additional_resources/image/cluster_k3s.jpg)
 
+![alt text](additional_resources\image\Switch_TP-Link LS1008G.jpg)
+
+![alt text](additional_resources\image\servidor_rack.jpg)
+
 ## Optimización para Producción
 
 | Aspecto                     | Detalle                                                                                            |
