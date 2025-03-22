@@ -466,8 +466,7 @@ resource "libvirt_network" "kube_network_03" {
           | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento Persist.   |
           | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.4.27            |
           +---------------------------+   +---------------------------+   +---------------------------+
-
-                        
+                       
 ```
 
 ## Arquitectura de Kubernetes (Cluster K3s)
