@@ -483,9 +483,7 @@ resource "libvirt_network" "kube_network_03" {
 
 ![Switch TP-Link LS1008G](additional_resources/image/switch-tplink-ls1008g.jpg)
 
-## Interfaz Web de Administración – Cockpit en Rocky Linux
-
-## Interfaz Web de Administración – Cockpit en Rocky Linux
+## Interfaz Web de Administración (Cockpit en Rocky Linux)
 
 ![Cockpit en Rocky Linux - Login](additional_resources/image/cockpit-rocky-linux-dashboard-login.png)
 
