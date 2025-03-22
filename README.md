@@ -2,7 +2,7 @@
 
 ## Descripción General del Proyecto
 
-FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico. El entorno se ejecuta sobre un servidor ProLiant DL380 G7, utilizando Rocky Linux 9.5 como sistema operativo base para virtualización, junto con AlmaLinux 9.4 en algunos nodos auxiliares. Las máquinas virtuales que componen el clúster Kubernetes utilizan Flatcar Container Linux como sistema operativo liviano y seguro.
+**FlatcarMicroCloud** es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico. El entorno se ejecuta sobre un servidor **ProLiant DL380 G7**, utilizando **Rocky Linux 9.5** como sistema operativo base para virtualización, junto con **AlmaLinux 9.4** en algunos nodos auxiliares. Las máquinas virtuales que componen el clúster Kubernetes utilizan **Flatcar Container Linux** como sistema operativo liviano y seguro.
 
 Esta arquitectura permite desplegar aplicaciones en contenedores mediante herramientas modernas como:
 
@@ -41,11 +41,11 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | worker1       | 2   | 4096         | 10.17.4.24    | worker1.cefaslocalserver.com       | 50                   | worker1       |
 | worker2       | 2   | 4096         | 10.17.4.25    | worker2.cefaslocalserver.com       | 50                   | worker2       |
 | worker3       | 2   | 4096         | 10.17.4.26    | worker3.cefaslocalserver.com       | 50                   | worker3       |
+| storage1      | 2   | 2048         | 10.17.3.27    | storage1.cefaslocalserver.com      | 80                   | storage1      |
 | freeipa1      | 2   | 2048         | 10.17.3.11    | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
 | loadbalancer1 | 2   | 2048         | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
 | loadbalancer2 | 2   | 2048         | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 32                   | loadbalancer2 |
 | postgresql1   | 2   | 2048         | 10.17.3.14    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
-| storage1      | 2   | 2048         | 10.17.3.14    | storage1.cefaslocalserver.com      | 80                   | storage1      |
 | k8s-api-lb    | 2   | 2048         | 10.17.5.10    | k8s-api-lb.cefaslocalserver.com    | 80                   | k8s-api-lb    |
 
 ## Máquinas Virtuales y Roles
@@ -289,11 +289,14 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
 | kube_network_02 | loadbalancer2 | 10.17.3.13   | Balanceo de carga para el clúster        |
 | kube_network_02 | postgresql1   | 10.17.3.14   | Gestión de bases de datos                |
-| kube_network_03 | storage1      | 10.17.4.27   | alamacenamiento                          |
 | kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
+| kube_network_03 | master1       | 10.17.4.22   | Gestión del clúster                      |
+| kube_network_03 | master1       | 10.17.4.23   | Gestión del clúster                      |
 | kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
 | kube_network_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
+| kube_network_03 | storage1      | 10.17.4.27   | alamacenamiento                          |
+
 
 ### Red br0 
 
@@ -401,18 +404,18 @@ resource "libvirt_network" "kube_network_03" {
                                    |                           +---------------------------+
                                    v
                      +--------------------------------------+
-                     |  WireGuard VPN (Servidor Físico)    |
-                     |  Seguridad y acceso interno         |
-                     |  Red LAN Física                     |
-                     |  192.168.0.0/24                     |
+                     |  WireGuard VPN (Servidor Físico)     |
+                     |  Seguridad y acceso interno          |
+                     |  Red LAN Física                      |
+                     |  192.168.0.0/24                      |
                      +--------------------------------------+
                                    |
                                    v
                      +--------------------------------------+
-                     |  pfSense Firewall & NAT            |
-                     |  Seguridad de red                  |
-                     |  VPN, Reglas, IDS/IPS              |
-                     |  IP: 192.168.0.200                 |
+                     |  pfSense Firewall & NAT              |
+                     |  Seguridad de red                    |
+                     |  VPN, Reglas, IDS/IPS                |
+                     |  IP: 192.168.0.200                   |
                      +--------------------------------------+
                                    |
                                    v
