@@ -289,7 +289,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 | Red NAT | Nodo       | Dirección IP | Rol del Nodo                             |
 | ------- | ---------- | ------------ |------------------------------------------|
-| br0     | k8s-api-lb | 10.17.5.10   | seguridad                                |
+| br0     | k8s-api-lb | 10.17.5.10   | HAProxy + Keepalived  VIP                |
 
 ## Detalles de Configuración
 
@@ -300,7 +300,8 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
   - Alma Linux: `/mnt/lv_data/organized_storage/images/AlmaLinux-9.4-x86_64.qcow2`
 
 - **Red Gateway**:
-
+  
+  - br0: 10.17.5.1  
   - kube_network_03: 10.17.4.1
   - kube_network_02: 10.17.3.1
 
