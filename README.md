@@ -447,7 +447,7 @@ resource "libvirt_network" "kube_network_03" {
           +------------------+       +------------------+       +------------------+
                                    |
                                    v
-                   +---------------------------+---------------------------+---------------------------+---------------------------+
+                   +---------------------------+---------------------------+---------------------------+
                    |                           |                           |                           |
                    v                           v                           v                           v
           +------------------+       +------------------+       +------------------+       +------------------+
@@ -533,6 +533,11 @@ https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
 ### Configuración de K3s en el Clúster de Kubernetes
 
 https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
+
+
+### Implementación de configuracion del Clúster de Kubernetes
+
+https://github.com/vhgalvez/kubernetes-infra-automation.git
 
 ## Recursos Adicionales soporatdos por HP
 
