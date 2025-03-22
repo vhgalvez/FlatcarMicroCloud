@@ -2,7 +2,17 @@
 
 ## Descripción General del Proyecto
 
-FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico, en este caso, el ProLiant DL380 G7 ejecutando Alma Linux9.4. Permite desplegar aplicaciones en contenedores utilizando herramientas como K3s para Kubernetes ligero, Longhorn y NFS para almacenamiento persistente, monitoreo avanzado con Prometheus y Grafana, y Apache Kafka y MQTT Mosquitto para comunicación entre microservicios.
+FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico. El entorno se ejecuta sobre un servidor ProLiant DL380 G7, utilizando Rocky Linux 9.5 como sistema operativo base para virtualización, junto con AlmaLinux 9.4 en algunos nodos auxiliares. Las máquinas virtuales que componen el clúster Kubernetes utilizan Flatcar Container Linux como sistema operativo liviano y seguro.
+
+Esta arquitectura permite desplegar aplicaciones en contenedores mediante herramientas modernas como:
+
+- **K3s**, una distribución ligera de Kubernetes.
+
+- **Longhorn y NFS** para almacenamiento persistente.
+
+- **Prometheus y Grafana** para monitoreo y visualización avanzada.
+
+- **Apache Kafka y MQTT Mosquitto** para comunicación asincrónica entre microservicios.
 
 ## Hardware del Servidor
 
@@ -16,7 +26,7 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 
 ## Sistemas Operativos y Virtualización
 
-- **Sistemas Operativos**: Alma Linux9.4 y Flatcar Container Linux
+- **Sistemas Operativos**: Rocky Linux 9.5 y Flatcar Container Linux y Alma Linux 9.4
 - **Virtualización**: KVM con Libvirt y Virt-Manager
 - **Configuración de Red**: VPN con WireGuard, DHCP, firewall, y configuraciones de redes virtuales (NAT y Bridge) con KVM.
 - **Switch y Router**: Facilitan la comunicación y conectividad del clúster.
