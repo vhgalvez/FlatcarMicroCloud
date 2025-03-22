@@ -142,11 +142,20 @@ Si después de reiniciar `physical1`, las reglas siguen activas y los nodos `mas
 
 
 
-10.17.4.21
+# 10.17.4.21
 sudo iptables -I FORWARD -i virbr1 -o virbr0 -j ACCEPT
 sudo iptables -I FORWARD -i virbr0 -o virbr1 -j ACCEPT
 
 
-10.17.5.10
+# 10.17.5.10
 sudo iptables -I FORWARD -i virbr1 -o virbr2 -j ACCEPT
 sudo iptables -I FORWARD -i virbr2 -o virbr1 -j ACCEPT
+
+
+# 10.17.5.10
+sudo iptables -I FORWARD -i virbr2 -o virbr0 -j ACCEPT
+sudo iptables -I FORWARD -i virbr0 -o virbr2 -j ACCEPT
+
+
+sudo docker compose -f /etc/traefik/docker-compose.yml down
+sudo docker compose -f /etc/traefik/docker-compose.yml up -d
