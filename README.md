@@ -471,11 +471,11 @@ resource "libvirt_network" "kube_network_03" {
                         
 ```
 
-## Arquitectura de Kubernetes
+## Arquitectura de Kubernetes (Cluster K3s)
 
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
 
-## Arquitectura de Red (Servidor Físico)
+## Homelab Server (Servidor Físico ProLiant DL380 G7)
 
 ![Servidor en Rack](additional_resources/image/servidor_rack.jpg)
 
