@@ -532,17 +532,13 @@ https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
 
 https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
 
-
-
 ### Configuración de K3s en el Clúster de Kubernetes
 
 https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
 
-
 ## Recursos Adicionales soporatdos por HP
 
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
-
 
 ## Configuración de Redes Virtuales con pfSense y NIC passthrough en KVM (opcional)
 
