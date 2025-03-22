@@ -530,26 +530,14 @@ https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
 
 ### Automatización ansible para la configuración de NTP
 
-https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
+https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
 
 
 
 ### Configuración de K3s en el Clúster de Kubernetes
 
-curl -sfL https://get.k3s.io | K3S_URL=https://K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7:6443 K3S_TOKEN=<NODE_TOKEN> sh -
+https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
 
-
-sudo curl -sfL https://get.k3s.io | K3S_URL=https://10.17.4.21:6443 K3S_TOKEN=K105285ff598aec61abdf70c75ece64e56782d395222d6d8eabc9c49cadd74dcb8f::server:04fd44c81582d038e72d28d2ef7114b7 sh -
-
-curl -sfL https://get.k3s.io | sh -s - server --node-ip "10.17.4.21" --tls-san "10.17.4.21"
-
-
-### Acceso a Grafana
-
-http://master1.cefaslocalserver.com:3000
-
-Usuario: admin
-Contraseña: prom-operator
 
 ## Recursos Adicionales soporatdos por HP
 
