@@ -475,6 +475,8 @@ resource "libvirt_network" "kube_network_03" {
 
 ## Homelab Server (Servidor Físico ProLiant DL380 G7)
 
+![Virtualizacion KVM](additional_resources/image/virtualizacion_kvm.jpg)
+
 ![Servidor en Rack](additional_resources/image/servidor_rack_01.jpg)
 
 ![Servidor en Rack](additional_resources/image/servidor_rack_02.jpg)
@@ -545,11 +547,16 @@ https://github.com/vhgalvez/kubernetes-infra-automation.git
 
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
 
-## Configuración de Redes Virtuales con pfSense y NIC Passthrough en KVM (Opcional)
+
+## Configuración de Redes Virtuales con pfSense 
+
+![pfSense](additional_resources/image/pfSense.jpg)
 
 Esta sección es útil si deseas optimizar el rendimiento de red de tu entorno virtualizado con **passthrough de interfaces físicas (NIC)** directamente a una máquina virtual, como **pfSense**.
 
 ### 🔍 Verificar Compatibilidad de Virtualización en la CPU
+
+#### NIC Passthrough en KVM (Opcional)
 
 Antes de configurar NIC passthrough, asegúrate de que tu CPU soporte virtualización por hardware.
 
