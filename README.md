@@ -36,14 +36,14 @@ FlatcarMicroCloud es una solución Kubernetes diseñada para maximizar los recur
 | loadbalancer2 | 2   | 2048         | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 32                   | loadbalancer2 |
 | postgresql1   | 2   | 2048         | 10.17.3.14    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
 | storage1      | 2   | 2048         | 10.17.3.14    | storage1.cefaslocalserver.com      | 80                   | storage1      |
-| bastion1      | 2   | 2048        | 10.17.5.2    | bation1.cefaslocalserver.com      | 80                  | bastion1      |
+| k8s-api-lb    | 2   | 2048         | 10.17.5.10    | k8s-api-lb.cefaslocalserver.com    | 80                   | k8s-api-lb    |
 
 ## Máquinas Virtuales y Roles
 
 | Nodo               | Sistema Operativo       | Función                                    | Cantidad |
 | ------------------ | ----------------------- | ------------------------------------------ | -------- |
-| Bastion Node       | Alma Linux              | gestion y seguridad                        | 1        |
-| Load Balancer Node | Alma Linux              | Balanceo de tráfico con Traefik            | 1        |
+| k8s-api-lb         | Alma Linux              | gestion y seguridad                        | 1        |
+| Load Balancer Node | Alma Linux              | Balanceo Traefik controlador de ingress    | 2        |
 | FreeIPA Node       | Alma Linux              | DNS y autenticación                        | 1        |
 | PostgreSQL Node    | Alma Linux              | Base de datos central para microservicios  | 1        |
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
@@ -287,9 +287,9 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ### Red br0 
 
-| Red NAT | Nodo     | Dirección IP | Rol del Nodo                               |
-| ------- | -------- | ------------ | ------------------------------------------ |
-| br0     | bastion1 | 10.17.5.2    | seguridad                                  |
+| Red NAT | Nodo       | Dirección IP | Rol del Nodo                             |
+| ------- | ---------- | ------------ |------------------------------------------|
+| br0     | k8s-api-lb | 10.17.5.10   | seguridad                                |
 
 ## Detalles de Configuración
 
