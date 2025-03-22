@@ -516,11 +516,12 @@ curl -sfL https://get.k3s.io | sh -s - server --node-ip "10.17.4.21" --tls-san "
 
 ### Acceso a Grafana
 
-
 http://master1.cefaslocalserver.com:3000
 
 Usuario: admin
 Contraseña: prom-operator
+
+## Recursos Adicionales soporatdos por HP
 
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
 
