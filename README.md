@@ -485,9 +485,11 @@ resource "libvirt_network" "kube_network_03" {
 
 ## Interfaz Web de Administración – Cockpit en Rocky Linux
 
+## Interfaz Web de Administración – Cockpit en Rocky Linux
+
 ![Cockpit en Rocky Linux - Login](additional_resources/image/cockpit-rocky-linux-dashboard-login.png)
 
-La imagen muestra la pantalla de inicio de sesión de la interfaz web **Cockpit** en un servidor **Rocky Linux**. Cockpit es una herramienta poderosa de administración remota que permite gestionar el sistema operativo de manera gráfica desde un navegador web. Desde aquí es posible monitorear el rendimiento del sistema, gestionar servicios, redes, usuarios, almacenamiento y acceder a una terminal, facilitando el control de servidores Linux sin necesidad de depender únicamente de la línea de comandos.
+Pantalla de inicio de sesión de **Cockpit**, una interfaz web para administrar servidores **Rocky Linux** de forma remota y gráfica. Permite monitorear el sistema, gestionar servicios, redes, usuarios y acceder a una terminal sin depender exclusivamente de la línea de comandos.
 
 ## Optimización para Producción
 
