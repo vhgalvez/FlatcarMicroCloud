@@ -463,9 +463,9 @@ resource "libvirt_network" "kube_network_03" {
                    |                           |                           |
                    v                           v                           v
           +---------------------------+   +---------------------------+   +---------------------------+
-          |     FreeIPA Node          |   |    PostgreSQL Node        |   |     Storage Node         |
-          | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento Persist.  |
-          | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.4.27           |
+          |     FreeIPA Node          |   |    PostgreSQL Node        |   |     Storage Node          |
+          | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento Persist.   |
+          | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.4.27            |
           +---------------------------+   +---------------------------+   +---------------------------+
 
 
