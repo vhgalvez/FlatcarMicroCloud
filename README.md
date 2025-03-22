@@ -471,7 +471,7 @@ resource "libvirt_network" "kube_network_03" {
                         
 ```
 
-![alt text](additional_resources/image/cluster_k3s.png)
+![alt text](additional_resources/image/cluster_k3s.jpg)
 
 ## Optimización para Producción
 
