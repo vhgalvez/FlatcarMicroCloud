@@ -475,7 +475,6 @@ resource "libvirt_network" "kube_network_03" {
 
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
 
-
 ## Arquitectura de Red (Servidor Físico)
 
 ![Servidor en Rack](additional_resources/image/servidor_rack.jpg)
@@ -483,8 +482,6 @@ resource "libvirt_network" "kube_network_03" {
 ## Arquitectura de Red (Router fibra optica y Switch TP-Link LS1008G)
 
 ![Switch TP-Link LS1008G](additional_resources/image/switch-tplink-ls1008g.jpg)
-
-
 
 ## Optimización para Producción
 
