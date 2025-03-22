@@ -64,14 +64,13 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 - **Maestros (master1, master2, master3)**:
 
-  - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
+- Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
 
 - **Workers (worker1, worker2, worker3)**:
 - Nodos que ejecutan aplicaciones y microservicios, proporcionando la capacidad de escalar horizontalmente.
   
 - **FreeIPA (freeipa1)**:
-
-  - Nodo que actúa como servidor DNS y de autenticación, proporcionando gestión de nombres y autenticación centralizada.
+- Nodo que actúa como servidor DNS y de autenticación, proporcionando gestión de nombres y autenticación centralizada.
 
 - **Load Balancer (load_balancer1,load_balancer2)**:
   
@@ -79,7 +78,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 - **PostgreSQL (postgresql1)**:
 
-  - Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
+- Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
 
 ## Fases de Implementación
 
