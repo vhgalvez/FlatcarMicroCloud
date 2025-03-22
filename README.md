@@ -471,11 +471,19 @@ resource "libvirt_network" "kube_network_03" {
                         
 ```
 
+## Arquitectura de Kubernetes
+
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
 
-![Switch TP-Link LS1008G](additional_resources\image\switch-tplink-ls1008g.jpg)
+## Arquitectura de Red
 
 ![Servidor en Rack](additional_resources/image/servidor_rack.jpg)
+
+## Arquitectura de Red y Conectividad
+
+![Switch TP-Link LS1008G](additional_resources/image/switch-tplink-ls1008g.jpg)
+
+
 
 ## Optimización para Producción
 
