@@ -48,6 +48,28 @@ resource "libvirt_volume" "base" {
   format = "qcow2"
 }
 
+resource "libvirt_volume" "vm_disk" {
+  for_each = var.vm_definitions
+
+  name           = "${each.key}-disk"
+  base_volume_id = libvirt_volume.base.id
+  pool           = libvirt_pool.volumetmp_flatcar_03.name
+  format         = "qcow2"
+  size           = each.value.disk_size * 1024 * 1024
+}
+
+# Disco adicional (si existe)
+resource "libvirt_volume" "additional_disk" {
+  for_each = {
+    for k, v in var.vm_definitions : k => v if contains(keys(v), "additional_disks")
+  }
+
+  name   = "${each.key}-data-disk"
+  pool   = libvirt_pool.volumetmp_flatcar_03.name
+  format = each.value.additional_disks[0].type
+  size   = each.value.additional_disks[0].size * 1024 * 1024
+}
+
 data "template_file" "vm-configs" {
   for_each = var.vm_definitions
 
@@ -85,28 +107,6 @@ resource "libvirt_ignition" "ignition" {
   content = data.ct_config.vm-ignitions[each.key].rendered
 }
 
-resource "libvirt_volume" "vm_disk" {
-  for_each = var.vm_definitions
-
-  name           = "${each.key}-disk"
-  base_volume_id = libvirt_volume.base.id
-  pool           = libvirt_pool.volumetmp_flatcar_03.name
-  format         = "qcow2"
-  size           = each.value.disk_size * 1024 * 1024
-}
-
-resource "libvirt_volume" "additional_disks" {
-  for_each = {
-    for vm_name, vm in var.vm_definitions :
-    vm_name => vm if contains(keys(vm), "additional_disks")
-  }
-
-  name   = "${each.key}-data-disk"
-  pool   = libvirt_pool.volumetmp_flatcar_03.name
-  format = each.value.additional_disks[0].type
-  size   = each.value.additional_disks[0].size * 1024 * 1024
-}
-
 resource "libvirt_domain" "machine" {
   for_each = var.vm_definitions
 
@@ -126,9 +126,8 @@ resource "libvirt_domain" "machine" {
 
   dynamic "disk" {
     for_each = contains(keys(each.value), "additional_disks") ? [1] : []
-
     content {
-      volume_id = libvirt_volume.additional_disks[each.key].id
+      volume_id = libvirt_volume.additional_disk[each.key].id
     }
   }
 
@@ -149,6 +148,7 @@ resource "libvirt_domain" "machine" {
 output "ip_addresses" {
   value = {
     for key, machine in libvirt_domain.machine :
-    key => machine.network_interface[0].addresses[0] if length(machine.network_interface[0].addresses) > 0
+    key => machine.network_interface[0].addresses[0]
+    if length(machine.network_interface[0].addresses) > 0
   }
 }
