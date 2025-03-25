@@ -36,7 +36,6 @@ resource "libvirt_network" "kube_network_03" {
 resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
   type = "dir"
-
   target {
     path = "/mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
   }
@@ -121,35 +120,15 @@ resource "libvirt_domain" "machine" {
     addresses      = [each.value.ip]
   }
 
+  # Disco principal
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
 
+  # Disco adicional
   dynamic "disk" {
     for_each = contains(keys(each.value), "additional_disks") ? [1] : []
-
     content {
       volume_id = libvirt_volume.additional_disks[each.key].id
     }
   }
-
-  coreos_ignition = libvirt_ignition.ignition[each.key].id
-
-  graphics {
-    type        = "vnc"
-    listen_type = "address"
-  }
-
-  console {
-    type        = "pty"
-    target_type = "serial"
-    target_port = "0"
-  }
-}
-
-output "ip_addresses" {
-  value = {
-    for key, machine in libvirt_domain.machine :
-    key => machine.network_interface[0].addresses[0] if length(machine.network_interface[0].addresses) > 0
-  }
-}
