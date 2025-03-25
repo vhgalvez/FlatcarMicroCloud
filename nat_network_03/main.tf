@@ -1,8 +1,7 @@
-
 # nat_network_02\terraform.tfvars
 
 terraform {
-  required_version = "= 1.11.2"
+  required_version = ">= 1.11.2"
 
   required_providers {
     libvirt = {
@@ -98,8 +97,8 @@ resource "libvirt_volume" "vm_disk" {
 
 resource "libvirt_volume" "additional_disks" {
   for_each = {
-    for vm_name, vm in var.vm_definitions :
-    vm_name => vm if contains(keys(vm), "additional_disks")
+    for vm_key, vm in var.vm_definitions :
+    vm_key => vm if contains(keys(vm), "additional_disks")
   }
 
   name   = "${each.key}-data-disk"
@@ -127,7 +126,6 @@ resource "libvirt_domain" "machine" {
 
   dynamic "disk" {
     for_each = contains(keys(each.value), "additional_disks") ? [1] : []
-
     content {
       volume_id = libvirt_volume.additional_disks[each.key].id
     }
