@@ -27,6 +27,7 @@ resource "libvirt_network" "kube_network_03" {
   mode      = "nat"
   autostart = true
   addresses = ["10.17.4.0/24"]
+
   dhcp {
     enabled = true
   }
@@ -97,18 +98,19 @@ resource "libvirt_volume" "vm_disk" {
 resource "libvirt_volume" "additional_disks" {
   for_each = {
     for vm_name, vm in var.vm_definitions :
-    for idx, disk in lookup(vm, "additional_disks", []) :
+    for idx, disk in (lookup(vm, "additional_disks", [])) :
     "${vm_name}-${idx}" => {
       name = "${vm_name}-disk-${idx}"
       size = disk.size
       type = disk.type
+      pool = libvirt_pool.volumetmp_flatcar_03.name
     }
   }
 
   name   = each.value.name
-  pool   = libvirt_pool.volumetmp_flatcar_03.name
-  format = each.value.type
   size   = each.value.size * 1024 * 1024
+  format = each.value.type
+  pool   = each.value.pool
 }
 
 resource "libvirt_domain" "machine" {
@@ -129,9 +131,12 @@ resource "libvirt_domain" "machine" {
   }
 
   dynamic "disk" {
-    for_each = lookup(each.value, "additional_disks", [])
+    for_each = [
+      for key, volume in libvirt_volume.additional_disks :
+      volume if startswith(key, "${each.key}-")
+    ]
     content {
-      volume_id = libvirt_volume.additional_disks["${each.key}-${disk.key}"].id
+      volume_id = disk.value.id
     }
   }
 
