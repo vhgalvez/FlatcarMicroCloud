@@ -28,7 +28,6 @@ resource "libvirt_network" "kube_network_03" {
   mode      = "nat"
   autostart = true
   addresses = ["10.17.4.0/24"]
-
   dhcp {
     enabled = true
   }
@@ -130,7 +129,6 @@ resource "libvirt_domain" "machine" {
 
     content {
       volume_id = libvirt_volume.additional_disks[each.key].id
-      scsi      = false
     }
   }
 
