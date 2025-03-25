@@ -1,4 +1,5 @@
 # nat_network_02\terraform.tfvars
+
 terraform {
   required_version = ">= 1.11.2"
 
