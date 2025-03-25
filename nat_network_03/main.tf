@@ -1,5 +1,4 @@
 # nat_network_02\terraform.tfvars
-
 terraform {
   required_version = ">= 1.11.2"
 
@@ -96,20 +95,25 @@ resource "libvirt_volume" "vm_disk" {
   size           = each.value.disk_size * 1024 * 1024
 }
 
-resource "libvirt_volume" "additional_disks" {
-  for_each = {
-    for pair in flatten([
-      for vm_name, vm in var.vm_definitions : [
-        for idx, disk in try(vm.additional_disks, []) : {
+locals {
+  additional_disks_flat = flatten([
+    for vm_name, vm in var.vm_definitions : (
+      vm.additional_disks != null ? [
+        for idx, disk in vm.additional_disks : {
           key  = "${vm_name}-${idx}"
           name = "${vm_name}-disk-${idx}"
           size = disk.size
           type = disk.type
           pool = libvirt_pool.volumetmp_flatcar_03.name
         }
-      ]
-    ]) : pair.key => pair
-  }
+      ] : []
+    )
+  ])
+  additional_disks_map = { for disk in local.additional_disks_flat : disk.key => disk }
+}
+
+resource "libvirt_volume" "additional_disks" {
+  for_each = local.additional_disks_map
 
   name   = each.value.name
   pool   = each.value.pool
@@ -135,10 +139,7 @@ resource "libvirt_domain" "machine" {
   }
 
   dynamic "disk" {
-    for_each = {
-      for k, v in libvirt_volume.additional_disks :
-      k => v if startswith(k, "${each.key}-")
-    }
+    for_each = { for k, v in libvirt_volume.additional_disks : k => v if startswith(k, "${each.key}-") }
     content {
       volume_id = disk.value.id
     }
