@@ -94,6 +94,18 @@ resource "libvirt_volume" "vm_disk" {
   size           = each.value.disk_size * 1024 * 1024
 }
 
+resource "libvirt_volume" "additional_disks" {
+  for_each = {
+    for vm_name, vm in var.vm_definitions :
+    vm_name => vm if contains(keys(vm), "additional_disks")
+  }
+
+  name   = "${each.key}-data-disk"
+  pool   = libvirt_pool.volumetmp_flatcar_03.name
+  format = each.value.additional_disks[0].type
+  size   = each.value.additional_disks[0].size * 1024 * 1024
+}
+
 resource "libvirt_domain" "machine" {
   for_each = var.vm_definitions
 
@@ -107,8 +119,17 @@ resource "libvirt_domain" "machine" {
     addresses      = [each.value.ip]
   }
 
+  # Disco principal
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
+  }
+
+  # Disco adicional (si existe)
+  dynamic "disk" {
+    for_each = contains(keys(each.value), "additional_disks") ? [1] : []
+    content {
+      volume_id = libvirt_volume.additional_disks[each.key].id
+    }
   }
 
   coreos_ignition = libvirt_ignition.ignition[each.key].id

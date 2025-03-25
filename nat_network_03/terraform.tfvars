@@ -53,16 +53,20 @@ vm_definitions = {
   }
 
 
-  storage1 = {
-    cpus         = 2
-    memory       = 4096
-    ip           = "10.17.4.27"
-    name_dominio = "storage1.cefaslocalserver.com"
-    disk_size    = 71680 # 70 GB para el disco principal
-    node_name    = "storage1"
-  }
+storage1 = {
+  cpus         = 2
+  memory       = 4096
+  ip           = "10.17.4.27"
+  name_dominio = "storage1.cefaslocalserver.com"
+  disk_size    = 10240 # 10 GB
+  additional_disks = [
+    {
+      size = 61440  # 60 GB en MB
+      type = "qcow2"
+    }
+  ]
+  node_name = "storage1"
 }
-
 
 
 
