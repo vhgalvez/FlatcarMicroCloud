@@ -5,43 +5,43 @@ variable "base_image" {
 }
 
 variable "vm_definitions" {
-  description = "Definitions of virtual machines including CPU, memory, IP, domain name, and disk size"
+  description = "Definitions of virtual machines"
   type = map(object({
-    cpus         = number
-    memory       = number
-    ip           = string
-    name_dominio = string
-    disk_size    = number # in MB
-    node_name    = string # node name
+    cpus             = number
+    memory           = number
+    ip               = string
+    name_dominio     = string
+    disk_size        = number
+    node_name        = string
+    additional_disks = optional(list(object({
+      size = number
+      type = string
+    })))
   }))
 }
 
 variable "ssh_keys" {
-  description = "List of SSH keys to inject into VMs"
   type        = list(string)
+  description = "SSH keys"
 }
 
 variable "gateway" {
-  description = "Gateway IP address"
-  type        = string
+  type = string
 }
 
 variable "dns1" {
-  description = "Primary DNS server"
-  type        = string
+  type = string
 }
 
 variable "dns2" {
-  description = "Secondary DNS server"
-  type        = string
+  type = string
 }
+
 variable "node_name" {
-  description = "Nombre del nodo"
-  type        = string
-  default     = null
+  type    = string
+  default = null
 }
 
 variable "timezone" {
-  description = "Timezone for the VMs"
-  type        = string
+  type = string
 }
