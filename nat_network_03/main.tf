@@ -27,7 +27,6 @@ resource "libvirt_network" "kube_network_03" {
   mode      = "nat"
   autostart = true
   addresses = ["10.17.4.0/24"]
-
   dhcp {
     enabled = true
   }
@@ -72,15 +71,17 @@ data "ct_config" "vm-ignitions" {
 
 resource "local_file" "ignition_configs" {
   for_each = var.vm_definitions
+
   content  = data.ct_config.vm-ignitions[each.key].rendered
   filename = "${path.module}/ignition-configs/${each.key}.ign"
 }
 
 resource "libvirt_ignition" "ignition" {
   for_each = var.vm_definitions
-  name     = "${each.key}-ignition"
-  pool     = libvirt_pool.volumetmp_flatcar_03.name
-  content  = data.ct_config.vm-ignitions[each.key].rendered
+
+  name    = "${each.key}-ignition"
+  pool    = libvirt_pool.volumetmp_flatcar_03.name
+  content = data.ct_config.vm-ignitions[each.key].rendered
 }
 
 resource "libvirt_volume" "vm_disk" {
@@ -96,13 +97,18 @@ resource "libvirt_volume" "vm_disk" {
 resource "libvirt_volume" "additional_disks" {
   for_each = {
     for vm_name, vm in var.vm_definitions :
-    vm_name => vm if try(length(vm.additional_disks), 0) > 0
+    for idx, disk in lookup(vm, "additional_disks", []) :
+    "${vm_name}-${idx}" => {
+      name = "${vm_name}-disk-${idx}"
+      size = disk.size
+      type = disk.type
+    }
   }
 
-  name   = "${each.key}-data-disk"
+  name   = each.value.name
   pool   = libvirt_pool.volumetmp_flatcar_03.name
-  format = each.value.additional_disks[0].type
-  size   = each.value.additional_disks[0].size * 1024 * 1024
+  format = each.value.type
+  size   = each.value.size * 1024 * 1024
 }
 
 resource "libvirt_domain" "machine" {
@@ -123,9 +129,9 @@ resource "libvirt_domain" "machine" {
   }
 
   dynamic "disk" {
-    for_each = try(each.value.additional_disks, [])
+    for_each = lookup(each.value, "additional_disks", [])
     content {
-      volume_id = libvirt_volume.additional_disks[each.key].id
+      volume_id = libvirt_volume.additional_disks["${each.key}-${disk.key}"].id
     }
   }
 
