@@ -26,7 +26,7 @@ provider "libvirt" {
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
-  domain    = "example.test"
+  autostart = true
   addresses = ["10.17.4.0/24"]
   dhcp {
     enabled = true
@@ -34,9 +34,12 @@ resource "libvirt_network" "kube_network_03" {
 }
 
 resource "libvirt_pool" "volumetmp_flatcar_03" {
-  name   = "volumetmp_flatcar_03"
-  type   = "dir"
-  path   = "/mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
+  name = "volumetmp_flatcar_03"
+  type = "dir"
+
+  target {
+    path = "/mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
+  }
 }
 
 resource "libvirt_volume" "base" {
