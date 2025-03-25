@@ -2,7 +2,8 @@
 # nat_network_02\terraform.tfvars
 
 terraform {
-  required_version = ">= 1.11.2"
+  required_version = "= 1.11.2"
+
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
@@ -48,36 +49,6 @@ resource "libvirt_volume" "base" {
   format = "qcow2"
 }
 
-# Volumen principal por VM
-resource "libvirt_volume" "vm_disk" {
-  for_each = var.vm_definitions
-
-  name           = "${each.key}-disk"
-  base_volume_id = libvirt_volume.base.id
-  pool           = libvirt_pool.volumetmp_flatcar_03.name
-  format         = "qcow2"
-  size           = each.value.disk_size * 1024 * 1024
-}
-
-# Discos adicionales por VM (si existen)
-resource "libvirt_volume" "additional_disks" {
-  for_each = {
-    for vm_key, vm in var.vm_definitions :
-    for i, disk in lookup(vm, "additional_disks", []) :
-    "${vm_key}-${i}" => {
-      name   = "${vm_key}-disk-${i}"
-      size   = disk.size * 1024 * 1024
-      format = disk.type
-      pool   = libvirt_pool.volumetmp_flatcar_03.name
-    }
-  }
-
-  name   = each.value.name
-  size   = each.value.size
-  format = each.value.format
-  pool   = each.value.pool
-}
-
 data "template_file" "vm-configs" {
   for_each = var.vm_definitions
 
@@ -102,15 +73,39 @@ data "ct_config" "vm-ignitions" {
 
 resource "local_file" "ignition_configs" {
   for_each = var.vm_definitions
+
   content  = data.ct_config.vm-ignitions[each.key].rendered
   filename = "${path.module}/ignition-configs/${each.key}.ign"
 }
 
 resource "libvirt_ignition" "ignition" {
   for_each = var.vm_definitions
-  name     = "${each.key}-ignition"
-  pool     = libvirt_pool.volumetmp_flatcar_03.name
-  content  = data.ct_config.vm-ignitions[each.key].rendered
+
+  name    = "${each.key}-ignition"
+  pool    = libvirt_pool.volumetmp_flatcar_03.name
+  content = data.ct_config.vm-ignitions[each.key].rendered
+}
+
+resource "libvirt_volume" "vm_disk" {
+  for_each = var.vm_definitions
+
+  name           = "${each.key}-disk"
+  base_volume_id = libvirt_volume.base.id
+  pool           = libvirt_pool.volumetmp_flatcar_03.name
+  format         = "qcow2"
+  size           = each.value.disk_size * 1024 * 1024
+}
+
+resource "libvirt_volume" "additional_disks" {
+  for_each = {
+    for vm_name, vm in var.vm_definitions :
+    vm_name => vm if contains(keys(vm), "additional_disks")
+  }
+
+  name   = "${each.key}-data-disk"
+  pool   = libvirt_pool.volumetmp_flatcar_03.name
+  format = each.value.additional_disks[0].type
+  size   = each.value.additional_disks[0].size * 1024 * 1024
 }
 
 resource "libvirt_domain" "machine" {
@@ -126,19 +121,15 @@ resource "libvirt_domain" "machine" {
     addresses      = [each.value.ip]
   }
 
-  # Disco principal
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
 
-  # Discos adicionales si los hay
   dynamic "disk" {
-    for_each = [for i in keys({
-      for index, disk in lookup(each.value, "additional_disks", []) :
-      index => disk
-    }) : i]
+    for_each = contains(keys(each.value), "additional_disks") ? [1] : []
+
     content {
-      volume_id = libvirt_volume.additional_disks["${each.key}-${disk.value}"].id
+      volume_id = libvirt_volume.additional_disks[each.key].id
     }
   }
 
@@ -159,7 +150,6 @@ resource "libvirt_domain" "machine" {
 output "ip_addresses" {
   value = {
     for key, machine in libvirt_domain.machine :
-    key => machine.network_interface[0].addresses[0]
-    if length(machine.network_interface[0].addresses) > 0
+    key => machine.network_interface[0].addresses[0] if length(machine.network_interface[0].addresses) > 0
   }
 }
