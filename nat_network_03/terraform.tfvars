@@ -61,7 +61,7 @@ vm_definitions = {
     disk_size    = 10240 # 10 GB
     additional_disks = [
       {
-        size = 61440 # 60 GB en MB
+        size = 81920 # 60 GB en MB
         type = "qcow2"
       }
     ]
