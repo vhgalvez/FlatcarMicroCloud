@@ -97,20 +97,23 @@ resource "libvirt_volume" "vm_disk" {
 
 resource "libvirt_volume" "additional_disks" {
   for_each = {
-    for vm_name, vm in var.vm_definitions :
-    for idx, disk in (lookup(vm, "additional_disks", [])) :
-    "${vm_name}-${idx}" => {
-      name = "${vm_name}-disk-${idx}"
-      size = disk.size
-      type = disk.type
-      pool = libvirt_pool.volumetmp_flatcar_03.name
-    }
+    for pair in flatten([
+      for vm_name, vm in var.vm_definitions : [
+        for idx, disk in lookup(vm, "additional_disks", []) : {
+          key  = "${vm_name}-${idx}"
+          name = "${vm_name}-disk-${idx}"
+          size = disk.size
+          type = disk.type
+          pool = libvirt_pool.volumetmp_flatcar_03.name
+        }
+      ]
+    ]) : pair.key => pair
   }
 
   name   = each.value.name
-  size   = each.value.size * 1024 * 1024
-  format = each.value.type
   pool   = each.value.pool
+  format = each.value.type
+  size   = each.value.size * 1024 * 1024
 }
 
 resource "libvirt_domain" "machine" {
@@ -131,10 +134,7 @@ resource "libvirt_domain" "machine" {
   }
 
   dynamic "disk" {
-    for_each = [
-      for key, volume in libvirt_volume.additional_disks :
-      volume if startswith(key, "${each.key}-")
-    ]
+    for_each = [for pair in libvirt_volume.additional_disks : pair if startswith(pair.key, each.key)]
     content {
       volume_id = disk.value.id
     }
