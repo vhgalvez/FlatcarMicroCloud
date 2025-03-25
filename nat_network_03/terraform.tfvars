@@ -52,6 +52,7 @@ vm_definitions = {
     node_name    = "worker3"
   }
 
+
 storage1 = {
   cpus         = 2
   memory       = 4096
@@ -60,6 +61,7 @@ storage1 = {
   disk_size    = 71680  # 70 GB para el disco principal
   node_name    = "storage1"
 }
+
 
 
 ssh_keys = [
