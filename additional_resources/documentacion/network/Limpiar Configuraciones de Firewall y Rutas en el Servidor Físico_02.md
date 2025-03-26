@@ -46,6 +46,12 @@ Si el tráfico se queda atascado en `10.17.4.1`, significa que no está haciendo
 
 ## 2. Eliminación de reglas antiguas en nftables
 
+```bash
+sudo setenforce 0
+sudo systemctl restart libvirtd
+sudo systemctl restart NetworkManager
+```
+
 Antes de agregar nuevas reglas, eliminamos todas las configuraciones previas:
 
 ```bash
