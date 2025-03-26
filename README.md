@@ -167,6 +167,85 @@ cd FlatcarMicroCloud
   sudo terraform apply
   ```
 
+## 🔧 Automatización con Ansible
+
+### ✅ Configuración de FreeIPA DNS
+
+**Repositorio:** [ansible-freeipa-dns-setup-rockylinux](https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
+cd ansible-freeipa-dns-setup-rockylinux
+sudo ansible-playbook -i inventory.ini freeipa_setup.yml
+```
+
+---
+
+### 🕒 Configuración de NTP sincronizado con FreeIPA
+
+**Repositorio:** [ansible-ntp-freeipa-kubernetes](https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
+cd ansible-ntp-freeipa-kubernetes
+sudo ansible-playbook -i inventory.ini ntp_setup.yml
+```
+
+---
+
+### ☸️ Despliegue de K3s con alta disponibilidad (etcd)
+
+**Repositorio:** [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
+```
+
+---
+
+### ⚙️ Configuración de la Infraestructura del Clúster Kubernetes
+
+**Repositorio:** [kubernetes-infra-automation](https://github.com/vhgalvez/kubernetes-infra-automation)
+
+```bash
+sudo git clone https://github.com/vhgalvez/kubernetes-infra-automation.git
+cd kubernetes-infra-automation
+
+# Instalar Traefik como Ingress Controller
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
+
+# Generar certificados SSL autofirmados para Traefik
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
+
+# Configurar HAProxy + Keepalived para balanceo de carga
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
+```
+
+---
+
+### 💾 Configuración de Almacenamiento (NFS + Longhorn)
+
+**Repositorio:** [ansible-storage-cluster](https://github.com/vhgalvez/ansible-storage-cluster)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-storage-cluster.git
+cd ansible-storage-cluster
+```
+
+#### 1️⃣ Configurar almacenamiento con LVM sobre `/dev/vdb`
+
+```bash
+sudo ansible-playbook -i inventory/hosts.ini site.yml
+```
+
+Esto crea volúmenes lógicos (LVM), puntos de montaje y los prepara para NFS y Longhorn.
+
+#### 2️⃣ Exportar rutas NFS y activar el servicio
+
+```bash
+sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
+```
+
 ## Notas Adicionales
 
 - Asegúrese de tener las variables y configuraciones adecuadas en los archivos `terraform.tfvars` de cada subproyecto.
@@ -642,88 +721,12 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
    - **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
 5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
-## Recursos Adicionales requeridos con el Proyecto
-
-### Automatización ansible para la configuración de FreeIPA DNS
-
-https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux
-
-```bash
-sudo git clone https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
-```
-
-```bash
-sudo ansible-playbook -i inventory.ini freeipa_setup.yml
-```
-
-
-### Automatización ansible para la configuración de NTP
-
-https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
-
-```bash
-sudo git clone https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
-```
-
-
-```bash
-sudo ansible-playbook -i inventory.ini ntp_setup.yml
-```
-
-### Configuración de K3s en el Clúster de Kubernetes
-
-
-https://github.com/vhgalvez/ansible-k3s-etcd-cluster
 
 
 
-```bash
-
-sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
-
-```
 
 
-### Implementación de configuracion del Clúster de Kubernetes
 
-
-https://github.com/vhgalvez/kubernetes-infra-automation
-
-
-```bash
-sudo git clone https://github.com/vhgalvez/kubernetes-infra-automation.git
-
-```
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
-```
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
-```
-```bash
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
-```
-
-### Configuración de Almacenamiento 
-
-```bash
-https://github.com/vhgalvez/ansible-storage-cluster.git
-```
-1️⃣ Configurar almacenamiento (`/dev/vdb`)
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini site.yml
-```
-
-Esto configura LVM, crea puntos de montaje y prepara los volúmenes para NFS y Longhorn.
-
-2️⃣ Exportar rutas NFS y activar servicio
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
-```
 
 
 ## Recursos Adicionales soporatdos por HP
