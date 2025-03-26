@@ -168,86 +168,6 @@ cd FlatcarMicroCloud
   sudo terraform apply
   ```
 
-## 🔧 Automatización con Ansible
-
-### ✅ Configuración de FreeIPA DNS
-
-**Repositorio:** [ansible-freeipa-dns-setup-rockylinux](https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux)
-
-```bash
-sudo git clone https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
-cd ansible-freeipa-dns-setup-rockylinux
-sudo ansible-playbook -i inventory.ini freeipa_setup.yml
-```
-
----
-
-### 🕒 Configuración de NTP sincronizado con FreeIPA
-
-**Repositorio:** [ansible-ntp-freeipa-kubernetes](https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes)
-
-```bash
-sudo git clone https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
-cd ansible-ntp-freeipa-kubernetes
-sudo ansible-playbook -i inventory.ini ntp_setup.yml
-```
-
----
-
-### ☸️ Despliegue de K3s con alta disponibilidad (etcd)
-
-**Repositorio:** [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)
-
-```bash
-sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
-cd ansible-k3s-etcd-cluster
-
-#### 1️⃣ Configurar nodos maestros y workers
-sudo ansible-playbook -i inventory.ini install_k3s.yaml
-```
-
-### ⚙️ Configuración de la Infraestructura del Clúster Kubernetes
-
-**Repositorio:** [kubernetes-infra-automation](https://github.com/vhgalvez/kubernetes-infra-automation)
-
-```bash
-sudo git clone https://github.com/vhgalvez/kubernetes-infra-automation.git
-cd kubernetes-infra-automation
-
-# Generar certificados SSL autofirmados para Traefik
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
-
-# Configurar HAProxy + Keepalived para balanceo de carga
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
-
-# Instalar Traefik como Ingress Controller
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
-```
-
----
-
-### 💾 Configuración de Almacenamiento (NFS + Longhorn)
-
-**Repositorio:** [ansible-storage-cluster](https://github.com/vhgalvez/ansible-storage-cluster)
-
-```bash
-sudo git clone https://github.com/vhgalvez/ansible-storage-cluster.git
-cd ansible-storage-cluster
-```
-
-#### 1️⃣ Configurar almacenamiento con LVM sobre `/dev/vdb`
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini site.yml
-```
-
-Esto crea volúmenes lógicos (LVM), puntos de montaje y los prepara para NFS y Longhorn.
-
-#### 2️⃣ Exportar rutas NFS y activar el servicio
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
-```
 
 ## Notas Adicionales
 
@@ -748,3 +668,121 @@ grep -E '(vmx|svm)' /proc/cpuinfo
 - vmx: Indica soporte para **Intel VT-x**.
 
 - svm: Indica soporte para **AMD-V**.
+
+
+
+- - -
+
+
+# 🔧 Automatización con Ansible para Clúster Kubernetes HA
+
+Este documento describe el orden **correcto y recomendado** para desplegar tu infraestructura Kubernetes con alta disponibilidad (HA), integrando FreeIPA, balanceadores de carga, K3s, Ingress Controller y almacenamiento persistente.
+
+---
+
+## ✅ 1. Configuración del DNS con FreeIPA
+
+**Repositorio:** [ansible-freeipa-dns-setup-rockylinux](https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
+cd ansible-freeipa-dns-setup-rockylinux
+sudo ansible-playbook -i inventory.ini freeipa_setup.yml
+```
+
+---
+
+## 🕒 2. Configuración de NTP sincronizado con FreeIPA
+
+**Repositorio:** [ansible-ntp-freeipa-kubernetes](https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
+cd ansible-ntp-freeipa-kubernetes
+sudo ansible-playbook -i inventory.ini ntp_setup.yml
+```
+
+---
+
+## ⚙️ 3. Configuración de la Infraestructura de Balanceo
+
+**Repositorio:** [kubernetes-infra-automation](https://github.com/vhgalvez/kubernetes-infra-automation)
+
+```bash
+sudo git clone https://github.com/vhgalvez/kubernetes-infra-automation.git
+cd kubernetes-infra-automation
+
+# Generar certificados SSL autofirmados para Traefik
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
+
+# Instalar y configurar HAProxy + Keepalived con IP virtual (VIP)
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
+```
+
+> 🧠 **Nota:** Es fundamental tener el VIP funcionando antes de desplegar K3s para generar certificados TLS correctos y permitir el acceso al API Server desde el Ingress Controller y otros componentes.
+
+---
+
+## ☸️ 4. Despliegue de K3s con alta disponibilidad (etcd)
+
+**Repositorio:** [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
+cd ansible-k3s-etcd-cluster
+
+# Instalar K3s en modo HA con etcd, usando el VIP configurado
+sudo ansible-playbook -i inventory.ini install_k3s.yaml
+```
+
+---
+
+## 🚪 5. Instalación del Ingress Controller (Traefik)
+
+Regresa al repositorio de infraestructura:
+
+```bash
+cd ../kubernetes-infra-automation
+
+# Instalar Traefik como Ingress Controller, conectado al VIP del API Server
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
+```
+
+---
+
+## 💾 6. Configuración del Nodo de Almacenamiento (NFS + Longhorn)
+
+**Repositorio:** [ansible-storage-cluster](https://github.com/vhgalvez/ansible-storage-cluster)
+
+```bash
+sudo git clone https://github.com/vhgalvez/ansible-storage-cluster.git
+cd ansible-storage-cluster
+```
+
+### 6.1 Crear volúmenes LVM para PostgreSQL, datos compartidos y Longhorn
+
+```bash
+sudo ansible-playbook -i inventory/hosts.ini site.yml
+```
+
+### 6.2 Exportar rutas NFS y activar el servicio
+
+```bash
+sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
+```
+
+---
+
+## ✅ Infraestructura lista
+
+Al finalizar todos los pasos, tu entorno tendrá:
+
+- DNS y autenticación gestionada con FreeIPA
+- Balanceo de carga con HAProxy + Keepalived (VIP)
+- Clúster Kubernetes con K3s en alta disponibilidad (etcd)
+- Ingress Controller con certificados TLS usando Traefik
+- Almacenamiento persistente con NFS y Longhorn listo para usar
+
+---
+
+> ✨ Desarrollado para la solución **FlatcarMicroCloud** sobre servidores físicos o virtualizados.
