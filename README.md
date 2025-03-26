@@ -205,9 +205,9 @@ cd ansible-k3s-etcd-cluster
 
 #### 1️⃣ Configurar nodos maestros y workers
 
-```bash
+
 sudo ansible-playbook -i inventory.ini install_k3s.yaml
----
+
 
 ### ⚙️ Configuración de la Infraestructura del Clúster Kubernetes
 
