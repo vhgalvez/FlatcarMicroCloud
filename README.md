@@ -722,13 +722,6 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
 
-
-
-
-
-
-
-
 ## Recursos Adicionales soporatdos por HP
 
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
