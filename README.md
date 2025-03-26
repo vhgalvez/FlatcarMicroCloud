@@ -646,6 +646,8 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 ### Automatización ansible para la configuración de FreeIPA DNS
 
+https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux
+
 ```bash
 sudo git clone https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
 ```
@@ -656,6 +658,8 @@ sudo ansible-playbook -i inventory.ini freeipa_setup.yml
 
 
 ### Automatización ansible para la configuración de NTP
+
+https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes
 
 ```bash
 sudo git clone https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
@@ -668,6 +672,11 @@ sudo ansible-playbook -i inventory.ini ntp_setup.yml
 
 ### Configuración de K3s en el Clúster de Kubernetes
 
+
+https://github.com/vhgalvez/ansible-k3s-etcd-cluster
+
+
+
 ```bash
 
 sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
@@ -677,14 +686,24 @@ sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
 
 ### Implementación de configuracion del Clúster de Kubernetes
 
+
+https://github.com/vhgalvez/kubernetes-infra-automation
+
+
 ```bash
 sudo git clone https://github.com/vhgalvez/kubernetes-infra-automation.git
+
 ```
 
 ```bash
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml && \
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml && \
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
+```
+
+```bash
 sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
+```
+```bash
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
 ```
 
 ### Configuración de Almacenamiento 
