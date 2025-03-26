@@ -411,11 +411,9 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
   - Clave pública SSH incluida para acceso seguro a las VMs.
 
----
-
 ## Configuración de Redes Virtuales
 
-### Red br0 - 
+### Red br0 -
 
 ```hcl
 resource "libvirt_network" "br0" {
@@ -465,7 +463,7 @@ resource "libvirt_network" "kube_network_03" {
 - **Sincronización de tiempo**:
   FreeIPA también proporciona servicios NTP. Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc** y el servidor NTP de FreeIPA (`10.17.3.11`). Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
 
----
+
 
 ## Diagramas de Red y Arquitectura
 
@@ -663,7 +661,6 @@ resource "libvirt_network" "kube_network_03" {
 * storage1 está configurado con volúmenes LVM para aislar el espacio y prevenir desbordes
 
 * La infraestructura está protegida por VPN (WireGuard), pfSense y expuesta con seguridad vía Cloudflare
-
 
 
 ## Arquitectura de Kubernetes (Cluster K3s)
