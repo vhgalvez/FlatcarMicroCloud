@@ -214,20 +214,17 @@ sudo ansible-playbook -i inventory.ini install_k3s.yaml
 **Repositorio:** [kubernetes-infra-automation](https://github.com/vhgalvez/kubernetes-infra-automation)
 
 ```bash
-
 sudo git clone https://github.com/vhgalvez/kubernetes-infra-automation.git
 cd kubernetes-infra-automation
+
+# Generar certificados SSL autofirmados para Traefik
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
 
 # Configurar HAProxy + Keepalived para balanceo de carga
 sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
 
 # Instalar Traefik como Ingress Controller
 sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
-
-# Generar certificados SSL autofirmados para Traefik
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
-
-
 ```
 
 ---
