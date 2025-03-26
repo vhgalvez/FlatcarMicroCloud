@@ -200,8 +200,13 @@ sudo ansible-playbook -i inventory.ini ntp_setup.yml
 
 ```bash
 sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
+cd ansible-k3s-etcd-cluster
 ```
 
+#### 1️⃣ Configurar nodos maestros y workers
+
+```bash
+sudo ansible-playbook -i inventory.ini install_k3s.yaml
 ---
 
 ### ⚙️ Configuración de la Infraestructura del Clúster Kubernetes
