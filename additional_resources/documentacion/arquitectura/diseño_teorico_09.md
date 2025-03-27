@@ -302,3 +302,29 @@ Traefik actúa como proxy inverso:
 La petición HTTPS llega desde el navegador a Traefik.
 
 Traefik reenvía la petición HTTP internamente hacia los pods correctos en los Workers según la configuración dinámica.
+
+
+
+🎯 Resumen visual claro del flujo del usuario final:
+nginx
+Copiar
+Editar
+Usuario (Internet)
+         │
+         │ HTTP/HTTPS (80/443)
+         │
+         ▼
+Traefik (Ingress Controllers: 10.17.3.12 / 10.17.3.13)
+         │
+         ├───────────────(Consulta API Kubernetes usando VIP 10.17.5.10:6443)
+         │                         │
+         │                         ▼
+         │             API Server Kubernetes (Masters: 10.17.4.21,22,23)
+         │                         │
+         │◄───────────────(Respuesta: Pods y reglas de Ingress)
+         │
+         ▼
+Workers Kubernetes (10.17.4.24/25/26/27 Pods Aplicación)
+         │
+         ▼
+Respuesta directa al usuario final vía Traefik
