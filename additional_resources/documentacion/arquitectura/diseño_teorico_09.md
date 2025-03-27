@@ -217,7 +217,7 @@ Dime si quieres ajustes o mejoras. 🔥
           |   HAProxy + Keepalived (Alta Disponibilidad)     |
           |           k8s-api-lb - VIP: 10.17.5.10           |
           |  - Balanceo de la API de Kubernetes              |
-          |  - Failover automático entre Masters             |
+          |  - Failover automático entre Masters            |
           +--------------------------------------------------+
                                    |
                                    v
@@ -229,3 +229,76 @@ Dime si quieres ajustes o mejoras. 🔥
           |       (etcd)     |       |       (etcd)     |       |       (etcd)     |
           |    10.17.4.21    |       |    10.17.4.22    |       |    10.17.4.23    |
           +------------------+       +------------------+       +------------------+
+
+
+
+🌍 Flujo del Usuario claramente explicado paso a paso
+1. Usuario hace petición HTTP/HTTPS
+Un usuario desde Internet (por ejemplo, usando un navegador web) hace una petición a tu aplicación usando un nombre de dominio, por ejemplo:
+
+arduino
+Copiar
+Editar
+https://app.tudominio.com
+Este dominio apunta mediante DNS a las IPs públicas de tus balanceadores Traefik (10.17.3.12 y 10.17.3.13).
+(Si tienes un CDN o un servidor VPS delante, primero pasará por ahí antes de llegar a Traefik)
+
+2. Entrada por balanceadores Traefik (Ingress Controller)
+La petición HTTP/HTTPS llega a alguno de tus dos nodos Traefik:
+
+yaml
+Copiar
+Editar
++---------------------------+      +---------------------------+
+| Traefik Load Balancer #1  |      | Traefik Load Balancer #2  |
+|       IP: 10.17.3.12      |      |       IP: 10.17.3.13      |
++---------------------------+      +---------------------------+
+Estos balanceadores:
+
+Escuchan en puertos 80 (HTTP) y 443 (HTTPS).
+
+Tienen certificados SSL válidos (autofirmados o Let's Encrypt).
+
+Decodifican la petición para identificar qué aplicación o servicio Kubernetes debe responder según la URL (dominio o subdominio).
+
+3. Consulta a la API Server de Kubernetes (10.17.5.10:6443)
+Traefik, antes de decidir dónde enviar el tráfico, consulta al API Server de Kubernetes usando la IP virtual del API Server (10.17.5.10:6443) para saber:
+
+¿Qué Pods/Servicios están activos?
+
+¿Qué Pods pueden responder a esta petición en particular según las reglas de Ingress definidas?
+
+Aquí interviene la VM de balanceo del API Server:
+
+pgsql
+Copiar
+Editar
++-----------------------------------------------------+
+| HAProxy + Keepalived (Nodo k8s-api-lb, IP real: 10.17.5.20) |
+| IP virtual (VIP): 10.17.5.10                        |
+| (Balanceo del API Server Kubernetes)                |
++-----------------------------------------------------+
+                      |
+                      v
+       +---------------------------+
+       | Masters con API Kubernetes|
+       |  10.17.4.21/22/23 (6443)  |
+       +---------------------------+
+Esto permite a Traefik conocer la estructura actual del clúster en tiempo real.
+
+4. Traefik envía la petición a los Workers directamente
+Después de consultar el API Server, Traefik sabe claramente cuáles Pods en los nodos Workers pueden responder a esta petición HTTP/HTTPS. Ahora, Traefik envía el tráfico directamente hacia los nodos Worker:
+
+diff
+Copiar
+Editar
++---------------------------------------------------+
+|            Kubernetes Worker Nodes                |
+|          10.17.4.24 / 10.17.4.25 / 10.17.4.26     |
+|                  10.17.4.27                       |
++---------------------------------------------------+
+Traefik actúa como proxy inverso:
+
+La petición HTTPS llega desde el navegador a Traefik.
+
+Traefik reenvía la petición HTTP internamente hacia los pods correctos en los Workers según la configuración dinámica.
