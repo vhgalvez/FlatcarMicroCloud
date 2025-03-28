@@ -17,6 +17,8 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ## Hardware del Servidor
 
+![ProLiant DL380 G7](additional_resources/image/image_brige.png)
+
 - **Modelo**: ProLiant DL380 G7
 - **CPU**: Intel Xeon X5650 (24 cores) @ 2.666GHz
 - **GPU**: AMD ATI ES1000
@@ -24,7 +26,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 - **Almacenamiento**:
   - Disco Principal: 1.5TB
   - Disco Secundario: 3.0TB
-
+  
 ## Sistemas Operativos y Virtualización
 
 - **Sistemas Operativos**: Rocky Linux 9.5 y Flatcar Container Linux y Alma Linux 9.4
