@@ -215,7 +215,7 @@ Dime si quieres ajustes o mejoras. 🔥
                                    v
           +--------------------------------------------------+
           |   HAProxy + Keepalived (Alta Disponibilidad)     |
-          |           k8s-api-lb - VIP: 10.17.5.10           |
+          |   10.17.5.20   k8s-api-lb - VIP: 10.17.5.10      |
           |  - Balanceo de la API de Kubernetes              |
           |  - Failover automático entre Masters            |
           +--------------------------------------------------+
