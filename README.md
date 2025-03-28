@@ -17,7 +17,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ## Hardware del Servidor
 
-![ProLiant DL380 G7](additional_resources/image/image_brige.png)
+![ProLiant DL380 G7](additional_resources/image/hp_server.png)
 
 - **Modelo**: ProLiant DL380 G7
 - **CPU**: Intel Xeon X5650 (24 cores) @ 2.666GHz
