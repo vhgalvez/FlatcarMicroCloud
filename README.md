@@ -36,20 +36,21 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ## Resumen de Recursos para Máquinas Virtuales
 
-| Nombre de VM  | CPU | Memoria (MB) | IP            | Nombre de Dominio                  | Tamaño de Disco (GB) | Hostname      |
-| ------------- | --- | ------------ | ------------- | ---------------------------------- | -------------------- | ------------- |
-| master1       | 2   | 4096         | 10.17.4.21    | master1.cefaslocalserver.com       | 50                   | master1       |
-| master2       | 2   | 4096         | 10.17.4.22    | master2.cefaslocalserver.com       | 50                   | master2       |
-| master3       | 2   | 4096         | 10.17.4.23    | master3.cefaslocalserver.com       | 50                   | master3       |
-| worker1       | 2   | 4096         | 10.17.4.24    | worker1.cefaslocalserver.com       | 50                   | worker1       |
-| worker2       | 2   | 4096         | 10.17.4.25    | worker2.cefaslocalserver.com       | 50                   | worker2       |
-| worker3       | 2   | 4096         | 10.17.4.26    | worker3.cefaslocalserver.com       | 50                   | worker3       |
-| storage1      | 2   | 2048         | 10.17.3.27    | storage1.cefaslocalserver.com      | 80                   | storage1      |
-| freeipa1      | 2   | 2048         | 10.17.3.11    | freeipa1.cefaslocalserver.com      | 32                   | freeipa1      |
-| loadbalancer1 | 2   | 2048         | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32                   | loadbalancer1 |
-| loadbalancer2 | 2   | 2048         | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 32                   | loadbalancer2 |
-| postgresql1   | 2   | 2048         | 10.17.3.14    | postgresql1.cefaslocalserver.com   | 32                   | postgresql1   |
-| k8s-api-lb    | 2   | 2048         | 10.17.5.10    | k8s-api-lb.cefaslocalserver.com    | 80                   | k8s-api-lb    |
+| **VM**  | **CPU** | **Memoria (MB)** | **IP**        | **Dominio**                  | **Disco (GB)** | **Hostname**  |
+|---------|---------|------------------|---------------|-----------------------------|----------------|---------------|
+| master1 | 2       | 4096             | 10.17.4.21    | master1.cefaslocalserver.com | 50             | master1       |
+| master2 | 2       | 4096             | 10.17.4.22    | master2.cefaslocalserver.com | 50             | master2       |
+| master3 | 2       | 4096             | 10.17.4.23    | master3.cefaslocalserver.com | 50             | master3       |
+| worker1 | 2       | 4096             | 10.17.4.24    | worker1.cefaslocalserver.com | 50             | worker1       |
+| worker2 | 2       | 4096             | 10.17.4.25    | worker2.cefaslocalserver.com | 50             | worker2       |
+| worker3 | 2       | 4096             | 10.17.4.26    | worker3.cefaslocalserver.com | 50             | worker3       |
+| storage1| 2       | 2048             | 10.17.3.27    | storage1.cefaslocalserver.com| 80             | storage1      |
+| freeipa1| 2       | 2048             | 10.17.3.11    | freeipa1.cefaslocalserver.com| 32             | freeipa1      |
+| loadbalancer1| 2   | 2048             | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 32         | loadbalancer1 |
+| loadbalancer2| 2   | 2048             | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 32         | loadbalancer2 |
+| postgresql1| 2     | 2048             | 10.17.3.14    | postgresql1.cefaslocalserver.com | 32           | postgresql1   |
+| k8s-api-lb | 2     | 2048             | 10.17.5.10    | k8s-api-lb.cefaslocalserver.com | 80            | k8s-api-lb    |
+
 
 ## Máquinas Virtuales y Roles
 
