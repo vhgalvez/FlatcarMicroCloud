@@ -738,7 +738,7 @@ sudo ansible-playbook -i inventory.ini update_k3s_api_vip.yaml
 
 ```
 
----
+- - -
 
 ## 🌐 5. Configuración del Ingress Controller (Traefik)
 
@@ -759,15 +759,15 @@ Regresa al repositorio de infraestructura:
 
 ```bash
 cd ../traefik-k8s-ingress-controller-ansible
+```
 
 # Instalar Traefik como Ingress Controller, conectado al VIP del API Server
+
+```bash
 sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
 ```
 
-
-
-
----
+- - -
 
 ## 💾 6. Configuración del Nodo de Almacenamiento (NFS + Longhorn)
 
