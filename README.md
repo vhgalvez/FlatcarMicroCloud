@@ -706,14 +706,13 @@ sudo ansible-playbook -i inventory.ini ntp_setup.yml
 
 ## ⚙️ 3. Configuración de la Infraestructura de Balanceo
 
-**Repositorio:** [kubernetes-infra-automation](https://github.com/vhgalvez/kubernetes-infra-automation)
+**Repositorio:** [ansible-haproxy-keepalived](https://github.com/vhgalvez/ansible-haproxy-keepalived)
+
 
 ```bash
-sudo git clone https://github.com/vhgalvez/kubernetes-infra-automation.git
-cd kubernetes-infra-automation
+sudo git clone https://github.com/vhgalvez/ansible-haproxy-keepalived.git
+cd ansible-haproxy-keepalived
 
-# Generar certificados SSL autofirmados para Traefik
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
 
 # Instalar y configurar HAProxy + Keepalived con IP virtual (VIP)
 sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
@@ -733,20 +732,40 @@ cd ansible-k3s-etcd-cluster
 
 # Instalar K3s en modo HA con etcd, usando el VIP configurado
 sudo ansible-playbook -i inventory.ini install_k3s.yaml
+
+# Configurar el VIP del API Server de K3s
+sudo ansible-playbook -i inventory.ini update_k3s_api_vip.yaml
+
 ```
 
 ---
 
-## 🚪 5. Instalación del Ingress Controller (Traefik)
+## 🌐 5. Configuración del Ingress Controller (Traefik)
+
+**Repositorio:** [traefik-k8s-ingress-controller-ansible](https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible)
+
+
+```bash
+sudo git clone https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible.git
+cd traefik-k8s-ingress-controller-ansible
+
+### 5.1 Generar certificados SSL autofirmados para Traefik
+sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
+
+
+###  5.2 Instalación del Ingress Controller (Traefik)
 
 Regresa al repositorio de infraestructura:
 
 ```bash
-cd ../kubernetes-infra-automation
+cd ../traefik-k8s-ingress-controller-ansible
 
 # Instalar Traefik como Ingress Controller, conectado al VIP del API Server
 sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
 ```
+
+
+
 
 ---
 
