@@ -322,7 +322,7 @@ Este flujo de trabajo está optimizado para ser desplegado sobre **servidores f�
 
 ---
 
-### 🔄 **Notas Finales:**
+### 🔄 **Advertencias:**
 
 - **Seguridad:** Asegúrate de que todos los certificados y claves privadas estén correctamente protegidos.
 - **Escalabilidad:** Este enfoque permite que tu infraestructura escale fácilmente agregando más nodos al clúster y configurando balanceadores de carga adicionales si es necesario.
