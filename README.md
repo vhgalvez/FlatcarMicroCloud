@@ -30,7 +30,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 ## Sistemas Operativos y Virtualización
 
 - **Sistemas Operativos**: Rocky Linux 9.5 y Flatcar Container Linux y Alma Linux 9.4
-- **Virtualización**: KVM con Libvirt y Virt-Manager
+- **Virtualización**: KVM con Libvirt y Virt-Manager y oVirt
 - **Configuración de Red**: VPN con WireGuard, DHCP, firewall, y configuraciones de redes virtuales (NAT y Bridge) con KVM.
 - **Switch y Router**: Facilitan la comunicación y conectividad del clúster.
 
