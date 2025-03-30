@@ -1,6 +1,6 @@
 # pfsense\main.tf
 terraform {
-  required_version = "= 1.10.1"
+  required_version = "= 1.11.3"
 
   required_providers {
     libvirt = {
