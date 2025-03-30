@@ -254,10 +254,6 @@ Configura un clúster K3s en alta disponibilidad (HA) utilizando etcd como almac
    sudo ansible-playbook -i inventory.ini install_k3s.yaml
    ```
 
-2. **Configurar el VIP del API Server de K3s:**
-   ```bash
-   sudo ansible-playbook -i inventory.ini update_k3s_api_vip.yaml
-   ```
 
 ---
 
