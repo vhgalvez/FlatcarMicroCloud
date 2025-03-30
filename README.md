@@ -88,7 +88,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ### Fase 1: Instalación y Configuración de K3s en el Clúster de Kubernetes
 
-1. **Nodo Master1*: Instalación de K3s y configuración inicial del clúster.
+1. **Nodo Master1**: Instalación de K3s y configuración inicial del clúster.
 2. **Nodos Master y Worker**: Configuración de nodos maestros y workers, desplegando Traefik como balanceador.
 
 ### Fase 2: Configuración de PostgreSQL
