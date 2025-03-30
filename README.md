@@ -254,7 +254,6 @@ Configura un clúster K3s en alta disponibilidad (HA) utilizando etcd como almac
    sudo ansible-playbook -i inventory.ini install_k3s.yaml
    ```
 
-
 ---
 
 ## 🌐 **5. Configuración del Ingress Controller (Traefik)**
@@ -329,6 +328,9 @@ Este flujo de trabajo está optimizado para ser desplegado sobre **servidores f�
 
 Este proceso de automatización con Ansible te ayudará a gestionar y mantener tu infraestructura Kubernetes de manera eficiente y segura.
 
+## Maquinas Virtuales Monitoreo y Gestión de Recursos
+
+![kvm_virt-top](additional_resources/image/kvm_virt-top.png)
 
 - - -
 
