@@ -1,6 +1,6 @@
 # br0_network\main.tf
 terraform {
-  required_version = ">= 1.11.0, < 2.0.0"
+  required_version = ">= 1.11.3, < 2.0.0"
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"

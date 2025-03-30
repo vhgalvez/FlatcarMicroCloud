@@ -1,6 +1,6 @@
 # nat_network_02\terraform.tfvars
 terraform {
-  required_version = ">= 1.11.2"
+  required_version = ">= 1.11.3, < 2.0.0"
 
   required_providers {
     libvirt = {
