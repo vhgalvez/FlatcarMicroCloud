@@ -165,3 +165,6 @@ sudo iptables -I FORWARD -i virbr0 -o virbr2 -j ACCEPT
 
 sudo docker compose -f /etc/traefik/docker-compose.yml down
 sudo docker compose -f /etc/traefik/docker-compose.yml up -d
+
+
+sudo scp -i /home/victory/.ssh/id_rsa_key_cluster_openshift core@10.17.4.21:/etc/rancher/k3s/k3s.yaml /tmp/kubeconfig-traefik
