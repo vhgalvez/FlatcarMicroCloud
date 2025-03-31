@@ -835,3 +835,5 @@ grep -E '(vmx|svm)' /proc/cpuinfo
 - vmx: Indica soporte para **Intel VT-x**.
 
 - svm: Indica soporte para **AMD-V**.
+
+sudo k3s agent --server https://10.17.4.21:6443 --token K109e5adb59c2839b329732caef7af06478fa59bd82968d16c6aaff9f9254c1db82::server:00bddb08fd589a40b0426b481bf26514
