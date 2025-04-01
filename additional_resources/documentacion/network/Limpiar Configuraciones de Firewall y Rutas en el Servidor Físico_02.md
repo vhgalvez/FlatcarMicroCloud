@@ -176,5 +176,10 @@ mkdir -p ~/.kube
 sudo cp /tmp/kubeconfig-traefik ~/.kube/config
 sudo chown $USER:$USER ~/.kube/config
 
+
+
 # token para el worker1 k3s
+
 cat /var/lib/rancher/k3s/server/token
+
+sudo cat /var/lib/rancher/k3s/server/node-token
