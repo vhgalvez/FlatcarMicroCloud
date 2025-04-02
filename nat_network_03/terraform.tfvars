@@ -1,3 +1,4 @@
+
 # nat_network_03\terraform.tfvars
 
 base_image = "/mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img"
@@ -32,26 +33,43 @@ vm_definitions = {
     memory       = 4096
     ip           = "10.17.4.24"
     name_dominio = "worker1.cefaslocalserver.com"
-    disk_size    = 51200 # 50 GB in MB
-    node_name    = "worker1"
+    disk_size    = 20480 # 20 GB for Flatcar OS
+    additional_disks = [
+      {
+        size = 61440 # 60 GB for Longhorn
+        type = "qcow2"
+      }
+    ]
+    node_name = "worker1"
   }
   worker2 = {
     cpus         = 2
     memory       = 4096
     ip           = "10.17.4.25"
     name_dominio = "worker2.cefaslocalserver.com"
-    disk_size    = 51200 # 50 GB in MB
-    node_name    = "worker2"
+    disk_size    = 20480 # 20 GB for Flatcar OS
+    additional_disks = [
+      {
+        size = 61440 # 60 GB for Longhorn
+        type = "qcow2"
+      }
+    ]
+    node_name = "worker2"
   }
   worker3 = {
     cpus         = 2
     memory       = 4096
     ip           = "10.17.4.26"
     name_dominio = "worker3.cefaslocalserver.com"
-    disk_size    = 51200 # 50 GB in MB
-    node_name    = "worker3"
+    disk_size    = 20480 # 20 GB for Flatcar OS
+    additional_disks = [
+      {
+        size = 61440 # 60 GB for Longhorn
+        type = "qcow2"
+      }
+    ]
+    node_name = "worker3"
   }
-
 
   storage1 = {
     cpus         = 2
@@ -61,7 +79,7 @@ vm_definitions = {
     disk_size    = 10240 # 10 GB
     additional_disks = [
       {
-        size = 81920 # 60 GB en MB
+        size = 81920 # 80 GB for NFS + Longhorn backup
         type = "qcow2"
       }
     ]
