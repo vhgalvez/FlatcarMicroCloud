@@ -22,24 +22,6 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Crea la carpeta del pool antes de crear el pool
-resource "null_resource" "create_pool_dir" {
-  provisioner "local-exec" {
-    command = "sudo mkdir -p /mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
-  }
-}
-
-# Elimina la carpeta al destruir
-resource "null_resource" "delete_pool_dir" {
-  triggers = {
-    always_run = timestamp()
-  }
-  provisioner "local-exec" {
-    when    = destroy
-    command = "sudo rm -rf /mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
-  }
-}
-
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
@@ -52,12 +34,11 @@ resource "libvirt_network" "kube_network_03" {
 }
 
 resource "libvirt_pool" "volumetmp_flatcar_03" {
-  name   = "volumetmp_flatcar_03"
-  type   = "dir"
+  name = "volumetmp_flatcar_03"
+  type = "dir"
   target {
     path = "/mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
   }
-  depends_on = [null_resource.create_pool_dir]
 }
 
 resource "libvirt_volume" "base" {
@@ -183,5 +164,3 @@ output "ip_addresses" {
     for key, machine in libvirt_domain.machine :
     key => machine.network_interface[0].addresses[0] if length(machine.network_interface[0].addresses) > 0
   }
-}
-
