@@ -1,3 +1,4 @@
+# nat_network_03\terraform.tfvars
 base_image = "/mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img"
 
 vm_definitions = {
