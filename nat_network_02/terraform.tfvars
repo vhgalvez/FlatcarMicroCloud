@@ -4,8 +4,8 @@ rocky9_image = "/mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9
 
 vm_rockylinux_definitions = {
   "freeipa1" = {
-    cpus           = 2,
-    memory         = 2048,
+    cpus           = 1,
+    memory         = 512,
     ip             = "10.17.3.11",
     hostname       = "freeipa1.cefaslocalserver.com",
     volume_name    = "freeipa1_volume",
@@ -18,8 +18,8 @@ vm_rockylinux_definitions = {
     short_hostname = "freeipa1"
   },
   "load_balancer1" = {
-    cpus           = 2,
-    memory         = 1024,
+    cpus           = 1,
+    memory         = 512,
     ip             = "10.17.3.12",
     hostname       = "loadbalancer1.cefaslocalserver.com",
     volume_name    = "loadbalancer1_volume",
@@ -32,8 +32,8 @@ vm_rockylinux_definitions = {
     short_hostname = "loadbalancer1"
   },
   "load_balancer2" = {
-    cpus           = 2,
-    memory         = 1024,
+    cpus           = 1,
+    memory         = 512,
     ip             = "10.17.3.13",
     hostname       = "loadbalancer2.cefaslocalserver.com",
     volume_name    = "loadbalancer1_volume",
@@ -47,7 +47,7 @@ vm_rockylinux_definitions = {
   },
   "postgresql1" = {
     cpus           = 2,
-    memory         = 2048,
+    memory         = 1024,
     ip             = "10.17.3.14",
     hostname       = "postgresql1.cefaslocalserver.com",
     volume_name    = "postgresql1_volume",

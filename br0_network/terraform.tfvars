@@ -4,8 +4,8 @@ rocky9_image = "/mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9
 
 vm_rockylinux_definitions = {
   k8s-api-lb = {
-    cpus           = 2
-    memory         = 1024
+    cpus           = 1
+    memory         = 512
     ip             = "10.17.5.20"
     volume_format  = "qcow2"
     volume_pool    = "default"
