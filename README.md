@@ -283,17 +283,26 @@ Traefik actúa como un Ingress Controller para gestionar el tráfico hacia tus s
 
 Configura el almacenamiento persistente en tu clúster Kubernetes utilizando NFS y Longhorn para garantizar la alta disponibilidad y persistencia de los datos.
 
+
+
+flatcar-k3s-storage-suite
+
 ### **Repositorio:** 
-[ansible-storage-cluster](https://github.com/vhgalvez/ansible-storage-cluster)
+
+[flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)
 
 ### **Pasos:**
 
 1. **Crear volúmenes LVM para PostgreSQL, datos compartidos y Longhorn:**
    ```bash
-   sudo git clone https://github.com/vhgalvez/ansible-storage-cluster.git
-   cd ansible-storage-cluster
+   sudo git clone https://github.com/vhgalvez/flatcar-k3s-storage-suite.git
+  
    sudo ansible-playbook -i inventory/hosts.ini site.yml
    ```
+
+2. **Exportar rutas NFS y activar el servicio:**
+   ```bash
+   sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
 
 2. **Exportar rutas NFS y activar el servicio:**
    ```bash
