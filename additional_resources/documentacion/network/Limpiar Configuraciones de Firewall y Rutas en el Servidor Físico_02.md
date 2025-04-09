@@ -159,7 +159,8 @@ sudo iptables -I FORWARD -i virbr2 -o virbr1 -j ACCEPT
 sudo iptables -I FORWARD -i virbr2 -o virbr0 -j ACCEPT
 sudo iptables -I FORWARD -i virbr0 -o virbr2 -j ACCEPT
 
-
+# tiempo real
+iptables -A INPUT -p udp --dport 123 -j ACCEPT
 
 sudo docker compose -f /etc/traefik/docker-compose.yml down
 sudo docker compose -f /etc/traefik/docker-compose.yml up -d
