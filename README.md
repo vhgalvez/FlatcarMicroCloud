@@ -845,7 +845,8 @@ cd terraform-pfsense-kvm-libvirt
 ---
 
 
-## Recursos Adicionales soporatdos por HP firmware
+## 🔧 Recursos Adicionales Soportados por HP – Firmware ProLiant DL380 G7
 
-- [Firmware HP ProLiant DL380 G7](https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes)
+Consulta y descarga actualizaciones oficiales de firmware y software para tu servidor HP desde el portal de soporte de Hewlett Packard Enterprise:
 
+- [🔗 Firmware HP ProLiant DL380 G7 – Página oficial de soporte](https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes)
