@@ -43,6 +43,8 @@ sudo systemctl restart nftables
 sudo systemctl restart NetworkManager
 ```
 
+# SELinux 
+
 ```bash
 sudo setenforce 0
 sudo systemctl restart libvirtd
