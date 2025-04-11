@@ -822,16 +822,27 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 ![pfSense](additional_resources/image/pfSense.jpg)
 
+Esta sección te guía en la configuración de redes virtuales utilizando **pfSense como firewall** dentro de tu infraestructura KVM. Aprovecha el proyecto automatizado con Terraform para desplegar pfSense rápidamente como una máquina virtual lista para enrutar tráfico entre redes virtualizadas.
 
-[fterraform-pfsense-kvm-libvirt](https://github.com/vhgalvez/terraform-pfsense-kvm-libvirt)
+---
 
-Clona este repositorio para comenzar:
+### 🔗 Repositorio Oficial
+
+Accede al código fuente y plantillas de Terraform en el siguiente repositorio:
+
+[📦 GitHub – terraform-pfsense-kvm-libvirt](https://github.com/vhgalvez/terraform-pfsense-kvm-libvirt)
+
+---
+### 🚀 Clona el repositorio
+
+Para comenzar con la configuración:
 
 ```bash
 git clone https://github.com/vhgalvez/terraform-pfsense-kvm-libvirt.git
 cd terraform-pfsense-kvm-libvirt
 ```
 
+---
 ## Recursos Adicionales soporatdos por HP
 
 https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
