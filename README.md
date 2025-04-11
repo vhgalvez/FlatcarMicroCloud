@@ -852,12 +852,38 @@ Consulta y descarga actualizaciones oficiales de firmware y software para tu ser
 - [🔗 Firmware HP ProLiant DL380 G7 – Página oficial de soporte](https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes)
 
 
+## 💿 Imágenes de Disco para VMs
+
+## ✅ Flatcar para KVM/Libvirt: Descarga y preparación
+
+### 🔽 1. Descargar imagen comprimida
+```bash
+sudo curl -O https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_qemu_image.img.bz2
+```
+
+### 🔐 2. (Opcional) Verificar firma
+```bash
+sudo curl -O https://www.flatcar.org/security/image-signing-key/Flatcar_Image_Signing_Key.asc
+gpg --import Flatcar_Image_Signing_Key.asc
+sudo curl -O https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_qemu_image.img.bz2.sig
+gpg --verify flatcar_production_qemu_image.img.bz2.sig flatcar_production_qemu_image.img.bz2
+```
+
+### 📦 3. Descomprimir imagen
+```bash
+bunzip2 flatcar_production_qemu_image.img.bz2
+```
+
+Resultado:
+```bash
+flatcar_production_qemu_image.img
+```
+
+> Lista para usar con Terraform, libvirt o virt-manager.
 
 
 
-
-## Imágenes de Disco para VMs
+### 🐧 AlmaLinux 9.5 Generic Cloud (QCOW2)
 
 ```bash
 curl -o alma9-generic.qcow2 https://repo.almalinux.org/almalinux/9.5/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
-```
