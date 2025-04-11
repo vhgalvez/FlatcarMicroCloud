@@ -1,5 +1,5 @@
 # nat_network_03\terraform.tfvars
-base_image = "/mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img"
+base_image = "/var/lib/libvirt/images/flatcar_production_qemu_image.img"
 
 vm_definitions = {
   # Master Nodes (optimizados: 2 vCPU y 2 GB RAM)

@@ -29,7 +29,7 @@ resource "libvirt_pool" "volumetmp_nat_02" {
   name = "${var.cluster_name}_nat_02"
   type = "dir"
   target {
-    path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_nat_02"
+    path = "/var/lib/libvirt/images/volumes/${var.cluster_name}_nat_02"
   }
 }
 

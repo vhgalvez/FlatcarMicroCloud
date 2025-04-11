@@ -26,7 +26,7 @@ resource "libvirt_pool" "volumetmp_k8s-api-lb" {
   name = "${var.cluster_name}_k8s-api-lb"
   type = "dir"
   target {
-    path = "/mnt/lv_data/organized_storage/volumes/${var.cluster_name}_k8s-api-lb"
+    path = "/var/lib/libvirt/images/volumes/${var.cluster_name}_k8s-api-lb"
   }
 }
 
