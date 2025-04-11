@@ -843,6 +843,9 @@ cd terraform-pfsense-kvm-libvirt
 ```
 
 ---
-## Recursos Adicionales soporatdos por HP
 
-https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
+
+## Recursos Adicionales soporatdos por HP firmware
+
+- [Firmware HP ProLiant DL380 G7](https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes)
+
