@@ -818,8 +818,6 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
 
-
-
 ## 🌐 Configuración de Redes Virtuales con pfSense
 
 ![pfSense](additional_resources/image/pfSense.jpg)
