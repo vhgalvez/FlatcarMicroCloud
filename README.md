@@ -818,16 +818,14 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
 
-## Recursos Adicionales soporatdos por HP
-
-https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
 
 
 ## 🌐 Configuración de Redes Virtuales con pfSense
 
 ![pfSense](additional_resources/image/pfSense.jpg)
 
-Esta sección es útil si deseas optimizar el rendimiento de red en tu entorno virtualizado con **passthrough de interfaces físicas (NIC)** directamente hacia una máquina virtual como **pfSense**.
+
+[fterraform-pfsense-kvm-libvirt](https://github.com/vhgalvez/terraform-pfsense-kvm-libvirt)
 
 Clona este repositorio para comenzar:
 
@@ -836,19 +834,6 @@ git clone https://github.com/vhgalvez/terraform-pfsense-kvm-libvirt.git
 cd terraform-pfsense-kvm-libvirt
 ```
 
-### 🔍 Verificar Compatibilidad de Virtualización en la CPU
+## Recursos Adicionales soporatdos por HP
 
-#### NIC Passthrough en KVM (Opcional)
-
-Antes de configurar NIC passthrough, asegúrate de que tu CPU soporte virtualización por hardware.
-
-#### ✅ Comprobar si la CPU soporta Intel VT-x o AMD-V:
-
-```bash
-grep -E '(vmx|svm)' /proc/cpuinfo
-```
-
-- vmx: Indica soporte para **Intel VT-x**.
-
-- svm: Indica soporte para **AMD-V**.
-
+https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes
