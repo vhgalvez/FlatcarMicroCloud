@@ -870,11 +870,13 @@ gpg --verify flatcar_production_qemu_image.img.bz2.sig flatcar_production_qemu_i
 ```
 
 ### 📦 3. Descomprimir imagen
+
 ```bash
 bunzip2 flatcar_production_qemu_image.img.bz2
 ```
 
 Resultado:
+
 ```bash
 flatcar_production_qemu_image.img
 ```
@@ -882,8 +884,9 @@ flatcar_production_qemu_image.img
 > Lista para usar con Terraform, libvirt o virt-manager.
 
 
-
 ### 🐧 AlmaLinux 9.5 Generic Cloud (QCOW2)
 
 ```bash
 curl -o alma9-generic.qcow2 https://repo.almalinux.org/almalinux/9.5/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
+```
+
