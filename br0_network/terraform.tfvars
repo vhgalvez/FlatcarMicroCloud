@@ -1,5 +1,5 @@
 # br0_network/terraform.tfvars
-
+# curl -o alma9-generic.qcow2 https://repo.almalinux.org/almalinux/9.5/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
 rocky9_image = "/mnt/lv_data/organized_storage/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 
 vm_rockylinux_definitions = {
