@@ -829,6 +829,8 @@ https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14
 
 Esta sección es útil si deseas optimizar el rendimiento de red de tu entorno virtualizado con **passthrough de interfaces físicas (NIC)** directamente a una máquina virtual, como **pfSense**.
 
+git clone https://github.com/vhgalvez/terraform-pfsense-kvm-libvirt
+
 ### 🔍 Verificar Compatibilidad de Virtualización en la CPU
 
 #### NIC Passthrough en KVM (Opcional)
@@ -846,3 +848,5 @@ grep -E '(vmx|svm)' /proc/cpuinfo
 - svm: Indica soporte para **AMD-V**.
 
 sudo k3s agent --server https://10.17.4.21:6443 --token K109e5adb59c2839b329732caef7af06478fa59bd82968d16c6aaff9f9254c1db82::server:00bddb08fd589a40b0426b481bf26514
+
+
