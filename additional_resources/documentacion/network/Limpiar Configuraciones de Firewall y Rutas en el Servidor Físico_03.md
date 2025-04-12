@@ -64,3 +64,16 @@ sudo iptables -A LIBVIRT_FWO -s 10.17.4.0/24 -d 10.17.3.0/24 -p icmp --icmp-type
 sudo iptables -A LIBVIRT_FWO -s 10.17.5.0/24 -d 10.17.3.0/24 -p icmp --icmp-type echo-request -j ACCEPT
 
 ```
+
+
+
+# SELINUX
+
+sudo setenforce 0
+sudo systemctl restart libvirtd
+
+sudo sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
+
+
+
+
