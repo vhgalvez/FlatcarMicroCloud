@@ -890,3 +890,20 @@ flatcar_production_qemu_image.img
 curl -o alma9-generic.qcow2 https://repo.almalinux.org/almalinux/9.5/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
 ```
 
+
+---
+
+## 📦 Repositorio del Script SSH Compartido
+
+Este repositorio utiliza un script externo para la generación centralizada de claves SSH compartidas para todas las VMs del clúster.
+
+🔗 Repositorio: [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key.git)
+
+Puedes clonarlo directamente con:
+
+```bash
+git clone https://github.com/vhgalvez/generate_shared_ssh_key.git
+```
+
+Este script es útil si estás automatizando la creación de máquinas virtuales con Terraform y necesitas una clave reutilizable para conectarte vía SSH con Flatcar.
+
