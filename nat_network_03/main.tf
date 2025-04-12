@@ -37,7 +37,7 @@ resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
   type = "dir"
   target {
-    path = "/mnt/lv_data/organized_storage/volumes/volumetmp_flatcar_03"
+    path = "/var/lib/libvirt/images/volumes/volumetmp_flatcar_03"
   }
 }
 
