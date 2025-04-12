@@ -51,6 +51,8 @@ sudo iptables -I FORWARD -i virbr0 -o virbr2 -j ACCEPT
 # tiempo real puerto 123
 sudo iptables -A INPUT -p udp --dport 123 -j ACCEPT
 
+#  escritorio remoto xrdp puerto 3389
+sudo iptables -I INPUT -p tcp --dport 3389 -j ACCEPT
 
 
 
