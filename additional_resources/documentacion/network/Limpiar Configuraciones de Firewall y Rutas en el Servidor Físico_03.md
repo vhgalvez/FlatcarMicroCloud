@@ -65,12 +65,12 @@ sudo iptables -I INPUT -p tcp --dport 3389 -j ACCEPT
 
 ### Agregar reglas de firewall en `physical1` para permitir el tráfico ICMP si es necesario:
 
-```bash
+
 sudo iptables -A LIBVIRT_FWI -s 10.17.3.0/24 -d 10.17.4.0/24 -p icmp --icmp-type echo-request -j ACCEPT
 sudo iptables -A LIBVIRT_FWO -s 10.17.4.0/24 -d 10.17.3.0/24 -p icmp --icmp-type echo-request -j ACCEPT
 sudo iptables -A LIBVIRT_FWO -s 10.17.5.0/24 -d 10.17.3.0/24 -p icmp --icmp-type echo-request -j ACCEPT
 
-```
+
 
 
 
