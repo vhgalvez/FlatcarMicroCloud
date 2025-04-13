@@ -546,6 +546,8 @@ resource "libvirt_network" "kube_network_03" {
 
 ## Monitorización con `virt-top`
 
+![Monitorización con `virt-top`](additional_resources/image/mvs_monitoreo.png)
+
 ### Instalación
 
 ```bash
