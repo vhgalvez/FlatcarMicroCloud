@@ -544,34 +544,6 @@ resource "libvirt_network" "kube_network_03" {
 }
 ```
 
-## Monitorización con `virt-top`
-
-![Monitorización con `virt-top`](additional_resources/image/mvs_monitoreo.png)
-
-### Instalación
-
-```bash
-sudo dnf install virt-top
-```
-### Uso básico
-
-```bash
-sudo virt-top
-```
-
-### Atajos útiles
-
-- h: Ayuda
-
-- c: Ordenar por CPU
-
-- m: Ordenar por Memoria
-
-- 1: Ver vCPUs
-
-- q: Salir
-
-
 ## Configuración de Redes Virtuales
 
 - **Switch**: TP-Link LS1008G - 8 puertos Gigabit no administrados
