@@ -37,6 +37,8 @@ sudo nft list ruleset
 
 sudo setenforce 0
 sudo systemctl restart libvirtd
+sudo systemctl restart NetworkManager
+sudo systemctl restart nftables
 
 sudo sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
 
