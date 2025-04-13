@@ -181,19 +181,19 @@ Este documento describe el flujo **correcto y recomendado** para desplegar tu in
 
 ## 🚀 **1. Configuración del DNS con FreeIPA**
 
-La configuración de DNS y autenticación con FreeIPA es esencial para gestionar el acceso a tu infraestructura de manera centralizada.
+La configuración de CoreDNS.
 
 ### **Repositorio:** 
-[ansible-freeipa-dns-setup-rockylinux](https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux)
+[ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)
 
 ### **Pasos:** 
 ```bash
 # Clona el repositorio
-sudo git clone https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux.git
-cd ansible-freeipa-dns-setup-rockylinux
+sudo git clone https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux.git
+cd ansible-CoreDNS-setup-Linux
 
-# Ejecuta el playbook para configurar FreeIPA
-sudo ansible-playbook -i inventory.ini freeipa_setup.yml
+# Ejecuta el playbook para configurar CoreDNS
+sudo ansible-playbook -i inventory.ini CoreDNS_setup.yml
 ```
 
 ---
