@@ -71,10 +71,9 @@ sudo iptables -A LIBVIRT_FWO -s 10.17.4.0/24 -d 10.17.3.0/24 -p icmp --icmp-type
 sudo iptables -A LIBVIRT_FWO -s 10.17.5.0/24 -d 10.17.3.0/24 -p icmp --icmp-type echo-request -j ACCEPT
 
 
-
-
-
-
-
-
-
+sudo iptables -F
+sudo iptables -X
+sudo iptables -t nat -F
+sudo iptables -t nat -X
+sudo iptables -t mangle -F
+sudo iptables -t mangle -X
