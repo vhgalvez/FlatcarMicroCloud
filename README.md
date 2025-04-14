@@ -678,9 +678,9 @@ resource "libvirt_network" "kube_network_03" {
                                   │
                                   ▼
                      +-----------------------------+
-                     |  pfSense Firewall           |
-                     |  IP: 192.168.0.200          |
-                     |  NAT, VPN, IDS/IPS          |
+                     |  servidor fisico nftables   |
+                     |  IP: 192.168.0.19           |
+                     |  NAT, VPN,                  |
                      +-----------------------------+
                                   │
                       (Redirección de tráfico interno)
@@ -723,8 +723,8 @@ resource "libvirt_network" "kube_network_03" {
 +----------------+ +----------------+ +----------------+ +----------------+
 | Worker Node 1  | | Worker Node 2  | | Worker Node 3  | | Storage Node   |
 | 10.17.4.24     | | 10.17.4.25     | | 10.17.4.26     | | 10.17.4.27     |
-|               | |                | |                | |  🐂 Longhorn    |
-|               | |                | |                | |  📁 NFS Server  |
+|  Longhorn      | | Longhorn       | |    Longhorn    | |  🐂 Longhorn    |
+|               | |                | |                 | |  📁 NFS Server  |
 +----------------+ +----------------+ +----------------+ +----------------+
 
                           ⬇ Volúmenes en storage1 ⬇
@@ -740,6 +740,7 @@ resource "libvirt_network" "kube_network_03" {
 🔗 NFS Mounts:
 - PostgreSQL Node → /srv/nfs/postgresql
 - Pods con PVC RWX → /srv/nfs/shared
+- /mnt/longhorn-disk
 
 🔗 Longhorn PVCs:
 - Prometheus, Grafana, ELK
@@ -760,7 +761,7 @@ resource "libvirt_network" "kube_network_03" {
 
 * storage1 está configurado con volúmenes LVM para aislar el espacio y prevenir desbordes
 
-* La infraestructura está protegida por VPN (WireGuard), pfSense y expuesta con seguridad vía Cloudflare
+* La infraestructura está protegida por VPN (WireGuard), nftables y expuesta con seguridad vía Cloudflare
 
 
 ## Arquitectura de Kubernetes (Cluster K3s)
