@@ -49,6 +49,7 @@ sudo systemctl restart NetworkManager
 sudo setenforce 0
 sudo systemctl restart libvirtd
 sudo systemctl restart NetworkManager
+sudo systemctl restart nftables
 ```
 
 
