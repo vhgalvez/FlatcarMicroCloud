@@ -49,6 +49,7 @@ Si el tráfico se queda atascado en `10.17.4.1`, significa que no está haciendo
 ```bash
 sudo setenforce 0
 sudo systemctl restart libvirtd
+sudo systemctl restart nftables
 sudo systemctl restart NetworkManager
 ```
 
@@ -182,3 +183,7 @@ sudo chown $USER:$USER ~/.kube/config
 cat /var/lib/rancher/k3s/server/token
 
 sudo cat /var/lib/rancher/k3s/server/node-token
+
+
+sudo systemctl enable --now virtqemud.service virtlogd.service virtproxyd.service
+sudo systemctl enable --now virtnetworkd.service virtstoraged.service
