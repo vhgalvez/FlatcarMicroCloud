@@ -53,6 +53,16 @@ sudo systemctl restart nftables
 ```
 
 
+sudo systemctl restart virtqemud.service
+sudo systemctl restart virtlogd.service
+sudo systemctl restart virtproxyd.service
+sudo systemctl restart virtnetworkd.service
+sudo systemctl restart virtstoraged.service
+sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged
+
+systemctl status virtqemud virtlogd virtproxyd virtnetworkd virtstoraged
+
+
 
 
 ### VNC mobaxterm
