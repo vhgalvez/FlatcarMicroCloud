@@ -53,6 +53,11 @@ sudo systemctl restart NetworkManager
 sudo systemctl restart nftables
 ```
 
+sudo setenforce 0
+sudo systemctl restart NetworkManager
+sudo systemctl restart nftables
+sudo systemctl restart virtproxyd.service
+sudo systemctl restart virtnetworkd.service
 
 sudo systemctl restart virtqemud.service
 sudo systemctl restart virtlogd.service
