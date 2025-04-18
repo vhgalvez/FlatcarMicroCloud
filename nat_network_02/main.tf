@@ -94,7 +94,16 @@ resource "libvirt_domain" "vm_nat_02" {
   # Configuración del disco con un bus soportado (virtio)
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    bus       = "virtio"  # Establecer el bus a 'virtio' para mejor rendimiento y compatibilidad
+
+    # Usamos el driver para especificar el tipo de bus
+    driver {
+      name = "qemu"
+      type = "qcow2"  # Aseguramos que el formato sea qcow2
+    }
+
+    # Configuramos el bus de la siguiente manera
+    device = "disk"
+    bus    = "virtio"  # Establecer explícitamente el bus como 'virtio'
   }
 
   graphics {
