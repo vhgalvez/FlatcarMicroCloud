@@ -92,11 +92,9 @@ resource "libvirt_domain" "vm_nat_02" {
   }
 
   disk {
-    volume_id = libvirt_volume.vm_disk[each.key].id
-    # Removed unsupported 'bus' argument
+    volume_id  = libvirt_volume.vm_disk[each.key].id
+    target_bus = "virtio" # Explicitly set the disk bus type to virtio
   }
-
-  # Removed dynamic disk block due to undefined 'additional_disks' variable
 
   graphics {
     type        = "vnc"
