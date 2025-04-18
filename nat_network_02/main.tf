@@ -83,7 +83,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   # Especificamos la arquitectura y el tipo de máquina
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.4.0" # Actualización a un tipo de máquina más moderno
+  machine = "pc-q35-rhel9.4.0" # Tipo de máquina actualizado
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
@@ -93,7 +93,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    bus       = "virtio"  # Establecer explícitamente el bus como 'virtio'
+    # Eliminamos el parámetro 'bus' ya que libvirt maneja el tipo de bus automáticamente.
   }
 
   graphics {
