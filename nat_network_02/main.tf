@@ -94,7 +94,7 @@ resource "libvirt_domain" "vm_nat_02" {
   # Configuración del disco: usamos SCSI para asegurar compatibilidad con Q35
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    scsi      = "yes"  # Habilitamos el bus SCSI, que es compatible con Q35
+    scsi      = true  # Habilitamos el bus SCSI, que es compatible con Q35
   }
 
   graphics {
