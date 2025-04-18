@@ -62,3 +62,12 @@ variable "vm_rockylinux_definitions" {
     short_hostname = string
   }))
 }
+
+variable "additional_disks" {
+  description = "Map of additional disks for each VM"
+  type        = map(object({
+    size = number
+    type = string
+  }))
+  default = {}
+}

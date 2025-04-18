@@ -93,16 +93,10 @@ resource "libvirt_domain" "vm_nat_02" {
 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    bus       = "virtio" # Ensure virtio is used for the main disk
+    # Removed unsupported 'bus' argument
   }
 
-  dynamic "disk" {
-    for_each = { for k, v in var.additional_disks : k => v if startswith(k, "${each.key}-") }
-    content {
-      volume_id = disk.value.id
-      bus       = "virtio" # Ensure virtio is used for additional disks
-    }
-  }
+  # Removed dynamic disk block due to undefined 'additional_disks' variable
 
   graphics {
     type        = "vnc"
