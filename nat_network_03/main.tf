@@ -1,4 +1,4 @@
-# nat_network_02\terraform.tfvars
+# nat_network_03\main.tf
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
 
@@ -128,6 +128,11 @@ resource "libvirt_domain" "machine" {
   vcpu   = each.value.cpus
   memory = each.value.memory
 
+  machine = "pc-i440fx-2.9"  # Actualización aquí: Tipo de máquina actualizado
+
+  cpu_mode = "host-passthrough"  # Cambio aquí
+  cpu_cores = each.value.cpus  # Número de núcleos de CPU
+
   network_interface {
     network_id     = libvirt_network.kube_network_03.id
     wait_for_lease = true
@@ -146,22 +151,6 @@ resource "libvirt_domain" "machine" {
   }
 
   coreos_ignition = libvirt_ignition.ignition[each.key].id
-
-  # Actualización del tipo de máquina y CPU
-  os {
-    type     = "hvm"
-    arch     = "x86_64"
-    machine  = "pc-i440fx-2.9"  # Actualización aquí
-    boot {
-      dev = ["hd"]
-    }
-  }
-
-  cpu {
-    mode  = "host-passthrough"  # Cambio aquí
-    match = "exact"
-    check = "none"
-  }
 
   graphics {
     type        = "vnc"
