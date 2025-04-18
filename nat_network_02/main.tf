@@ -81,9 +81,14 @@ resource "libvirt_domain" "vm_nat_02" {
   memory = each.value.domain_memory
   vcpu   = each.value.cpus
 
-  # Configuración compatible con libvirt 0.8.3
+  # Configuración Q35 no obsoleta
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.0.0"  # Usar una versión más nueva no obsoleta de i440fx
+  machine = "pc-q35-rhel9.0.0"  # Versión no deprecated para Q35
+
+  # Controlador SCSI obligatorio para Q35
+  controller {
+    type = "scsi"
+  }
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
@@ -91,9 +96,10 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración de disco (IDE por defecto)
+  # Configuración de disco SCSI
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
+    scsi      = true  # Requerido para Q35 en libvirt 0.8.3
   }
 
   graphics {
