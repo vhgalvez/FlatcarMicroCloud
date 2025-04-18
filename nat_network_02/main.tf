@@ -1,4 +1,5 @@
 # nat_network_02\main.tf
+# nat_network_02\main.tf
 terraform {
   required_version = ">= 1.11.4, < 2.0.0"
 
@@ -81,9 +82,9 @@ resource "libvirt_domain" "vm_nat_02" {
   memory = each.value.domain_memory
   vcpu   = each.value.cpus
 
-  # Configuración para Q35 no obsoleta
+  # Configuración para Q35 no obsoleta con SCSI
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.0.0"  # Versión más reciente no obsoleta de Q35
+  machine = "pc-q35-rhel9.0.0"  # Usar versión no obsoleta de Q35
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
@@ -91,7 +92,7 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración simplificada del disco
+  # Configuración del disco: forzamos el uso de SCSI
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
     scsi      = true  # Requerido para Q35 en libvirt 0.8.3
