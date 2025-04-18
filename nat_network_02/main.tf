@@ -93,6 +93,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
+    bus       = "virtio" # Especificamos el bus virtio
   }
 
   graphics {
