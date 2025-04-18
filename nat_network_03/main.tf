@@ -1,5 +1,4 @@
 # nat_network_03\main.tfterraform
-
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
 
@@ -133,10 +132,11 @@ resource "libvirt_domain" "machine" {
 
   # Especificar la arquitectura y el tipo de máquina directamente
   arch    = "x86_64"
-  machine = "pc-i440fx-2.9"  # Tipo de máquina válido en libvirt
+  machine = "pc-q35-2.9"  # Tipo de máquina actualizado
 
+  # Configuración de la CPU
   cpu {
-    mode  = "host-passthrough"  # Usar el modelo de CPU del host
+    mode = "host-model"  # Usar el modelo de CPU del host
   }
 
   network_interface {
