@@ -98,7 +98,7 @@ resource "libvirt_volume" "vm_disk" {
 }
 
 locals {
-  additional_disks_flat = flatten([
+  additional_disks_flat = flatten([ 
     for vm_name, vm in var.vm_definitions : (
       vm.additional_disks != null ? [
         for idx, disk in vm.additional_disks : {
@@ -130,17 +130,13 @@ resource "libvirt_domain" "machine" {
   vcpu   = each.value.cpus
   memory = each.value.memory
 
-  os {
-    type    = "hvm"
-    arch    = "x86_64"
-    machine = "pc-i440fx-rhel7.6.0"
-  }
+  # Especificar la arquitectura y el tipo de máquina directamente
+  arch    = "x86_64"
+  machine = "pc-i440fx-2.9"  # Tipo de máquina válido en libvirt
 
+  # Configuración de la CPU
   cpu {
-    mode  = "custom"
-    model = "qemu64"
-    match = "exact"
-    check = "none"
+    mode  = "host-passthrough"  # Usar el modelo de CPU del host
   }
 
   network_interface {
