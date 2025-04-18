@@ -72,10 +72,6 @@ resource "libvirt_volume" "vm_disk" {
   base_volume_id = libvirt_volume.rocky9_image.id
   pool           = libvirt_pool.volumetmp_nat_02.name
   format         = "qcow2"
-
-  # Configuración de disco CORRECTA para Q35
-  bus    = "virtio"  # VirtIO es obligatorio para Q35
-  target = "vda"     # Define el dispositivo en el guest
 }
 
 resource "libvirt_domain" "vm_nat_02" {
@@ -95,9 +91,11 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración del disco
+  # Configuración del disco (movido aquí desde libvirt_volume)
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
+    bus       = "virtio"  # VirtIO es obligatorio para Q35
+    target    = "vda"     # Define el dispositivo en el guest
   }
 
   graphics {
