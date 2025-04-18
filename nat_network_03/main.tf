@@ -128,11 +128,6 @@ resource "libvirt_domain" "machine" {
   vcpu   = each.value.cpus
   memory = each.value.memory
 
-  machine = "pc-i440fx-2.9"  # Actualización aquí: Tipo de máquina actualizado
-
-  cpu_mode = "host-passthrough"  # Cambio aquí
-  cpu_cores = each.value.cpus  # Número de núcleos de CPU
-
   network_interface {
     network_id     = libvirt_network.kube_network_03.id
     wait_for_lease = true
@@ -161,6 +156,12 @@ resource "libvirt_domain" "machine" {
     type        = "pty"
     target_type = "serial"
     target_port = "0"
+  }
+
+  cpu {
+    mode  = "host-passthrough"
+    match = "exact"
+    check = "none"
   }
 }
 
