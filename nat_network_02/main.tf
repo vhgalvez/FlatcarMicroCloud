@@ -91,9 +91,10 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Discos configurados sin usar 'device' ni 'bus'
+  # Configuración del disco con un bus soportado (virtio)
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
+    bus       = "virtio"  # Establecer el bus a 'virtio' para mejor rendimiento y compatibilidad
   }
 
   graphics {
