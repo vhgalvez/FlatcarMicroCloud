@@ -1,7 +1,27 @@
-# nat_network_03\main.tf
+# nat_network_03\main.tfterraform {
+  required_version = ">= 1.11.3, < 2.0.0"
+
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"  # Proveedor correcto
+      version = "0.8.3"
+    }
+    ct = {
+      source  = "poseidon/ct"  # Proveedor correcto
+      version = "0.13.0"
+    }
+    template = {
+      source  = "hashicorp/template"
+      version = "~> 2.2.0"
+    }
+  }
+}
+
 provider "libvirt" {
   uri = "qemu:///system"
 }
+
+provider "ct" {}
 
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
@@ -137,11 +157,6 @@ resource "libvirt_domain" "machine" {
     type        = "pty"
     target_type = "serial"
     target_port = "0"
-  }
-
-  cpu {
-    mode  = "host-model"  # Actualización: se usará "host-model" para mejor compatibilidad con la CPU host
-    cores = each.value.cpus  # Número de núcleos de CPU
   }
 }
 
