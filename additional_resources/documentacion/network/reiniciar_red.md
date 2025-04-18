@@ -114,3 +114,7 @@ sudo systemctl status vncserver@:1.service
 sudo systemctl status vncserver@:3.service
 cat /usr/lib/systemd/system/vncserver@.service
 ```
+
+
+
+sudo ln -s /usr/libexec/qemu-kvm /usr/bin/qemu-system-x86_64
