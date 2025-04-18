@@ -92,8 +92,8 @@ resource "libvirt_domain" "vm_nat_02" {
   }
 
   disk {
-    volume_id  = libvirt_volume.vm_disk[each.key].id
-    target_bus = "virtio" # Explicitly set the disk bus type to virtio
+    volume_id = libvirt_volume.vm_disk[each.key].id
+    bus       = "virtio" # Correctly set the disk bus type to virtio
   }
 
   graphics {
