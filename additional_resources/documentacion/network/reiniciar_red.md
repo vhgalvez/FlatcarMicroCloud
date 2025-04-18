@@ -125,3 +125,6 @@ sudo nano /etc/libvirt/libvirtd.conf
 firewall_backend = "nftables"
 max_clients = 10
 max_requests = 100
+
+
+ ls -l /etc/libvirt/virtqemud*
