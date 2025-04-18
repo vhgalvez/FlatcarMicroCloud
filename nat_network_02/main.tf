@@ -81,9 +81,9 @@ resource "libvirt_domain" "vm_nat_02" {
   memory = each.value.domain_memory
   vcpu   = each.value.cpus
 
-  # Especificamos la arquitectura y el tipo de máquina
+  # Configuración probada que funciona con tu versión de QEMU
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.4.0" # Tipo de máquina actualizado
+  machine = "pc-q35-rhel9.0.0"  # Versión compatible confirmada
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
@@ -91,10 +91,11 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración del disco: usamos SCSI para asegurar compatibilidad con Q35
+  # Configuración de disco CORRECTA para Q35
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    scsi      = true  # Habilitamos el bus SCSI, que es compatible con Q35
+    bus       = "virtio"  # Obligatorio para Q35
+    target    = "vda"     # Dispositivo target
   }
 
   graphics {
@@ -108,7 +109,6 @@ resource "libvirt_domain" "vm_nat_02" {
     mode = "host-model" # Usamos el modelo de CPU del host para mejor compatibilidad
   }
 
-  # Añadimos soporte para la consola serial
   console {
     type        = "pty"
     target_type = "serial"
