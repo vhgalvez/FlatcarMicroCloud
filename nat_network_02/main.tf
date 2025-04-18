@@ -83,7 +83,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   # Configuración compatible con libvirt 0.8.3
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.0.0"  # Cambiado a máquina legacy compatible
+  machine = "pc-i440fx-rhel8.6.0"  # Usar una versión más nueva no obsoleta de i440fx
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
@@ -91,7 +91,7 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración simplificada del disco
+  # Configuración de disco (IDE por defecto)
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
@@ -104,7 +104,7 @@ resource "libvirt_domain" "vm_nat_02" {
   cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
 
   cpu {
-    mode = "host-model"  # Usamos el modelo de CPU del host para mejor compatibilidad
+    mode = "host-model"
   }
 
   console {
