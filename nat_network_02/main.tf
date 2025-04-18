@@ -91,9 +91,9 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
+  # Discos configurados sin usar 'device' ni 'bus'
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    device    = "disk"  # Configuración correcta sin 'bus' y 'interface'
   }
 
   graphics {
