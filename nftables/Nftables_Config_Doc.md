@@ -91,6 +91,11 @@ sudo nft -f /etc/sysconfig/nftables.conf
 ```bash
 sudo systemctl daemon-reexec
 sudo systemctl enable --now nftables
+sudo systemctl start nftables
+sudo systemctl restart nftables
+sudo systemctl status nftables
+```
+sudo nft list ruleset
 ```
 
 ---
