@@ -132,7 +132,7 @@ resource "libvirt_domain" "machine" {
 
   # Specify the architecture and machine type
   arch    = "x86_64"
-  machine = "pc-q35-3.0"  # Modern machine type to replace deprecated 'pc-i440fx-rhel7.6.0'
+  machine = "pc-q35-rhel8.6.0"  # Ensure this line reflects the change
 
   # Configure the CPU model to host-model
   cpu {
