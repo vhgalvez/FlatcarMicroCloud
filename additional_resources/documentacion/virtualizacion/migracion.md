@@ -84,3 +84,36 @@ Asegúrate de que las imágenes de disco sean accesibles por el usuario `libvirt
 ---
 
 Siguiendo estos pasos, podrás migrar de manera efectiva de `libvirtd` a `virtqemud`, aprovechando las ventajas de una arquitectura modular y mejorando la seguridad y el rendimiento de la gestión de tus máquinas virtuales.
+
+
+
+/etc/libvirt/qemu.conf. Añade o edita la línea para habilitar el soporte de nftables:
+
+ini
+Copiar
+Editar
+firewall_driver = "nftables"
+Reinicia los servicios de libvirt y virtqemud: Después de realizar los cambios, reinicia el servicio virtqemud y asegúrate de que no se detenga ni se reinicie:
+
+bash
+Copiar
+Editar
+sudo systemctl restart virtqemud
+Revisa los logs para errores adicionales: Después de hacer estos cambios, revisa los logs de nuevo para asegurarte de que el problema se ha resuelto:
+
+bash
+Copiar
+Editar
+sudo journalctl -u virtqemud.service
+Verifica que el módulo nftables esté cargado: Ya que has tenido problemas con modprobe nftables, verifica si el módulo nftables está cargado correctamente usando el siguiente comando:
+
+bash
+Copiar
+Editar
+lsmod | grep nft
+
+
+firewall_backend = "nftables"
+max_clients = 20
+max_requests = 1000
+[victory@virtualizacion-server nat_network_03]$ sudo cat /etc/libvirt/libvirtd.conf

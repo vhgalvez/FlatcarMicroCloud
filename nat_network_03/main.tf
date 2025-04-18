@@ -4,11 +4,11 @@ terraform {
 
   required_providers {
     libvirt = {
-      source  = "dmacvicar/libvirt" # Proveedor correcto
+      source  = "dmacvicar/libvirt"
       version = "0.8.3"
     }
     ct = {
-      source  = "poseidon/ct" # Proveedor correcto
+      source  = "poseidon/ct"
       version = "0.13.0"
     }
     template = {
@@ -129,6 +129,19 @@ resource "libvirt_domain" "machine" {
   name   = each.key
   vcpu   = each.value.cpus
   memory = each.value.memory
+
+  os {
+    type    = "hvm"
+    arch    = "x86_64"
+    machine = "pc-i440fx-rhel7.6.0"
+  }
+
+  cpu {
+    mode  = "custom"
+    model = "qemu64"
+    match = "exact"
+    check = "none"
+  }
 
   network_interface {
     network_id     = libvirt_network.kube_network_03.id
