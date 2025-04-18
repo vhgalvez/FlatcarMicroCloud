@@ -5,7 +5,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.8.3"
+      version = "0.8.3"  # Mantener la versión 0.8.3
     }
     template = {
       source  = "hashicorp/template"
@@ -91,11 +91,13 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración del disco (movido aquí desde libvirt_volume)
+  # Configuración del disco: usamos SCSI o driver
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    bus       = "virtio"  # VirtIO es obligatorio para Q35
-    target    = "vda"     # Define el dispositivo en el guest
+    scsi      = true  # El parámetro `scsi` funciona en esta versión
+    driver {
+      type = "qcow2"  # Tipo de driver para el disco
+    }
   }
 
   graphics {
