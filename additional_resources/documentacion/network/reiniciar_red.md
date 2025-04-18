@@ -89,6 +89,11 @@ rpm -q iptables-nft
 
 sudo update-alternatives --config iptables
 
+
+sudo update-alternatives --config iptables
+
+
+
 ### VNC mobaxterm
 
 
