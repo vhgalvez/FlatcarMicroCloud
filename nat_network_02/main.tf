@@ -93,7 +93,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    bus       = "virtio" # Correctly set the disk bus type to virtio
+    device    = "disk"  # Configuración correcta sin 'bus' y 'interface'
   }
 
   graphics {
