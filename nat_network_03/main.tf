@@ -1,13 +1,14 @@
 # nat_network_03\main.tfterraform {
+terraform {
   required_version = ">= 1.11.3, < 2.0.0"
 
   required_providers {
     libvirt = {
-      source  = "dmacvicar/libvirt"  # Proveedor correcto
+      source  = "dmacvicar/libvirt" # Proveedor correcto
       version = "0.8.3"
     }
     ct = {
-      source  = "poseidon/ct"  # Proveedor correcto
+      source  = "poseidon/ct" # Proveedor correcto
       version = "0.13.0"
     }
     template = {
@@ -97,7 +98,7 @@ resource "libvirt_volume" "vm_disk" {
 }
 
 locals {
-  additional_disks_flat = flatten([ 
+  additional_disks_flat = flatten([
     for vm_name, vm in var.vm_definitions : (
       vm.additional_disks != null ? [
         for idx, disk in vm.additional_disks : {
