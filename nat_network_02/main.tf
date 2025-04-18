@@ -91,13 +91,10 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración del disco: usamos SCSI o driver
+  # Configuración del disco: Usamos SCSI para la compatibilidad
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
     scsi      = true  # El parámetro `scsi` funciona en esta versión
-    driver {
-      type = "qcow2"  # Tipo de driver para el disco
-    }
   }
 
   graphics {
