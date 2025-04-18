@@ -1,4 +1,3 @@
-# nat_network_02\main.tf
 terraform {
   required_version = ">= 1.11.4, < 2.0.0"
 
@@ -83,7 +82,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   # Especificamos la arquitectura y el tipo de máquina
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.4.0"
+  machine = "pc-q35-rhel9.4.0"  # Actualización a un tipo de máquina más moderno
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
@@ -93,7 +92,9 @@ resource "libvirt_domain" "vm_nat_02" {
 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    bus       = "virtio" # Especificamos el bus virtio
+    device    = "disk"       # Esto indica que es un dispositivo de tipo "disco"
+    bus       = "virtio"     # Especificamos el bus virtio
+    interface = "virtio"     # Asegura la compatibilidad con VirtIO
   }
 
   graphics {
@@ -114,8 +115,6 @@ resource "libvirt_domain" "vm_nat_02" {
     target_port = "0"
   }
 }
-
-# output.tf
 
 output "ip_addresses" {
   value = { for key, machine in libvirt_domain.vm_nat_02 : key => var.vm_rockylinux_definitions[key].ip }
