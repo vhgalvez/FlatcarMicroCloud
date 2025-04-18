@@ -83,23 +83,21 @@ resource "libvirt_domain" "vm_nat_02" {
 
   # Especificamos la arquitectura y el tipo de máquina
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.0.0"  # Usar una versión compatible de Q35
-
-  # Configuración del disco: usamos SCSI para asegurar compatibilidad con Q35
-  disk {
-    volume_id = libvirt_volume.vm_disk[each.key].id
-    scsi      = true  # Habilitamos el bus SCSI, que es compatible con Q35
-  }
-
-  # Controlador SCSI obligatorio para Q35
-  controller {
-    type = "scsi"
-  }
+  machine = "pc-q35-rhel9.0.0"  # Versión compatible confirmada
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
     wait_for_lease = true
     addresses      = [each.value.ip]
+  }
+
+  # Configuración del disco: usamos SCSI o driver
+  disk {
+    volume_id = libvirt_volume.vm_disk[each.key].id
+    scsi      = true  # El parámetro `scsi` funciona en esta versión
+    driver {
+      type = "qcow2"  # Tipo de driver para el disco
+    }
   }
 
   graphics {
@@ -110,9 +108,10 @@ resource "libvirt_domain" "vm_nat_02" {
   cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
 
   cpu {
-    mode = "host-model"  # Usamos el modelo de CPU del host para mejor compatibilidad
+    mode = "host-model" # Usamos el modelo de CPU del host para mejor compatibilidad
   }
 
+  # Añadimos soporte para la consola serial
   console {
     type        = "pty"
     target_type = "serial"
