@@ -97,17 +97,17 @@ resource "libvirt_volume" "vm_disk" {
 
 locals {
   additional_disks_flat = flatten([ 
-    for vm_name, vm in var.vm_definitions : (
-      vm.additional_disks != null ? [
-        for idx, disk in vm.additional_disks : {
-          key  = "${vm_name}-${idx}"
-          name = "${vm_name}-disk-${idx}"
-          size = disk.size
-          type = disk.type
-          pool = libvirt_pool.volumetmp_flatcar_03.name
-        }
-      ] : []
-    )
+    for vm_name, vm in var.vm_definitions : ( 
+      vm.additional_disks != null ? [ 
+        for idx, disk in vm.additional_disks : { 
+          key  = "${vm_name}-${idx}" 
+          name = "${vm_name}-disk-${idx}" 
+          size = disk.size 
+          type = disk.type 
+          pool = libvirt_pool.volumetmp_flatcar_03.name 
+        } 
+      ] : [] 
+    ) 
   ])
   additional_disks_map = { for disk in local.additional_disks_flat : disk.key => disk }
 }
@@ -159,9 +159,12 @@ resource "libvirt_domain" "machine" {
   }
 
   cpu {
-    mode  = "host-passthrough"
-    match = "exact"
-    check = "none"
+    mode  = "host-model"  # Cambio aquí
+    topology {
+      sockets = 1
+      cores   = each.value.cpus
+      threads = 1
+    }
   }
 }
 
