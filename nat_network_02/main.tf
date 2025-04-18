@@ -83,7 +83,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   # Configuración compatible con libvirt 0.8.3
   arch    = "x86_64"
-  machine = "pc-i440fx-rhel8.6.0"  # Usar una versión más nueva no obsoleta de i440fx
+  machine = "pc-q35-rhel9.0.0"  # Usar una versión más nueva no obsoleta de i440fx
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
