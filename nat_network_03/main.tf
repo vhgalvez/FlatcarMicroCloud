@@ -1,4 +1,5 @@
-# nat_network_03\main.tfterraform {
+# nat_network_03\main.tfterraform
+
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
 
@@ -98,7 +99,7 @@ resource "libvirt_volume" "vm_disk" {
 }
 
 locals {
-  additional_disks_flat = flatten([ 
+  additional_disks_flat = flatten([
     for vm_name, vm in var.vm_definitions : (
       vm.additional_disks != null ? [
         for idx, disk in vm.additional_disks : {
@@ -134,7 +135,6 @@ resource "libvirt_domain" "machine" {
   arch    = "x86_64"
   machine = "pc-i440fx-2.9"  # Tipo de máquina válido en libvirt
 
-  # Configuración de la CPU
   cpu {
     mode  = "host-passthrough"  # Usar el modelo de CPU del host
   }
