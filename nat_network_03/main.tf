@@ -130,13 +130,13 @@ resource "libvirt_domain" "machine" {
   vcpu   = each.value.cpus
   memory = each.value.memory
 
-  # Especificar la arquitectura y el tipo de máquina directamente
+  # Specify the architecture and machine type
   arch    = "x86_64"
-  machine = "pc-q35-rhel9.4.0"  # Tipo de máquina actualizado
+  machine = "pc-q35-3.0"  # Modern machine type to replace deprecated 'pc-i440fx-rhel7.6.0'
 
-  # Configuración de la CPU
+  # Configure the CPU model to host-model
   cpu {
-    mode = "host-model"  # Usar el modelo de CPU del host
+    mode = "host-model"  # Use the host CPU model for better compatibility
   }
 
   network_interface {
