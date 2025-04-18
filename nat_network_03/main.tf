@@ -96,7 +96,7 @@ resource "libvirt_volume" "vm_disk" {
 }
 
 locals {
-  additional_disks_flat = flatten([
+  additional_disks_flat = flatten([ 
     for vm_name, vm in var.vm_definitions : (
       vm.additional_disks != null ? [
         for idx, disk in vm.additional_disks : {
@@ -146,6 +146,22 @@ resource "libvirt_domain" "machine" {
   }
 
   coreos_ignition = libvirt_ignition.ignition[each.key].id
+
+  # Actualización del tipo de máquina y CPU
+  os {
+    type     = "hvm"
+    arch     = "x86_64"
+    machine  = "pc-i440fx-2.9"  # Actualización aquí
+    boot {
+      dev = ["hd"]
+    }
+  }
+
+  cpu {
+    mode  = "host-passthrough"  # Cambio aquí
+    match = "exact"
+    check = "none"
+  }
 
   graphics {
     type        = "vnc"
