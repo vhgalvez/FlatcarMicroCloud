@@ -1,4 +1,4 @@
-# nat_network_03\main.tfterraform
+# nat_network_03\main.tf
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
 
@@ -130,12 +130,9 @@ resource "libvirt_domain" "machine" {
   vcpu   = each.value.cpus
   memory = each.value.memory
 
-  # Specify the architecture and machine type
-  features {
-    arch    = "x86_64"
-    machine = "pc-q35-rhel9.4.0"
-  }
-
+  # Specify the architecture and machine type directly (compatible with libvirt provider 0.8.3)
+  arch    = "x86_64"
+  machine = "pc-q35-rhel9.4.0"
 
   # Configure the CPU model to host-model
   cpu {
