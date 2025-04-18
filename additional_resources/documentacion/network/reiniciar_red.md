@@ -51,7 +51,12 @@ sudo systemctl restart libvirtd (deprecrado)
 sudo setenforce 0
 sudo systemctl restart NetworkManager
 sudo systemctl restart nftables
+sudo systemctl restart virtqemud.service
+
 ```
+sudo systemctl status virtqemud.service
+
+
 
 sudo setenforce 0
 sudo systemctl restart NetworkManager
