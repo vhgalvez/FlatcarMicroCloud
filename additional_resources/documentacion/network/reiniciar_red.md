@@ -67,9 +67,22 @@ sudo systemctl restart virtstoraged.service
 sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged
 
 systemctl status virtqemud virtlogd virtproxyd virtnetworkd virtstoraged
+sudo systemctl is-enabled virtqemud.service
+sudo systemctl restart virtqemud.service
 
 
+sudo nft add chain ip filter LIBVIRT_INP { type filter hook input priority filter \; }
+sudo nft add rule ip filter LIBVIRT_INP iifname "virbr3" tcp dport 67 accept
 
+sudo nft list ruleset | sudo tee /etc/sysconfig/nftables.conf
+
+sudo systemctl restart virtqemud.service
+
+sudo terraform apply --auto-approve --var-file=./terraform.tfvars
+
+rpm -q iptables-nft
+
+sudo update-alternatives --config iptables
 
 ### VNC mobaxterm
 
