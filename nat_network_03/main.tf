@@ -98,8 +98,8 @@ resource "libvirt_volume" "vm_disk" {
 }
 
 locals {
-  additional_disks_flat = flatten([ 
-    for vm_name, vm in var.vm_definitions : ( 
+  additional_disks_flat = flatten([
+    for vm_name, vm in var.vm_definitions : (
       vm.additional_disks != null ? [
         for idx, disk in vm.additional_disks : {
           key  = "${vm_name}-${idx}"
@@ -131,12 +131,15 @@ resource "libvirt_domain" "machine" {
   memory = each.value.memory
 
   # Specify the architecture and machine type
-  arch    = "x86_64"
-  machine = "pc-q35-rhel8.6.0"  # Ensure this line reflects the change
+  features {
+    arch    = "x86_64"
+    machine = "pc-q35-rhel9.4.0"
+  }
+
 
   # Configure the CPU model to host-model
   cpu {
-    mode = "host-model"  # Use the host CPU model for better compatibility
+    mode = "host-model" # Use the host CPU model for better compatibility
   }
 
   network_interface {
