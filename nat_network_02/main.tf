@@ -72,6 +72,10 @@ resource "libvirt_volume" "vm_disk" {
   base_volume_id = libvirt_volume.rocky9_image.id
   pool           = libvirt_pool.volumetmp_nat_02.name
   format         = "qcow2"
+
+  # Configuración de disco CORRECTA para Q35
+  bus    = "virtio"  # VirtIO es obligatorio para Q35
+  target = "vda"     # Define el dispositivo en el guest
 }
 
 resource "libvirt_domain" "vm_nat_02" {
@@ -81,7 +85,7 @@ resource "libvirt_domain" "vm_nat_02" {
   memory = each.value.domain_memory
   vcpu   = each.value.cpus
 
-  # Configuración probada que funciona con tu versión de QEMU
+  # Especificamos la arquitectura y el tipo de máquina
   arch    = "x86_64"
   machine = "pc-q35-rhel9.0.0"  # Versión compatible confirmada
 
@@ -91,11 +95,9 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses      = [each.value.ip]
   }
 
-  # Configuración de disco CORRECTA para Q35
+  # Configuración del disco
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
-    bus       = "virtio"  # Obligatorio para Q35
-    target    = "vda"     # Dispositivo target
   }
 
   graphics {
@@ -109,6 +111,7 @@ resource "libvirt_domain" "vm_nat_02" {
     mode = "host-model" # Usamos el modelo de CPU del host para mejor compatibilidad
   }
 
+  # Añadimos soporte para la consola serial
   console {
     type        = "pty"
     target_type = "serial"
