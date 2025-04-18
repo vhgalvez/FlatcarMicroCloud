@@ -81,6 +81,10 @@ resource "libvirt_domain" "vm_nat_02" {
   memory = each.value.domain_memory
   vcpu   = each.value.cpus
 
+  # Especificamos la arquitectura y el tipo de máquina
+  arch    = "x86_64"
+  machine = "pc-q35-rhel9.4.0"
+
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
     wait_for_lease = true
@@ -99,13 +103,19 @@ resource "libvirt_domain" "vm_nat_02" {
   cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
 
   cpu {
-    mode = "host-passthrough"
+    mode = "host-model" # Usamos el modelo de CPU del host para mejor compatibilidad
   }
 
-  # Add this section for serial console support
+  # Añadimos soporte para la consola serial
   console {
     type        = "pty"
     target_type = "serial"
     target_port = "0"
   }
+}
+
+# output.tf
+
+output "ip_addresses" {
+  value = { for key, machine in libvirt_domain.vm_nat_02 : key => var.vm_rockylinux_definitions[key].ip }
 }
