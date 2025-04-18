@@ -83,7 +83,7 @@ resource "libvirt_domain" "vm_nat_02" {
 
   # Configuración compatible con libvirt 0.8.3
   arch    = "x86_64"
-  machine = "pc"  # Cambiado a máquina legacy compatible
+  machine = "q35"  # Cambiado a máquina legacy compatible
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
