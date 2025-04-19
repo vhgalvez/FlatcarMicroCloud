@@ -120,3 +120,120 @@ sudo nft list ruleset
 
 Este setup asegura que tu entorno de virtualización con subredes internas y salida a Internet tenga una política de seguridad clara, precisa y compatible con Kubernetes y otros servicios distribuidos internos.
 
+
+
+✅ OBJETIVO
+Configurar Libvirt + nftables en Rocky Linux 9.5 usando iptables-nft (por defecto en RHEL9+), asegurando:
+
+Que Libvirt cree redes NAT sin errores.
+
+Que nftables funcione como firewall.
+
+Que NO necesites iptables-legacy.
+
+🧱 PASO A PASO
+1. 🔍 Verifica que estás usando iptables-nft
+bash
+Copiar
+Editar
+sudo update-alternatives --display iptables
+Debe decir algo como:
+
+bash
+Copiar
+Editar
+link currently points to /usr/sbin/iptables-nft
+Si NO, cámbialo con:
+
+bash
+Copiar
+Editar
+sudo update-alternatives --set iptables /usr/sbin/iptables-nft
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
+2. 🧰 Asegúrate de tener todo actualizado
+bash
+Copiar
+Editar
+sudo dnf update -y
+sudo dnf install libvirt firewalld nftables iptables-nft -y
+3. 🔥 Configura firewalld para trabajar con nftables
+Editar el archivo de configuración:
+
+bash
+Copiar
+Editar
+sudo nano /etc/firewalld/firewalld.conf
+Busca la línea:
+
+shell
+Copiar
+Editar
+#NftablesTableOwner=yes
+Y cámbiala a:
+
+ini
+Copiar
+Editar
+NftablesTableOwner=no
+Esto permite que Libvirt inserte sus reglas directamente en nftables.
+
+Reinicia firewalld:
+
+bash
+Copiar
+Editar
+sudo systemctl restart firewalld
+4. 🧠 Asegúrate de que el kernel soporte NAT
+Habilita módulos necesarios:
+
+bash
+Copiar
+Editar
+echo -e "options nf_conntrack ip_conntrack_helper=1\noptions nf_nat_ftp nf_nat=1" | sudo tee /etc/modprobe.d/libvirt-nft.conf
+Cárgalos:
+
+bash
+Copiar
+Editar
+sudo modprobe -r nf_conntrack nf_nat_ftp
+sudo modprobe nf_conntrack nf_nat_ftp
+5. 🚀 Reinicia Libvirt y Firewalld
+bash
+Copiar
+Editar
+sudo systemctl restart libvirtd firewalld
+6. 🌐 Verifica que virbr0 se está creando bien
+bash
+Copiar
+Editar
+sudo virsh net-list --all
+Si no está activa:
+
+bash
+Copiar
+Editar
+sudo virsh net-start default
+sudo virsh net-autostart default
+También puedes probar con una red NAT personalizada.
+
+7. 🔎 Verifica que Libvirt usa nftables correctamente
+bash
+Copiar
+Editar
+sudo nft list ruleset | grep -i virbr
+Deberías ver algo como:
+
+nginx
+Copiar
+Editar
+chain nat_POSTROUTING {
+  oifname "virbr0" masquerade
+}
+✅ CONCLUSIÓN
+Libvirt funciona bien con iptables-nft y nftables en Rocky Linux 9.5, si:
+
+Se ajusta firewalld para permitir que Libvirt modifique nftables.
+
+Se evita usar iptables-legacy (desaprobado en RHEL9).
+
+Se reinician correctamente los servicios.

@@ -87,6 +87,8 @@ sudo terraform apply --auto-approve --var-file=./terraform.tfvars
 
 rpm -q iptables-nft
 
+
+ sudo update-alternatives --display iptables
 sudo update-alternatives --config iptables
 
 
