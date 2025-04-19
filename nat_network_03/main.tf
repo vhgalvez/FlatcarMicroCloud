@@ -35,8 +35,6 @@ resource "libvirt_network" "kube_network_03" {
 
   dhcp {
     enabled = true
-    range_start = "10.17.4.100"
-    range_end   = "10.17.4.254"
   }
 }
 
