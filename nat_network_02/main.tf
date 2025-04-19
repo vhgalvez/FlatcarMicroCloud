@@ -21,6 +21,8 @@ provider "libvirt" {
 resource "libvirt_network" "kube_network_02" {
   name      = "kube_network_02"
   mode      = "nat"
+  bridge    = "virbr_kube02"
+  domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.3.0/24"]
 }

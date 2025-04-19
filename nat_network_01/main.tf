@@ -17,6 +17,8 @@ provider "libvirt" {
 resource "libvirt_network" "nat_network_01" {
   name      = var.rocky9_network_name
   mode      = "nat"
+  bridge    = "virbr_kube01"
+  domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.5.0/24"]
 }
