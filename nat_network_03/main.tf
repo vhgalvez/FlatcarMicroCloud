@@ -28,8 +28,8 @@ provider "ct" {}
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
-  bridge    = "virbr3"        # Personalizado y reutilizable
-  domain    = "kube.internal" # Opcional pero recomendable
+  bridge    = "virbr3"
+  domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.4.0/24"]
 
@@ -44,21 +44,6 @@ resource "libvirt_network" "kube_network_03" {
 }
 
 
-  # Desactivar la gestión de firewall por parte de libvirt
-  xml {
-    custom = <<EOF
-<network>
-  <name>kube_network_03</name>
-  <forward mode='nat'/>
-  <ip address='10.17.4.1' netmask='255.255.255.0'>
-    <dhcp>
-      <range start='10.17.4.100' end='10.17.4.254'/>
-    </dhcp>
-  </ip>
-</network>
-EOF
-  }
-}
 
 # 🗂️ Definición del pool de almacenamiento
 resource "libvirt_pool" "volumetmp_flatcar_03" {
