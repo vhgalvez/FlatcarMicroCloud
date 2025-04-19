@@ -86,6 +86,11 @@ sudo sysctl -p
 sudo nft -f /etc/sysconfig/nftables.conf
 ```
 
+sudo nft list ruleset | sudo tee /etc/sysconfig/nftables.conf
+
+
+
+
 2. Habilitar el servicio `nftables` para que se cargue al inicio:
 
 ```bash
