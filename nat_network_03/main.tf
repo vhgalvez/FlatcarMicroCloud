@@ -36,27 +36,6 @@ resource "libvirt_network" "kube_network_03" {
 }
 
 
-resource "libvirt_network" "kube_network_03" {
-  name = "kube_network_03"
-
-  xml {
-    custom = <<EOF
-<network>
-  <name>kube_network_03</name>
-  <forward mode='nat'/>
-  <bridge name='virbr3' stp='on' delay='0'/>
-  <ip address='10.17.4.1' netmask='255.255.255.0'>
-    <dhcp>
-      <range start='10.17.4.100' end='10.17.4.254'/>
-    </dhcp>
-  </ip>
-</network>
-EOF
-  }
-}
-
-
-
 resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
   type = "dir"
