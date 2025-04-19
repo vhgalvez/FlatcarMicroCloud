@@ -237,3 +237,31 @@ Se ajusta firewalld para permitir que Libvirt modifique nftables.
 Se evita usar iptables-legacy (desaprobado en RHEL9).
 
 Se reinician correctamente los servicios.
+
+
+Respuesta concisa y técnica:
+
+Sí, en Rocky Linux 9.5 necesitas que estos 3 componentes trabajen juntos para Libvirt/QEMU:
+
+firewalld + nftables + iptables-nft son requeridos en conjunto porque:
+
+nftables es el backend real del firewall (reemplazo moderno de iptables)
+
+iptables-nft provee compatibilidad para aplicaciones que aún usan comandos iptables (como Libvirt)
+
+firewalld actúa como frontend unificado que gestiona ambos sistemas
+
+[QEMU] ← (API) → [Libvirt] ← (iptables-nft) → [nftables]
+                   ↑
+                   ↓
+               [firewalld]
+
+
+​Para que libvirt y QEMU funcionen correctamente en Rocky Linux 9.5, es recomendable utilizar iptables-nft como backend, ya que es el predeterminado en esta versión y es compatible con nftables. Sin embargo, si prefieres una configuración más directa y controlada, puedes optar por utilizar únicamente nftables sin firewalld.​
+
+🔧 Recomendaciones de configuración
+Backend de iptables: Utilizar iptables-nft es adecuado y compatible con nftables.​
+
+firewalld y nftables: firewalld es una capa de abstracción sobre nftables y iptables. Si deseas una configuración más sencilla y directa, puedes desactivar firewalld y gestionar las reglas directamente con nftables.​
+
+libvirt y QEMU: Funcionan correctamente con nftables y iptables-nft. Asegúrate de que los servicios estén habilitados y en funcionamiento.
