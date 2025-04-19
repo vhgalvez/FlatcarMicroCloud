@@ -28,15 +28,21 @@ provider "ct" {}
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
-  bridge    = "virbr3"
+  bridge    = "virbr3"        # Personalizado y reutilizable
+  domain    = "kube.internal" # Opcional pero recomendable
   autostart = true
   addresses = ["10.17.4.0/24"]
 
   dhcp {
     enabled = true
-    start   = "10.17.4.100"
-    end     = "10.17.4.254"
+
+    range {
+      start = "10.17.4.100"
+      end   = "10.17.4.254"
+    }
   }
+}
+
 
   # Desactivar la gestión de firewall por parte de libvirt
   xml {
