@@ -73,9 +73,12 @@ sudo systemctl restart virtnetworkd.service
 sudo systemctl restart virtstoraged.service
 sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged
 
+
+sudo systemctl status virtqemud.service
+
+
 systemctl status virtqemud virtlogd virtproxyd virtnetworkd virtstoraged
 sudo systemctl is-enabled virtqemud.service
-sudo systemctl restart virtqemud.service
 
 
 sudo nft add chain ip filter LIBVIRT_INP { type filter hook input priority filter \; }
