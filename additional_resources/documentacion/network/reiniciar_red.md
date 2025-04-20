@@ -132,3 +132,32 @@ max_requests = 100
 
 
  ls -l /etc/libvirt/virtqemud*
+
+
+
+
+  Asegurar forwarding de ICMP
+Revisa esto en tu sistema host (muy importante):
+
+bash
+Copiar
+Editar
+sudo sysctl net.ipv4.ip_forward
+Debe devolver:
+
+ini
+Copiar
+Editar
+net.ipv4.ip_forward = 1
+Si es 0, habilítalo así:
+
+bash
+Copiar
+Editar
+sudo sysctl -w net.ipv4.ip_forward=1
+Y para hacerlo permanente:
+
+bash
+Copiar
+Editar
+echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
