@@ -65,3 +65,8 @@ Editar
 sudo nft list ruleset | less
 Deberías ver reglas como LIBVIRT_INP, LIBVIRT_FWX, etc., aplicadas por el hook.
 
+
+
+
+  #bridge    = "virbr_kube03"
+  #domain    = "kube.internal"
