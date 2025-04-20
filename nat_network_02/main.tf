@@ -95,11 +95,12 @@ resource "libvirt_domain" "vm_nat_02" {
   arch    = "x86_64"
   machine = "pc"
 
+
   network_interface {
-    network_id     = libvirt_network.kube_network_02.id
-    wait_for_lease = true  # ✅ Requiere DHCP en red
-    addresses      = [each.value.ip]
+    network_id = libvirt_network.kube_network_02.id
+    addresses  = [each.value.ip]
   }
+
 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
