@@ -24,12 +24,9 @@ provider "libvirt" {
 
 provider "ct" {}
 
-# 🧩 Definición de la red NAT sin adaptador puente
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
-  #bridge    = "virbr_kube03"
-  #domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.4.0/24"]
 
@@ -38,7 +35,6 @@ resource "libvirt_network" "kube_network_03" {
   }
 }
 
-# 🗂️ Definición del pool de almacenamiento
 resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
   type = "dir"
@@ -47,7 +43,6 @@ resource "libvirt_pool" "volumetmp_flatcar_03" {
   }
 }
 
-# 📦 Volumen base
 resource "libvirt_volume" "base" {
   name   = "base"
   source = var.base_image
@@ -55,7 +50,6 @@ resource "libvirt_volume" "base" {
   format = "qcow2"
 }
 
-# 📄 Generación de archivos de configuración para las VMs
 data "template_file" "vm-configs" {
   for_each = var.vm_definitions
 
@@ -73,13 +67,11 @@ data "template_file" "vm-configs" {
   }
 }
 
-# 🔧 Generación de configuraciones Ignition
 data "ct_config" "vm-ignitions" {
   for_each = var.vm_definitions
   content  = data.template_file.vm-configs[each.key].rendered
 }
 
-# 💾 Guardar configuraciones Ignition localmente
 resource "local_file" "ignition_configs" {
   for_each = var.vm_definitions
 
@@ -87,7 +79,6 @@ resource "local_file" "ignition_configs" {
   filename = "${path.module}/ignition-configs/${each.key}.ign"
 }
 
-# 🔌 Configuración de Ignition en libvirt
 resource "libvirt_ignition" "ignition" {
   for_each = var.vm_definitions
 
@@ -96,7 +87,6 @@ resource "libvirt_ignition" "ignition" {
   content = data.ct_config.vm-ignitions[each.key].rendered
 }
 
-# 💽 Volúmenes para las VMs
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_definitions
 
@@ -107,7 +97,6 @@ resource "libvirt_volume" "vm_disk" {
   size           = each.value.disk_size * 1024 * 1024
 }
 
-# 📁 Discos adicionales
 locals {
   additional_disks_flat = flatten([
     for vm_name, vm in var.vm_definitions : (
@@ -134,7 +123,6 @@ resource "libvirt_volume" "additional_disks" {
   size   = each.value.size * 1024 * 1024
 }
 
-# 🖥️ Definición de las máquinas virtuales
 resource "libvirt_domain" "machine" {
   for_each = var.vm_definitions
 
@@ -150,9 +138,8 @@ resource "libvirt_domain" "machine" {
   }
 
   network_interface {
-    network_id     = libvirt_network.kube_network_03.id
-    wait_for_lease = true
-    addresses      = [each.value.ip]
+    network_id = libvirt_network.kube_network_03.id
+    addresses  = [each.value.ip]
   }
 
   disk {
@@ -180,7 +167,6 @@ resource "libvirt_domain" "machine" {
   }
 }
 
-# 📤 Salida de direcciones IP
 output "ip_addresses" {
   value = {
     for key, machine in libvirt_domain.machine :
