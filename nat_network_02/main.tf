@@ -5,7 +5,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.8.3"  # Mantener la versión 0.8.3
+      version = "0.8.3"
     }
     template = {
       source  = "hashicorp/template"
@@ -18,15 +18,19 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
+# ✅ Red NAT sin atributos conflictivos
 resource "libvirt_network" "kube_network_02" {
   name      = "kube_network_02"
   mode      = "nat"
-  bridge    = "virbr_kube02"
-  domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.3.0/24"]
+
+  dhcp {
+    enabled = true
+  }
 }
 
+# 📦 Pool de almacenamiento
 resource "libvirt_pool" "volumetmp_nat_02" {
   name = "${var.cluster_name}_nat_02"
   type = "dir"
@@ -35,6 +39,7 @@ resource "libvirt_pool" "volumetmp_nat_02" {
   }
 }
 
+# 📄 Volumen base
 resource "libvirt_volume" "rocky9_image" {
   name   = "${var.cluster_name}_rocky9_image"
   source = var.rocky9_image
@@ -42,23 +47,25 @@ resource "libvirt_volume" "rocky9_image" {
   format = "qcow2"
 }
 
+# 🧩 Archivos de configuración por VM
 data "template_file" "vm-configs" {
   for_each = var.vm_rockylinux_definitions
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
   vars = {
-    ssh_keys       = jsonencode(var.ssh_keys),
-    hostname       = each.value.hostname,
-    short_hostname = each.value.short_hostname,
-    timezone       = var.timezone,
-    ip             = each.value.ip,
-    gateway        = var.gateway,
-    dns1           = var.dns1,
-    dns2           = var.dns2,
+    ssh_keys       = jsonencode(var.ssh_keys)
+    hostname       = each.value.hostname
+    short_hostname = each.value.short_hostname
+    timezone       = var.timezone
+    ip             = each.value.ip
+    gateway        = var.gateway
+    dns1           = var.dns1
+    dns2           = var.dns2
     cluster_domain = var.cluster_domain
   }
 }
 
+# ☁️ Disco cloudinit
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_rockylinux_definitions
 
@@ -67,6 +74,7 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   user_data = data.template_file.vm-configs[each.key].rendered
 }
 
+# 💽 Disco VM
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_rockylinux_definitions
 
@@ -76,6 +84,7 @@ resource "libvirt_volume" "vm_disk" {
   format         = "qcow2"
 }
 
+# 🖥️ Definición de cada VM
 resource "libvirt_domain" "vm_nat_02" {
   for_each = var.vm_rockylinux_definitions
 
@@ -83,27 +92,25 @@ resource "libvirt_domain" "vm_nat_02" {
   memory = each.value.domain_memory
   vcpu   = each.value.cpus
 
-  # Configuración compatible con libvirt 0.8.3
   arch    = "x86_64"
   machine = "pc"
 
   network_interface {
     network_id     = libvirt_network.kube_network_02.id
-    wait_for_lease = true
+    wait_for_lease = true  # ✅ Requiere DHCP en red
     addresses      = [each.value.ip]
   }
 
-  # Configuración simplificada del disco
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
+
+  cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
 
   graphics {
     type        = "vnc"
     listen_type = "address"
   }
-
-  cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
 
   cpu {
     mode = "host-model"
@@ -116,6 +123,10 @@ resource "libvirt_domain" "vm_nat_02" {
   }
 }
 
+# 🔍 Salida de IPs asignadas
 output "ip_addresses" {
-  value = { for key, machine in libvirt_domain.vm_nat_02 : key => var.vm_rockylinux_definitions[key].ip }
+  value = {
+    for key, machine in libvirt_domain.vm_nat_02 :
+    key => var.vm_rockylinux_definitions[key].ip
+  }
 }
