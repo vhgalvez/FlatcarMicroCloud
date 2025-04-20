@@ -265,3 +265,11 @@ Backend de iptables: Utilizar iptables-nft es adecuado y compatible con nftables
 firewalld y nftables: firewalld es una capa de abstracción sobre nftables y iptables. Si deseas una configuración más sencilla y directa, puedes desactivar firewalld y gestionar las reglas directamente con nftables.​
 
 libvirt y QEMU: Funcionan correctamente con nftables y iptables-nft. Asegúrate de que los servicios estén habilitados y en funcionamiento.
+
+
+
+https://github.com/clemensschlipfinger/libvirt-nft-ruler
+
+
+sudo systemctl restart nftables
+sudo nft list ruleset
