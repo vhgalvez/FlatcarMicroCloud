@@ -273,3 +273,16 @@ https://github.com/clemensschlipfinger/libvirt-nft-ruler
 
 sudo systemctl restart nftables
 sudo nft list ruleset
+
+
+✅ Para aplicar los cambios:
+bash
+Copiar
+Editar
+sudo systemctl restart nftables
+Y luego valida que se haya cargado correctamente:
+
+bash
+Copiar
+Editar
+sudo nft list ruleset

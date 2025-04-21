@@ -58,20 +58,28 @@ sudo systemctl status virtqemud.service
 
 
 
+# 🔓 1. (Opcional) Desactiva SELinux temporalmente si estás depurando
 sudo setenforce 0
+
+# 🌐 2. Reinicia servicios de red (útil para bridges virtuales o DNS)
 sudo systemctl restart NetworkManager
-sudo systemctl restart nftables
-sudo systemctl restart virtproxyd.service
-sudo systemctl restart virtnetworkd.service
-sudo systemctl restart virtqemud.service
 
+# 🔥 3. Reinicia reglas de firewall (como nftables o firewalld)
+sudo systemctl restart nftables  # O reemplaza por firewalld si usas firewalld
+# sudo systemctl restart firewalld
 
-sudo systemctl restart virtqemud.service
-sudo systemctl restart virtlogd.service
-sudo systemctl restart virtproxyd.service
-sudo systemctl restart virtnetworkd.service
-sudo systemctl restart virtstoraged.service
+# 🧠 4. Reinicia todos los servicios relacionados con libvirt y QEMU
+sudo systemctl restart virtqemud.service       # QEMU daemon
+sudo systemctl restart virtlogd.service        # Logging de libvirt/QEMU
+sudo systemctl restart virtproxyd.service      # Proxy de libvirt
+sudo systemctl restart virtnetworkd.service    # Redes de libvirt (NAT/bridge)
+sudo systemctl restart virtstoraged.service    # Almacenamiento libvirt
+
+# ✅ Alternativa más rápida: reiniciar todos juntos
 sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged
+
+
+sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged nftables NetworkManager
 
 
 sudo systemctl status virtqemud.service
