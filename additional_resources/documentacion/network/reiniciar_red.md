@@ -164,3 +164,7 @@ bash
 Copiar
 Editar
 echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
+
+
+
+sudo dnf install -y jq
