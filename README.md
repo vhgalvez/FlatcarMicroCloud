@@ -367,6 +367,10 @@ Provisionar y configurar VMs según especificaciones en la tabla de recursos, as
 
 Instalar y configurar Longhorn y NFS en el clúster de Kubernetes para almacenamiento persistente.
 
+![alt text](additional_resources/image/k3s_ansible_Longhorn_02.png)
+
+![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
+
 ### Paso 6: Configuración de Monitoreo y Visualización
 
 - Configurar **Prometheus** y **Grafana** para monitoreo.
