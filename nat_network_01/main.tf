@@ -1,4 +1,4 @@
-# nat_network_01_network\main.tf
+# kube_network_01_network\main.tf
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
   required_providers {
@@ -13,8 +13,8 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Configuración de la red nat_network_01
-resource "libvirt_network" "nat_network_01" {
+# Configuración de la red kube_network_01
+resource "libvirt_network" "kube_network_01" {
   name      = var.rocky9_network_name
   mode      = "nat"
   bridge    = "virbr_kube01"
@@ -92,7 +92,7 @@ resource "libvirt_domain" "vm" {
   vcpu   = each.value.cpus
 
   network_interface {
-    network_id = libvirt_network.nat_network_01.id
+    network_id = libvirt_network.kube_network_01.id
     addresses  = [each.value.ip] # Asignar la IP estática
   }
 
