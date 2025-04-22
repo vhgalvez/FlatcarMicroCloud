@@ -107,7 +107,7 @@ Una vez que las máquinas virtuales tengan direcciones IP en la red LAN, podrán
 
 
 # Red MVS freeIPA1 firewall-cmd
-
+nftables
 ```bash
 sudo firewall-cmd --zone=public --add-service=ssh --permanent
 sudo firewall-cmd --zone=public --add-service=dns --permanent
@@ -128,3 +128,83 @@ sudo firewall-cmd --reload
 sudo firewall-cmd --list-all
 ```
 
+lo que queriamos corregiuir el error de doble nat causa perdida de conectivad
+
+¡Hola! ¡Exactamente! El principal motivo detrás de la implementación del modo bridge para kube_network_01 es corregir el error de la doble NAT, que puede causar problemas de conectividad y dificultar la comunicación entre diferentes partes de tu infraestructura.
+
+Aquí te explico cómo la doble NAT puede generar problemas y cómo el modo bridge los soluciona en este contexto:
+
+Problema de la Doble NAT:
+
+Escenario: Inicialmente, si tu máquina k8s-api-lb estuviera conectada a una red Libvirt en modo NAT (como kube_network_01 originalmente con la IP 10.17.5.50) y necesitara comunicarse con los nodos Kubernetes que también están en otra red NAT (kube_network_03 con IPs 10.17.4.x), el tráfico tendría que pasar por dos capas de Traducción de Direcciones de Red (NAT).
+
+¿Por qué es un problema?
+
+Rutas Complejas: Configurar el enrutamiento y el reenvío de puertos a través de múltiples capas de NAT puede volverse complicado y propenso a errores.
+Problemas de Conectividad: Ciertos protocolos o tipos de comunicación pueden no funcionar correctamente a través de múltiples capas de NAT. Por ejemplo, protocolos que requieren conexiones iniciadas desde la red interna pueden tener dificultades para establecerse a través de múltiples NATs.
+Latencia Adicional: Cada capa de NAT introduce un pequeño retraso en el procesamiento del tráfico.
+Dificultad en el Diagnóstico: Rastrear problemas de conectividad a través de múltiples NATs puede ser más difícil.
+Solución con el Modo Bridge:
+
+Integración Directa: Al cambiar kube_network_01 al modo bridge y conectarlo a tu red LAN (192.168.0.0/24), cualquier máquina virtual conectada a esta red (como k8s-api-lb con la IP 192.168.0.50) obtiene una dirección IP directamente de tu LAN.
+
+Comunicación Directa: Ahora, k8s-api-lb está en la misma red lógica que otros dispositivos de tu LAN. Para comunicarse con los nodos Kubernetes (que están en la red NAT 10.17.4.0/24), el tráfico solo necesita ser enrutado entre estas dos redes. Esto elimina la necesidad de una segunda capa de NAT para la comunicación entre k8s-api-lb y la LAN.
+
+Enrutamiento Simplificado: La comunicación entre la LAN (192.168.0.0/24) y la red NAT de los nodos (10.17.4.0/24) se gestiona a nivel de tu router LAN (para el tráfico desde la LAN hacia la red NAT) y por el gateway NAT proporcionado por Libvirt (10.17.4.1) para el tráfico desde los nodos hacia la LAN. Esto es mucho más sencillo que lidiar con dos capas de NAT.
+
+En resumen, la implementación del modo bridge para kube_network_01 se realizó para:
+
+Eliminar la doble NAT que habría ocurrido si k8s-api-lb permanecía en una red NAT separada y necesitaba comunicarse con otras redes NAT.
+Simplificar la arquitectura de red y el enrutamiento.
+Mejorar la confiabilidad y la conectividad entre los diferentes componentes de tu infraestructura al evitar las posibles complicaciones de la doble NAT.
+
+
+vrrp_instance VI_1 {
+    state MASTER
+    interface br0 # <----- CAMBIO AQUÍ
+    virtual_router_id 51
+    priority 100  # Prioridad más alta para el nodo principal
+    advert_int 1  # Intervalo de anuncios VRRP
+    authentication {
+        auth_type PASS
+        auth_pass 12345678
+    }
+
+    virtual_ipaddress {
+        192.168.0.55 # <----- CAMBIO AQUÍ
+    }
+
+    track_script {
+        script "pidof haproxy"  # Monitoriza si HAProxy está corriendo
+        interval 2
+    }
+}
+
+# Configuración para el nodo de respaldo (para otros Load Balancers)
+vrrp_instance VI_2 {
+    state BACKUP
+    interface br0 # <----- CAMBIO AQUÍ
+    virtual_router_id 52  # Cambiar VRID para evitar duplicados
+    priority 90  # Menor prioridad para el nodo de respaldo
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 12345678
+    }
+
+    virtual_ipaddress {
+        192.168.0.55 # <----- CAMBIO AQUÍ
+    }
+
+    track_script {
+        script "pidof haproxy"  # Monitoriza si HAProxy está corriendo
+        interval 2
+    }
+}
+Explicación de los Cambios:
+
+interface br0: Hemos cambiado la interfaz de eth0 a br0. Esto asegura que Keepalived esté operando en la interfaz del puente que está conectada a tu red LAN. Si por alguna razón tu interfaz LAN en el host tiene un nombre diferente, debes usar ese nombre en lugar de br0.
+virtual_ipaddress 192.168.0.55: Hemos actualizado la dirección IP virtual en ambos bloques vrrp_instance a la nueva IP (192.168.0.55) que reside en tu red LAN.
+Una vez que apliques estos cambios al archivo keepalived.conf.j2 y ejecutes el playbook de Ansible, Keepalived configurará la IP virtual 192.168.0.55 en la interfaz br0 de tu servidor k8s-api-lb.
+
+Asegúrate de que el host donde se ejecuta Ansible pueda acceder al host k8s-api-lb y que la variable hosts: haproxy_keepalived en tu playbook apunte correctamente a ese host.
