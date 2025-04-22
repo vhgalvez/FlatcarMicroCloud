@@ -19,7 +19,6 @@ resource "libvirt_network" "kube_network_01" {
   mode        = "bridge"
   bridge      = "br0"
   autostart   = true
-  # domain      = "kube.internal" # Eliminar esta línea
 }
 
 
