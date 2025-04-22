@@ -176,3 +176,6 @@ echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 
 
 sudo dnf install -y jq
+
+
+sudo ip route add 10.17.5.0/24 via 10.17.4.1 dev eth0
