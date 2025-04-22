@@ -24,7 +24,6 @@ provider "libvirt" {
 
 provider "ct" {}
 
-
 # Networks
 resource "libvirt_network" "kube_network_03" {
   name         = "kube_network_03"
@@ -33,7 +32,7 @@ resource "libvirt_network" "kube_network_03" {
   domain       = "kube.internal"
   autostart    = true
   addresses    = ["10.17.4.0/24"]
-  forward_mode = "route" # <--- ¡CORRECCIÓN!
+  forward_mode = "route"
 
   dhcp {
     enabled = true
@@ -74,13 +73,13 @@ data "template_file" "vm-configs" {
 
 data "ct_config" "vm-ignitions" {
   for_each = var.vm_definitions
-  content   = data.template_file.vm-configs[each.key].rendered
+  content  = data.template_file.vm-configs[each.key].rendered
 }
 
 resource "local_file" "ignition_configs" {
   for_each = var.vm_definitions
 
-  content   = data.ct_config.vm-ignitions[each.key].rendered
+  content  = data.ct_config.vm-ignitions[each.key].rendered
   filename = "${path.module}/ignition-configs/${each.key}.ign"
 }
 
@@ -178,3 +177,7 @@ output "ip_addresses" {
     key => machine.network_interface[0].addresses[0] if length(machine.network_interface[0].addresses) > 0
   }
 }
+
+
+
+
