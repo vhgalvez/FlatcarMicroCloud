@@ -36,11 +36,6 @@ resource "libvirt_network" "kube_network_03" {
   dhcp {
     enabled = true
   }
-
-  forward {
-    mode = "route"
-    dev  = "virbr_kube02"
-  }
 }
 
 
