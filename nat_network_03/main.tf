@@ -44,7 +44,6 @@ resource "libvirt_network" "kube_network_03" {
   }
 }
 
-
 resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
   type = "dir"
