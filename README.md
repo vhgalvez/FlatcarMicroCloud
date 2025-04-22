@@ -754,8 +754,8 @@ resource "libvirt_network" "kube_network_03" {
 🧠 Roles Extra:
 ───────────────
 +-------------------------+     +-------------------------+
-| FreeIPA (10.17.3.11)    |     | PostgreSQL (10.17.3.14)  |
-| DNS + Autenticación     |     | Base de datos central    |
+| coredns (10.17.3.11)    |     | PostgreSQL (10.17.3.14)  |
+| DNS + npt               |     | Base de datos central    |
 +-------------------------+     +-------------------------+
 ```
 
