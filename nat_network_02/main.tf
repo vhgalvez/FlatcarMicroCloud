@@ -30,6 +30,11 @@ resource "libvirt_network" "kube_network_02" {
   dhcp {
     enabled = true
   }
+
+  forward {
+    mode = "route"
+    dev  = "virbr_kube03"
+  }
 }
 
 # 📦 Pool de almacenamiento

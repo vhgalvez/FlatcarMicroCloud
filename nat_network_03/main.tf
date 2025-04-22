@@ -24,6 +24,8 @@ provider "libvirt" {
 
 provider "ct" {}
 
+
+# Networks 
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
@@ -35,7 +37,13 @@ resource "libvirt_network" "kube_network_03" {
   dhcp {
     enabled = true
   }
+
+  forward {
+    mode = "route"
+    dev  = "virbr_kube02"
+  }
 }
+
 
 resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
