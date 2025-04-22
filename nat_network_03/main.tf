@@ -25,7 +25,7 @@ provider "libvirt" {
 provider "ct" {}
 
 
-# Networks 
+# Networks
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
   mode      = "nat"
@@ -78,13 +78,13 @@ data "template_file" "vm-configs" {
 
 data "ct_config" "vm-ignitions" {
   for_each = var.vm_definitions
-  content  = data.template_file.vm-configs[each.key].rendered
+  content   = data.template_file.vm-configs[each.key].rendered
 }
 
 resource "local_file" "ignition_configs" {
   for_each = var.vm_definitions
 
-  content  = data.ct_config.vm-ignitions[each.key].rendered
+  content   = data.ct_config.vm-ignitions[each.key].rendered
   filename = "${path.module}/ignition-configs/${each.key}.ign"
 }
 
