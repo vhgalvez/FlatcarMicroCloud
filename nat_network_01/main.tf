@@ -29,7 +29,6 @@ resource "libvirt_network" "kube_network_01" {
   bridge      = "br0"
   domain      = "kube.internal"
   autostart   = true
-  addresses   = ["192.168.0.0/24"] 
 }
 
 
