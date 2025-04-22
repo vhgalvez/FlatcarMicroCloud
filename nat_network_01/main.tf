@@ -14,21 +14,12 @@ provider "libvirt" {
 }
 
 # Configuración de la red kube_network_01
-  #resource "libvirt_network" "kube_network_01" {
-  # name      = var.rocky9_network_name
-  # mode      = "nat"
-  # bridge    = "virbr_kube01"
-  # domain    = "kube.internal"
-  # autostart = true
-  # addresses = ["10.17.5.0/24"]
-# }
-
 resource "libvirt_network" "kube_network_01" {
   name        = var.rocky9_network_name #
   mode        = "bridge"
   bridge      = "br0"
-  domain      = "kube.internal"
   autostart   = true
+  # domain      = "kube.internal" # Eliminar esta línea
 }
 
 
@@ -43,10 +34,10 @@ resource "libvirt_pool" "volumetmp_k8s-api-lb" {
 
 # Configuración del volumen de la imagen de Rocky Linux
 resource "libvirt_volume" "rocky9_image" {
-  name   = "${var.cluster_name}-rocky9_image"
-  source = var.rocky9_image
-  pool   = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
-  format = "qcow2"
+  name    = "${var.cluster_name}-rocky9_image"
+  source  = var.rocky9_image
+  pool    = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
+  format  = "qcow2"
 }
 
 # Configuración de los archivos de configuración para cada VM
@@ -55,14 +46,14 @@ data "template_file" "vm_configs" {
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
   vars = {
-    ssh_keys       = jsonencode(var.ssh_keys),
-    hostname       = each.value.hostname,
+    ssh_keys      = jsonencode(var.ssh_keys),
+    hostname      = each.value.hostname,
     short_hostname = each.value.short_hostname,
-    timezone       = var.timezone,
-    ip             = each.value.ip,
-    gateway        = each.value.gateway,
-    dns1           = each.value.dns1,
-    dns2           = each.value.dns2
+    timezone      = var.timezone,
+    ip            = each.value.ip,
+    gateway       = each.value.gateway,
+    dns1          = each.value.dns1,
+    dns2          = each.value.dns2
   }
 }
 
@@ -70,9 +61,9 @@ data "template_file" "vm_configs" {
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_rockylinux_definitions
 
-  name      = "${each.key}_cloudinit.iso"
-  pool      = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
-  user_data = data.template_file.vm_configs[each.key].rendered
+  name        = "${each.key}_cloudinit.iso"
+  pool        = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
+  user_data   = data.template_file.vm_configs[each.key].rendered
   network_config = templatefile("${path.module}/config/network-config.tpl", {
     ip      = each.value.ip,
     gateway = each.value.gateway,
@@ -85,20 +76,20 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_rockylinux_definitions
 
-  name           = each.value.volume_name
+  name          = each.value.volume_name
   base_volume_id = libvirt_volume.rocky9_image.id
-  pool           = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
-  format         = each.value.volume_format
-  size           = each.value.volume_size * 1024 * 1024 * 1024 # Convierte GB a bytes
+  pool          = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
+  format        = each.value.volume_format
+  size          = each.value.volume_size * 1024 * 1024 * 1024 # Convierte GB a bytes
 }
 
 # Configuración de las máquinas virtuales (VMs)
 resource "libvirt_domain" "vm" {
   for_each = var.vm_rockylinux_definitions
 
-  name   = each.value.hostname
-  memory = each.value.memory
-  vcpu   = each.value.cpus
+  name    = each.value.hostname
+  memory  = each.value.memory
+  vcpu    = each.value.cpus
 
   network_interface {
     network_id = libvirt_network.kube_network_01.id
