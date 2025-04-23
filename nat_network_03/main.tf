@@ -31,11 +31,11 @@ resource "libvirt_network" "kube_network_03" {
   bridge    = "virbr_kube03"
   domain    = "kube.internal"
   autostart = true
-  addresses = ["10.17.4.0/24"]
+   # addresses = ["10.17.4.0/24"]
 
-  dhcp {
-    enabled = true
-  }
+   # dhcp {
+    # enabled = true
+   #}
 }
 
 
