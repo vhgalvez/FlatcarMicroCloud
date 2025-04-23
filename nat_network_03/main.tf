@@ -26,20 +26,18 @@ provider "ct" {}
 
 # Networks
 resource "libvirt_network" "kube_network_03" {
-  name      = "kube_network_03"
-  mode      = "bridge"
-  bridge    = "br0"
-
-#bridge    = "virbr_kube03"
-  #domain    = "kube.internal"
+  name = "kube_network_03"
+  mode = "bridge"
+  #bridge    = "br0"
+  bridge    = "virbr_kube03"
+  domain    = "kube.internal"
   autostart = true
-   # addresses = ["10.17.4.0/24"]
+  addresses = ["10.17.4.0/24"]
 
-   # dhcp {
-    # enabled = true
-   #}
+  dhcp {
+    enabled = true
+  }
 }
-
 
 resource "libvirt_pool" "volumetmp_flatcar_03" {
   name = "volumetmp_flatcar_03"
