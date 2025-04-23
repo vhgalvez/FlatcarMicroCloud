@@ -27,13 +27,13 @@ provider "ct" {}
 # Networks
 resource "libvirt_network" "kube_network_03" {
   name = "kube_network_03"
-  mode = "bridge"
-  #bridge    = "br0"
+  mode = "nat"
   bridge    = "virbr_kube03"
   domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.4.0/24"]
-
+  #mode = "bridge"
+  #bridge    = "br0"
   dhcp {
     enabled = true
   }
