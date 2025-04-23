@@ -286,3 +286,7 @@ bash
 Copiar
 Editar
 sudo nft list ruleset
+
+
+sudo nft -f /etc/sysconfig/nftables.conf
+sudo nft list ruleset
