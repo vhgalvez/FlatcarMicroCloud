@@ -21,7 +21,7 @@ provider "libvirt" {
 # ✅ Red NAT sin atributos conflictivos
 resource "libvirt_network" "kube_network_02" {
   name      = "kube_network_02"
-  mode      = "nat"
+  mode      = "bridge"
   bridge    = "virbr_kube02"
   domain    = "kube.internal"
   autostart = true

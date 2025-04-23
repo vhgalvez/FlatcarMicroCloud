@@ -27,7 +27,7 @@ provider "ct" {}
 # Networks
 resource "libvirt_network" "kube_network_03" {
   name      = "kube_network_03"
-  mode      = "nat"
+  mode      = "bridge"
   bridge    = "virbr_kube03"
   domain    = "kube.internal"
   autostart = true
