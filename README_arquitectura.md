@@ -65,10 +65,6 @@ Incluye:
 
 ### Fase 2: Almacenamiento Persistente
 
-![Longhorn NFS Configuración](additional_resources/image/k3s_ansible_Longhorn_02.png)
-
-![Longhorn Volúmenes](additional_resources/image/k3s_ansible_Longhorn.png)
-
 - Configurar **Longhorn** y **NFS** para almacenamiento distribuido.
 - Rutas principales:
   - `/srv/nfs/postgresql` para base de datos.
@@ -154,7 +150,12 @@ Incluye:
 
 ![alt text](additional_resources/image/monitoreo_03.png)
 
+![Longhorn NFS Configuración](additional_resources/image/k3s_ansible_Longhorn_02.png)
+
+![Longhorn Volúmenes](additional_resources/image/k3s_ansible_Longhorn.png)
+
 ![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
+
 
 ## Resumen Final
 
