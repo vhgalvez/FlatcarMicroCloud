@@ -137,3 +137,21 @@ ls -l /mnt/lv_data/organized_storage/images/
 La salida muestra que flatcar_production_qemu_image.img está presente con un tamaño de aproximadamente 489 MB.
 
 Con estos pasos, la imagen de Flatcar Container Linux está lista para ser utilizada en tu entorno de virtualización.
+
+
+
+## 🧩 Monitorización con virt-top
+
+Si estás en un entorno virtualizado, puedes usar `virt-top` para monitorear el uso de recursos de las máquinas virtuales en tiempo real:
+
+### Instalación de virt-top:
+
+```bash
+sudo dnf install virt-top
+```
+
+### Uso básico:
+
+```bash
+sudo virt-top
+```
