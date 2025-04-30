@@ -10,7 +10,8 @@ Incluye:
 - **Longhorn** y **NFS** para almacenamiento persistente.
 - **Prometheus**, **Grafana**, **ELK Stack**, **cAdvisor** y **Nagios** para monitoreo.
 - **Apache Kafka**, **Redis**, y **MQTT Mosquitto** para comunicación entre microservicios.
-- **FreeIPA** para DNS y autenticación.
+- **CoreDNS** para DNS .
+- ntp para sincronización de tiempo.
 
 ## Hardware del Servidor
 
@@ -50,7 +51,7 @@ Incluye:
 | worker2       | 10.17.4.25 | Nodo Worker Kubernetes     | 2   | 4096     | 50         |
 | worker3       | 10.17.4.26 | Nodo Worker Kubernetes     | 2   | 4096     | 50         |
 | storage1      | 10.17.4.27 | NFS + Longhorn Storage     | 2   | 2048     | 80         |
-| infra-cluster | 10.17.3.11 | DNS / ntp                  | 2   | 2048     | 32         |
+| infra-cluster | 10.17.3.11 | DNS coredns / ntp  Chrony  | 2   | 2048     | 32         |
 | loadbalancer1 | 10.17.3.12 | Ingress Controller Traefik | 2   | 2048     | 32         |
 | loadbalancer2 | 10.17.3.13 | Ingress Controller Traefik | 2   | 2048     | 32         |
 | postgresql1   | 10.17.3.14 | Base de datos PostgreSQL   | 2   | 2048     | 32         |
@@ -73,7 +74,7 @@ Incluye:
 
 ### Fase 3: Servicios de Red y Seguridad
 
-- Configurar **FreeIPA** para DNS, NTP y autenticación centralizada.
+- Configurar ** infra-cluste** para DNS, NTP y autenticación centralizada.
 - Implementar **WireGuard** para acceso seguro remoto.
 
 ### Fase 4: Monitoreo
@@ -97,7 +98,7 @@ Incluye:
 ## Automatización
 
 - **Terraform**: Redes virtuales, almacenamiento, VMs.
-- **Ansible**: Instalación de Kubernetes, FreeIPA, HAProxy, Traefik, Longhorn, Monitoreo.
+- **Ansible**: Instalación de Kubernetes, coreDNS, HAProxy, Traefik, Longhorn, Monitoreo.
 
 ## Recursos de Automatización
 
@@ -241,6 +242,9 @@ Incluye:
 * La infraestructura está protegida por VPN (WireGuard), nftables y expuesta con seguridad vía Cloudflare
 
 
+## Autenticación segura:
+
+✅ basicAuth (para dashboards internos como Jenkins, Grafana, ArgoCD, etec).
 
 ## IMAGENES DEL PROYECTO 
 
