@@ -166,4 +166,30 @@ echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 
 sudo dnf install -y jq
 
+
 sudo ip route add 10.17.5.0/24 via 10.17.4.1 dev eth0
+
+
+
+## ✅ 🔧 Configuración de rutas necesarias para el balanceo y acceso en Kubernetes
+
+### 🟢 Máquinas donde debes configurar rutas manualmente
+- `load_balancer1` (IP: 10.17.3.12)
+- `load_balancer2` (IP: 10.17.3.13)
+
+Estas máquinas están en la red `10.17.3.0/24`, por lo tanto **requieren rutas hacia**:
+
+- La red de **nodos master/worker**: `10.17.4.0/24`
+- La red de **pods Flannel CNI**: `10.42.0.0/16`
+- La red del **VIP del API server**: `10.17.5.0/24`
+
+#### 🛠 Comandos a ejecutar (en ambas máquinas):
+```bash
+# 1. Ruta hacia red de nodos master/worker
+sudo ip route add 10.17.4.0/24 via 10.17.3.1 dev eth0
+
+# 2. Ruta hacia red de pods (red flannel CNI)
+sudo ip route add 10.42.0.0/16 via 10.17.3.1 dev eth0
+
+# 3. Ruta hacia la red del VIP del API server (k8s-api-lb)
+sudo ip route add 10.17.5.0/24 via 10.17.3.1 dev eth0
