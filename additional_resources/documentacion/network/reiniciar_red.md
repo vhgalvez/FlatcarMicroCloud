@@ -167,12 +167,13 @@ echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 sudo dnf install -y jq
 
 
+
+
 sudo ip route add 10.17.5.0/24 via 10.17.4.1 dev eth0
-
-
 
 ✅ 🔧 Configuración de rutas necesarias para el balanceo y acceso en Kubernetes
 🟢 Máquinas donde debes configurar rutas manualmente
+
 load_balancer1 (IP: 10.17.3.12)
 
 load_balancer2 (IP: 10.17.3.13)
@@ -197,12 +198,14 @@ sudo ip route add 10.42.0.0/16 via 10.17.3.1 dev eth0
 
 # 3. Ruta hacia la red del VIP del API server (k8s-api-lb)
 sudo ip route add 10.17.5.0/24 via 10.17.3.1 dev eth0
+
 🔵 Máquina k8s-api-lb (IP: 10.17.5.20)
 Si vas a usar kubectl desde este nodo o deseas conectividad directa a pods, solo necesitas esta ruta:
 
 bash
 Copiar
 Editar
+
 sudo ip route add 10.42.0.0/16 via 10.17.5.1 dev eth0
 💡 Esta ruta solo funcionará si 10.17.5.1 (pfSense o router) está configurado para enrutar a 10.42.0.0/16, o si tienes una ruta adicional en el router hacia, por ejemplo, 10.17.4.21.
 
