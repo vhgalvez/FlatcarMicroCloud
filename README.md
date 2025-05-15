@@ -208,7 +208,6 @@ Este flujo de trabajo está optimizado para ser desplegado sobre **servidores f�
 
 Provisionar y configurar VMs según especificaciones en la tabla de recursos, asegurando la asignación de CPU, RAM, y almacenamiento.
 
-
 ### Paso 5: Configuración de Almacenamiento Persistente
 
 Instalar y configurar Longhorn y NFS en el clúster de Kubernetes para almacenamiento persistente.
@@ -244,21 +243,19 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ## Microservicios en Pods
 
-#### Microservicios de Servicios de Aplicaciones
+### Servicios de Aplicaciones
 
-- **Nginx**: Servidor web aplicaciones web.
+- **Nginx**: Servidor web para aplicaciones.
 - **Redis**: Almacenamiento en caché y base de datos en memoria para mejorar el rendimiento de las aplicaciones.
-- ** **: Plataforma de mensajería utilizada para la comunicación entre microservicios.
+- **Kafka**: Plataforma de mensajería utilizada para la comunicación entre microservicios.
 
-#### Análisis y Visualización de Datos
+### Análisis y Visualización de Datos
 
-- **Prometheus**: Herramientas para el monitoreo, alertas **alertmanager** y visualización de métricas.
+- **Prometheus**: Herramientas para el monitoreo y alertas.
 - **Grafana**: Visualización de métricas del clúster.
-- **Nagios**: Rendimiento del sistema.
-- **cAdvisor**: Monitorear el rendimiento y uso de recursos por parte de los contenedores.
-- **ELK Stack Elasticsearch**: Visualización de métricas del clúster.
-- **ELK Stack Kibana**: Visualización de datos.
-- **ELK Stack Logstash**: Procesamiento de logs.
+- **Nagios**: Monitoreo del rendimiento del sistema.
+- **cAdvisor**: Monitoreo del rendimiento y uso de recursos por parte de los contenedores.
+- **ELK Stack**: Procesamiento y visualización de logs.
 
 ## Seguridad y Protección
 
@@ -370,7 +367,7 @@ resource "libvirt_network" "kube_network_03" {
 - **Sincronización de tiempo**:
   Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc**. Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
 
-# Recursos de Automatización
+## Recursos de Automatización
 
 | Proyecto                     | Repositorio                                                                                                                              |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -385,8 +382,7 @@ resource "libvirt_network" "kube_network_03" {
 | Jenkins CI/CD                | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
 | ArgoCD                       | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                           |
 
-
-# Arquitectura de Infraestructura Global
+## Arquitectura de Infraestructura Global
 
 ```bash
 
@@ -532,7 +528,6 @@ Pantalla de inicio de sesión de **Cockpit**, una interfaz web para administrar 
 
 ![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
 
-
 ## Optimización para Producción
 
 | Aspecto                     | Detalle                                                                                            |
@@ -557,11 +552,25 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 ## Resumen del Flujo
 
-1. **Ingreso de Conexiones Externas**: Las conexiones HTTPS externas ingresan por la **IP pública (192.168.0.21)**.
-2. **Acceso Seguro**: El tráfico pasa por el **Bastion Node (192.168.0.20)** para acceder de manera segura a la red interna.
-3. **Distribución de Tráfico**: El **Load Balancer1 Load Balancer2 (Traefik)** distribuye el tráfico hacia los nodos maestros y workers.
-4. **Resolución de Nombres y Sincronización de Tiempo**: **infra-cluster** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
-5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal a través de **chronyc**.
+1. **Ingreso de Conexiones Externas**:
+
+   - Las conexiones HTTPS externas ingresan por la IP pública (192.168.0.21).
+
+2. **Acceso Seguro**:
+
+   - El tráfico pasa por el Bastion Node (192.168.0.20) para acceder de manera segura a la red interna.
+
+3. **Distribución de Tráfico**:
+
+   - Los Load Balancers (Traefik) distribuyen el tráfico hacia los nodos maestros y workers, asegurando un balanceo eficiente.
+
+4. **Resolución de Nombres y Sincronización de Tiempo**:
+
+   - El nodo `infra-cluster` actúa como servidor DNS y NTP, garantizando la resolución de nombres y la sincronización temporal en todo el clúster.
+
+5. **Ejecución de Aplicaciones**:
+
+   - Los nodos workers y maestros ejecutan las aplicaciones, manteniendo la sincronización temporal a través de `chronyc`.
 
 ## 🌐 Configuración de Redes Virtuales con pfSense
 
@@ -601,11 +610,13 @@ Consulta y descarga actualizaciones oficiales de firmware y software para tu ser
 ## ✅ Flatcar para KVM/Libvirt: Descarga y preparación
 
 ### 🔽 1. Descargar imagen comprimida
+
 ```bash
 sudo curl -O https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_qemu_image.img.bz2
 ```
 
 ### 🔐 2. (Opcional) Verificar firma
+
 ```bash
 sudo curl -O https://www.flatcar.org/security/image-signing-key/Flatcar_Image_Signing_Key.asc
 gpg --import Flatcar_Image_Signing_Key.asc
