@@ -222,10 +222,6 @@ Provisionar y configurar VMs según especificaciones en la tabla de recursos, as
 
 Instalar y configurar Longhorn y NFS en el clúster de Kubernetes para almacenamiento persistente.
 
-![alt text](additional_resources/image/k3s_ansible_Longhorn_02.png)
-
-![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
-
 ### Paso 6: Configuración de Monitoreo y Visualización
 
 - Configurar **Prometheus** y **Grafana** para monitoreo.
@@ -389,7 +385,7 @@ resource "libvirt_network" "kube_network_03" {
 
 - **Sincronización de tiempo**:
   Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc**. Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
-  
+
 # Recursos de Automatización
 
 | Proyecto                     | Repositorio                                                                                                                              |
@@ -545,6 +541,13 @@ resource "libvirt_network" "kube_network_03" {
 ![Cockpit en Rocky Linux - Login](additional_resources/image/cockpit-rocky-linux-dashboard-metrics.png)
 
 Pantalla de inicio de sesión de **Cockpit**, una interfaz web para administrar servidores **Rocky Linux** de forma remota y gráfica. Permite monitorear el sistema, gestionar servicios, redes, usuarios y acceder a una terminal sin depender exclusivamente de la línea de comandos.
+
+## Longhorn instalado en el clúster K3s 
+
+![alt text](additional_resources/image/k3s_ansible_Longhorn_02.png)
+
+![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
+
 
 ## Optimización para Producción
 
