@@ -190,16 +190,7 @@ Al finalizar todos los pasos, tu entorno Kubernetes con alta disponibilidad esta
 ### ✨ **Desarrollado para la solución FlatcarMicroCloud**
 
 Este flujo de trabajo está optimizado para ser desplegado sobre **servidores físicos o virtualizados**, garantizando una solución robusta y escalable.
-
 ---
-
-### 🔄 **Advertencias:**
-
-- **Seguridad:** Asegúrate de que todos los certificados y claves privadas estén correctamente protegidos.
-- **Escalabilidad:** Este enfoque permite que tu infraestructura escale fácilmente agregando más nodos al clúster y configurando balanceadores de carga adicionales si es necesario.
-- **Mantenimiento:** Mantén siempre actualizado tu clúster Kubernetes y los componentes relacionados, incluyendo el Ingress Controller y el almacenamiento.
-
-Este proceso de automatización con Ansible te ayudará a gestionar y mantener tu infraestructura Kubernetes de manera eficiente y segura.
 
 ## Maquinas Virtuales Monitoreo y Gestión de Recursos
 

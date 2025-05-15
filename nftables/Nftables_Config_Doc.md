@@ -80,28 +80,27 @@ sudo sysctl -p
 
 ## Aplicar la configuración y habilitar el servicio
 
-1. Cargar las reglas:
+1. **Cargar las reglas**:
 
-```bash
-sudo nft -f /etc/sysconfig/nftables.conf
-```
+   ```bash
+   sudo nft -f /etc/sysconfig/nftables.conf
+   sudo nft list ruleset | sudo tee /etc/sysconfig/nftables.conf
+   ```
 
-sudo nft list ruleset | sudo tee /etc/sysconfig/nftables.conf
+2. **Habilitar el servicio `nftables` para que se cargue al inicio**:
 
+   ```bash
+   sudo systemctl daemon-reexec
+   sudo systemctl enable --now nftables
+   sudo systemctl restart nftables
+   sudo systemctl status nftables
+   ```
 
+3. **Validar la configuración**:
 
-
-2. Habilitar el servicio `nftables` para que se cargue al inicio:
-
-```bash
-sudo systemctl daemon-reexec
-sudo systemctl enable --now nftables
-sudo systemctl start nftables
-sudo systemctl restart nftables
-sudo systemctl status nftables
-```
-sudo nft list ruleset
-```
+   ```bash
+   sudo nft list ruleset
+   ```
 
 ---
 
@@ -118,9 +117,72 @@ sudo nft list ruleset
 
 ---
 
+## Verificar compatibilidad con iptables-nft
+
+1. **Confirmar que iptables usa nftables como backend**:
+
+   ```bash
+   sudo update-alternatives --display iptables
+   ```
+
+   Si no está configurado, ajustarlo con:
+
+   ```bash
+   sudo update-alternatives --set iptables /usr/sbin/iptables-nft
+   sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
+   ```
+
+2. **Actualizar y configurar firewalld**:
+
+   ```bash
+   sudo dnf update -y
+   sudo dnf install libvirt firewalld nftables iptables-nft -y
+   sudo nano /etc/firewalld/firewalld.conf
+   ```
+
+   Cambiar la línea `#NftablesTableOwner=yes` a:
+
+   ```ini
+   NftablesTableOwner=no
+   ```
+
+   Reiniciar firewalld:
+
+   ```bash
+   sudo systemctl restart firewalld
+   ```
+
+3. **Habilitar módulos del kernel para NAT**:
+
+   ```bash
+   echo -e "options nf_conntrack ip_conntrack_helper=1\noptions nf_nat_ftp nf_nat=1" | sudo tee /etc/modprobe.d/libvirt-nft.conf
+   sudo modprobe -r nf_conntrack nf_nat_ftp
+   sudo modprobe nf_conntrack nf_nat_ftp
+   ```
+
+4. **Reiniciar servicios**:
+
+   ```bash
+   sudo systemctl restart libvirtd firewalld
+   ```
+
+5. **Verificar reglas de nftables**:
+
+   ```bash
+   sudo nft list ruleset | grep -i virbr
+   ```
+
+   Deberías ver algo como:
+
+   ```nft
+   chain nat_POSTROUTING {
+     oifname "virbr0" masquerade
+   }
+   ```
+
+---
+
 Este setup asegura que tu entorno de virtualización con subredes internas y salida a Internet tenga una política de seguridad clara, precisa y compatible con Kubernetes y otros servicios distribuidos internos.
-
-
 
 ✅ OBJETIVO
 Configurar Libvirt + nftables en Rocky Linux 9.5 usando iptables-nft (por defecto en RHEL9+), asegurando:
@@ -265,7 +327,6 @@ Backend de iptables: Utilizar iptables-nft es adecuado y compatible con nftables
 firewalld y nftables: firewalld es una capa de abstracción sobre nftables y iptables. Si deseas una configuración más sencilla y directa, puedes desactivar firewalld y gestionar las reglas directamente con nftables.​
 
 libvirt y QEMU: Funcionan correctamente con nftables y iptables-nft. Asegúrate de que los servicios estén habilitados y en funcionamiento.
-
 
 
 https://github.com/clemensschlipfinger/libvirt-nft-ruler
