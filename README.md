@@ -388,6 +388,8 @@ resource "libvirt_network" "kube_network_03" {
 
 Repositorio: [arquitectura_FlatcarMicroCloud](https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud)
 
+https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud
+
 Este diagrama fue generado con **Python** utilizando la librería [Diagrams by Mingrammer](https://github.com/mingrammer/diagrams).  
 Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://github.com/vhgalvez/FlatcarMicroCloud), incluyendo red pública, túnel VPN, balanceadores Ingress, clúster Kubernetes con K3s, almacenamiento distribuido y servicios esenciales.
 
