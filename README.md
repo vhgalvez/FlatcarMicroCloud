@@ -307,7 +307,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 | Red NAT | Nodo       | Dirección IP | Rol del Nodo                             |
 | ------- | ---------- | ------------ |------------------------------------------|
-| br0     | k8s-api-lb | 10.17.5.10   | HAProxy + Keepalived VIP                 |
+| kube_network_01     | k8s-api-lb | 10.17.5.10   | HAProxy + Keepalived VIP                 |
 
 ## Detalles de Configuración
 
@@ -321,9 +321,9 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 - **Red Gateway**:
   
-  - br0: 10.17.5.1  
-  - kube_network_03: 10.17.4.1
+  - kube_network_01: 10.17.5.1  
   - kube_network_02: 10.17.3.1
+  - kube_network_03: 10.17.4.1
 
 - **DNS**:
 
@@ -343,7 +343,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 ### Red nat_network_01
 
 ```hcl
-resource "libvirt_network" "nat_network_01" {
+resource "libvirt_network" "Kube_network_01" {
   name      = var.rocky9_network_name
   mode      = "nat"
   autostart = true
