@@ -93,7 +93,7 @@ Incluye:
 
 ### Fase 7: Seguridad Adicional
 
-- Firewall, Fail2Ban, Políticas de RBAC en Kubernetes.
+- Firewall, Fail2Ban, nftables, Políticas de RBAC en Kubernetes.
 
 ## Automatización
 

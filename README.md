@@ -7,12 +7,9 @@
 Esta arquitectura permite desplegar aplicaciones en contenedores mediante herramientas modernas como:
 
 - **K3s**, una distribución ligera de Kubernetes.
-
 - **Longhorn y NFS** para almacenamiento persistente.
-
 - **Prometheus y Grafana** para monitoreo y visualización avanzada.
-
-- **Apache Kafka y MQTT Mosquitto** para comunicación asincrónica entre microservicios.
+- **Apache redpanda y MQTT Mosquitto** para comunicación asincrónica entre microservicios.
 
 ## Hardware del Servidor
 
@@ -25,7 +22,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 - **Almacenamiento**:
   - Disco Principal: 1.5TB
   - Disco Secundario: 3.0TB
-  
+
 ## Sistemas Operativos y Virtualización
 
 - **Sistemas Operativos**: Rocky Linux 9.5 y Flatcar Container Linux y Alma Linux 9.4
@@ -44,12 +41,11 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | worker2         | 10.17.4.25    | worker2.cefaslocalserver.com | 2       | 4096             | 50             |
 | worker3         | 10.17.4.26    | worker3.cefaslocalserver.com | 2       | 4096             | 50             |
 | storage1        | 10.17.3.27    | storage1.cefaslocalserver.com| 2       | 2048             | 80             |
-| freeipa1        | 10.17.3.11    | freeipa1.cefaslocalserver.com| 2       | 2048             | 32             |
+| infra-cluster   | 10.17.3.11    | freeipa1.cefaslocalserver.com| 2       | 2048             | 32             |
 | loadbalancer1   | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 2   | 2048             | 32             |
 | loadbalancer2   | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 2   | 2048             | 32             |
 | postgresql1     | 10.17.3.14    | postgresql1.cefaslocalserver.com | 2     | 2048             | 32             |
 | k8s-api-lb      | 10.17.5.10    | k8s-api-lb.cefaslocalserver.com | 2     | 2048             | 80             |
-
 
 ## Máquinas Virtuales y Roles
 
@@ -57,7 +53,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | ------------------ | ----------------------- | ------------------------------------------ | -------- |
 | k8s-api-lb         | Alma Linux              | gestion y seguridad                        | 1        |
 | Load Balancer Node | Alma Linux              | Balanceo Traefik controlador de ingress    | 2        |
-| FreeIPA Node       | Alma Linux              | DNS y autenticación                        | 1        |
+| infra-cluster Node | Alma Linux              | DNS coredns / ntp  Chrony                  | 1        |
 | PostgreSQL Node    | Alma Linux              | Base de datos central para microservicios  | 1        |
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
@@ -66,22 +62,19 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 ## Explicación de Roles de las VMs
 
 - **Maestros (master1, master2, master3)**:
-
-- Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
+  - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
 
 - **Workers (worker1, worker2, worker3)**:
-- Nodos que ejecutan aplicaciones y microservicios, proporcionando la capacidad de escalar horizontalmente.
-  
-- **FreeIPA (freeipa1)**:
-- Nodo que actúa como servidor DNS y de autenticación, proporcionando gestión de nombres y autenticación centralizada.
+  - Nodos que ejecutan aplicaciones y microservicios, proporcionando la capacidad de escalar horizontalmente.
+
+- **infra-cluster (infra-cluster)**:
+  - Nodo que actúa como servidor DNS coredns y ntp  Chrony
 
 - **Load Balancer (load_balancer1,load_balancer2)**:
-  
-- Nodos que distribuyen el tráfico de red entre los nodos maestros y workers, asegurando un balanceo de carga eficiente.
+  - Nodos que distribuyen el tráfico de red entre los nodos maestros y workers, asegurando un balanceo de carga eficiente.
 
 - **PostgreSQL (postgresql1)**:
-
-- Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
+  - Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
 
 ## Fases de Implementación
 
@@ -170,7 +163,7 @@ cd FlatcarMicroCloud
   sudo terraform apply
   ```
 
-- - - 
+---
 
 # 🔧 **Automatización con Ansible para Clúster Kubernetes HA**
 
@@ -182,10 +175,10 @@ Este documento describe el flujo **correcto y recomendado** para desplegar tu in
 
 La configuración de CoreDNS.
 
-### **Repositorio:** 
+### **Repositorio:**
 [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)
 
-### **Pasos:** 
+### **Pasos:**
 ```bash
 # Clona el repositorio
 sudo git clone https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux.git
@@ -201,10 +194,10 @@ sudo ansible-playbook -i inventory.ini CoreDNS_setup.yml
 
 Sincronizar los relojes de tus nodos es crucial para evitar problemas con los certificados y la autenticación.
 
-### **Repositorio:** 
+### **Repositorio:**
 [ansible-ntp-freeipa-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes.git)
 
-### **Pasos:** 
+### **Pasos:**
 ```bash
 # Clona el repositorio
 sudo git clone https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
@@ -220,10 +213,10 @@ sudo ansible-playbook -i inventory.ini ntp_setup.yml
 
 Configurar HAProxy y Keepalived con IP virtual (VIP) es esencial para asegurar que los nodos del clúster Kubernetes puedan acceder al API Server de manera eficiente.
 
-### **Repositorio:** 
+### **Repositorio:**
 [ansible-haproxy-keepalived](https://github.com/vhgalvez/ansible-haproxy-keepalived)
 
-### **Pasos:** 
+### **Pasos:**
 ```bash
 # Clona el repositorio
 sudo git clone https://github.com/vhgalvez/ansible-haproxy-keepalived.git
@@ -241,10 +234,10 @@ sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_k
 
 Configura un clúster K3s en alta disponibilidad (HA) utilizando etcd como almacenamiento distribuido, y asegúrate de que el VIP del API Server esté correctamente configurado.
 
-### **Repositorio:** 
+### **Repositorio:**
 [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)
 
-### **Pasos:** 
+### **Pasos:**
 
 1. **Instalación de K3s en modo HA con etcd, utilizando el VIP configurado:**
    ```bash
@@ -259,7 +252,7 @@ Configura un clúster K3s en alta disponibilidad (HA) utilizando etcd como almac
 
 Traefik actúa como un Ingress Controller para gestionar el tráfico hacia tus servicios dentro del clúster Kubernetes. Este paso incluye la instalación de Traefik y la generación de certificados TLS autofirmados.
 
-### **Repositorio:** 
+### **Repositorio:**
 [traefik-k8s-ingress-controller-ansible](https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible)
 
 ### **Pasos:**
@@ -282,11 +275,7 @@ Traefik actúa como un Ingress Controller para gestionar el tráfico hacia tus s
 
 Configura el almacenamiento persistente en tu clúster Kubernetes utilizando NFS y Longhorn para garantizar la alta disponibilidad y persistencia de los datos.
 
-
-
-flatcar-k3s-storage-suite
-
-### **Repositorio:** 
+### **Repositorio:**
 
 [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)
 
@@ -302,17 +291,11 @@ flatcar-k3s-storage-suite
 2. **Exportar rutas NFS y activar el servicio:**
    ```bash
    sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
-
-2. **Exportar rutas NFS y activar el servicio:**
-   ```bash
-   sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
    ```
-
-
 
 # ansible-monitoring-stack
 
-### **Repositorio:** 
+### **Repositorio:**
 
 [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)
 
@@ -359,10 +342,7 @@ sudo ansible-playbook -i inventory/hosts.ini playbook/03_update_scrape_targets.y
 - **PushGateway**: Recepción de métricas push.
 - **Scrape Externo**: Monitorización de máquinas fuera del clúster.
 
-
 ---
-
-
 
 ## ✅ **Infraestructura Lista**
 
@@ -394,8 +374,7 @@ Este proceso de automatización con Ansible te ayudará a gestionar y mantener t
 
 ![kvm_virt-top](additional_resources/image/kvm_virt-top.png)
 
-- - -
-
+---
 
 ## Notas Adicionales
 
@@ -431,9 +410,11 @@ Instalar y configurar Longhorn y NFS en el clúster de Kubernetes para almacenam
 
 ### Paso 7: Configuración de CI/CD y Automatización
 
-- Configurar **Jenkins**, **GitHub Actions** y **SonarQube** para integración continua.
-- Configurar **Harbor**, **Docker Registry** y **Kaniko** para gestión de imágenes de contenedores.
-- Configurar **ArgoCD** y **Spinnaker** para despliegue continuo.
+Configurar Jenkins y/o GitHub Actions para la integración continua (CI), ejecutando pruebas automáticas, análisis de código y construcción de imágenes de contenedor.
+
+Configurar un Docker Registry (privado o público) para almacenar y versionar imágenes generadas por el proceso de CI.
+
+Configurar ArgoCD como herramienta de despliegue continuo (CD), conectando los cambios en el repositorio con el entorno de Kubernetes mediante una estrategia GitOps.
 
 ### Paso 8: Configuración de Seguridad
 
@@ -466,14 +447,13 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 #### Microservicios de Servicios de Aplicaciones
 
 - **Nginx**: Servidor web aplicaciones web.
-- **Apache Kafka**: Plataforma de mensajería utilizada para la comunicación entre microservicios.
+- ** **: Plataforma de mensajería utilizada para la comunicación entre microservicios.
 - **Redis**: Almacenamiento en caché y base de datos en memoria para mejorar el rendimiento de las aplicaciones.
 
 ## Seguridad y Protección
 
-- **Firewall**: Configuración de reglas de firewall para proteger el clúster.
+- **Firewall nftables**:  Configuración de reglas de firewall para proteger el clúster.
 - **Fail2Ban**: Protección contra accesos no autorizados y ataques.
-- **DNS y FreeIPA**: Gestión centralizada de autenticación y políticas de seguridad y servidor de DNS.
 
 ## Almacenamiento Persistente
 
@@ -523,19 +503,18 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | kube_network_02 | loadbalancer2 | 10.17.3.13   | Balanceo de carga para el clúster        |
 | kube_network_02 | postgresql1   | 10.17.3.14   | Gestión de bases de datos                |
 | kube_network_03 | master1       | 10.17.4.21   | Gestión del clúster                      |
-| kube_network_03 | master1       | 10.17.4.22   | Gestión del clúster                      |
-| kube_network_03 | master1       | 10.17.4.23   | Gestión del clúster                      |
+| kube_network_03 | master2       | 10.17.4.22   | Gestión del clúster                      |
+| kube_network_03 | master3       | 10.17.4.23   | Gestión del clúster                      |
 | kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
 | kube_network_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
-| kube_network_03 | storage1      | 10.17.4.27   | alamacenamiento                          |
+| kube_network_03 | storage1      | 10.17.4.27   | Almacenamiento                          |
 
-
-### Red br0 
+### Red br0
 
 | Red NAT | Nodo       | Dirección IP | Rol del Nodo                             |
 | ------- | ---------- | ------------ |------------------------------------------|
-| br0     | k8s-api-lb | 10.17.5.10   | HAProxy + Keepalived  VIP                |
+| br0     | k8s-api-lb | 10.17.5.10   | HAProxy + Keepalived VIP                 |
 
 ## Detalles de Configuración
 
@@ -568,12 +547,12 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ## Configuración de Redes Virtuales
 
-### Red br0 - 
+### Red br0
 
 ```hcl
 resource "libvirt_network" "br0" {
   name      = var.rocky9_network_name
-   mode      = "nat"
+  mode      = "nat"
   autostart = true
   addresses = ["10.17.5.0/24"]
 }
@@ -617,8 +596,6 @@ resource "libvirt_network" "kube_network_03" {
 
 - **Sincronización de tiempo**:
   FreeIPA también proporciona servicios NTP. Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc** y el servidor NTP de FreeIPA (`10.17.3.11`). Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
-
-
 
 ## Diagramas de Red y Arquitectura
 
@@ -691,9 +668,7 @@ resource "libvirt_network" "kube_network_03" {
           |     FreeIPA Node          |   |    PostgreSQL Node        |   |     Storage Node          |
           | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento Persist.   |
           | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.4.27            |
-          +---------------------------+   +---------------------------+   +---------------------------+
-
-                       
+          +---------------------------+   +---------------------------+   +---------------------------+                       
 
 ```
 
@@ -813,7 +788,6 @@ resource "libvirt_network" "kube_network_03" {
 
 * La infraestructura está protegida por VPN (WireGuard), nftables y expuesta con seguridad vía Cloudflare
 
-
 ## Arquitectura de Kubernetes (Cluster K3s)
 
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
@@ -842,7 +816,7 @@ Pantalla de inicio de sesión de **Cockpit**, una interfaz web para administrar 
 
 | Aspecto                     | Detalle                                                                                            |
 | --------------------------- | -------------------------------------------------------------------------------------------------- |
-| Restricción de Recursos     | Configura límites en Kubernetes para cada servicio (Prometheus, PostgreSQL, Kafka, Redis).         |
+| Restricción de Recursos     | Configura límites en Kubernetes para cada servicio (Prometheus, PostgreSQL, Redpanda, Redis).         |
 | Control de Logs y Monitoreo | Define políticas de retención de logs en Prometheus y Kafka para reducir el consumo de disco.      |
 | Supervisión Activa          | Usa Grafana para monitoreo en tiempo real, ajustando recursos según los picos de carga detectados. |
 
@@ -868,14 +842,13 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 4. **Resolución de Nombres y Sincronización de Tiempo**: **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
 5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
 
-
 ## 🌐 Configuración de Redes Virtuales con pfSense
 
 ![pfSense](additional_resources/image/pfSense.jpg)
 
 Esta sección te guía en la configuración de redes virtuales utilizando **pfSense como firewall** dentro de tu infraestructura KVM. Aprovecha el proyecto automatizado con Terraform para desplegar pfSense rápidamente como una máquina virtual lista para enrutar tráfico entre redes virtualizadas.
 
---- 
+---
 
 ### 🔗 Repositorio Oficial
 
@@ -883,7 +856,8 @@ Accede al código fuente y plantillas de Terraform en el siguiente repositorio:
 
 [📦 GitHub – terraform-pfsense-kvm-libvirt](https://github.com/vhgalvez/terraform-pfsense-kvm-libvirt)
 
---- 
+---
+
 ### 🚀 Clona el repositorio
 
 Para comenzar con la configuración:
@@ -895,13 +869,11 @@ cd terraform-pfsense-kvm-libvirt
 
 ---
 
-
 ## 🔧 Recursos Adicionales Soportados por HP – Firmware ProLiant DL380 G7
 
 Consulta y descarga actualizaciones oficiales de firmware y software para tu servidor HP desde el portal de soporte de Hewlett Packard Enterprise:
 
 - [🔗 Firmware HP ProLiant DL380 G7 – Página oficial de soporte](https://support.hpe.com/connect/s/softwaredetails?collectionId=MTX-5db24d8d46d14448&language=en_US&tab=releaseNotes)
-
 
 ## 💿 Imágenes de Disco para VMs
 
@@ -934,15 +906,13 @@ flatcar_production_qemu_image.img
 
 > Lista para usar con Terraform, libvirt o virt-manager.
 
-
 ### 🐧 AlmaLinux 9.5 Generic Cloud (QCOW2)
 
 ```bash
 curl -o alma9-generic.qcow2 https://repo.almalinux.org/almalinux/9.5/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2
 ```
 
-
---- 
+---
 
 ## 📦 Repositorio del Script SSH Compartido
 
