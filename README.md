@@ -41,7 +41,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | worker2         | 10.17.4.25    | worker2.cefaslocalserver.com | 2       | 4096             | 50             |
 | worker3         | 10.17.4.26    | worker3.cefaslocalserver.com | 2       | 4096             | 50             |
 | storage1        | 10.17.3.27    | storage1.cefaslocalserver.com| 2       | 2048             | 80             |
-| infra-cluster   | 10.17.3.11    | freeipa1.cefaslocalserver.com| 2       | 2048             | 32             |
+| infra-cluster   | 10.17.3.11    | infra-cluster.cefaslocalserver.com| 2   | 2048             | 32             |
 | loadbalancer1   | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 2   | 2048             | 32             |
 | loadbalancer2   | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 2   | 2048             | 32             |
 | postgresql1     | 10.17.3.14    | postgresql1.cefaslocalserver.com | 2     | 2048             | 32             |
@@ -114,7 +114,7 @@ Clonar el repositorio en el servidor Rocky Linux.
 
 #### Estructura del Proyecto
 
-- `br0_network/`
+- `nat_network_01/`
 - `nat_network_02/`
 - `nat_network_03/`
 
@@ -165,175 +165,6 @@ cd FlatcarMicroCloud
 
 ---
 
-# 🔧 **Automatización con Ansible para Clúster Kubernetes HA**
-
-Este documento describe el flujo **correcto y recomendado** para desplegar tu infraestructura Kubernetes con alta disponibilidad (HA), integrando FreeIPA, balanceadores de carga, K3s, Ingress Controller y almacenamiento persistente. Sigue los pasos detallados para garantizar una configuración exitosa.
-
----
-
-## 🚀 **1. Configuración del DNS con FreeIPA**
-
-La configuración de CoreDNS.
-
-### **Repositorio:**
-[ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)
-
-### **Pasos:**
-```bash
-# Clona el repositorio
-sudo git clone https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux.git
-cd ansible-CoreDNS-setup-Linux
-
-# Ejecuta el playbook para configurar CoreDNS
-sudo ansible-playbook -i inventory.ini CoreDNS_setup.yml
-```
-
----
-
-## 🕒 **2. Configuración de NTP sincronizado serdidor DNS**
-
-Sincronizar los relojes de tus nodos es crucial para evitar problemas con los certificados y la autenticación.
-
-### **Repositorio:**
-[ansible-ntp-freeipa-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes.git)
-
-### **Pasos:**
-```bash
-# Clona el repositorio
-sudo git clone https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes.git
-cd ansible-ntp-chrony-kubernetes
-
-# Ejecuta el playbook para configurar NTP
-sudo ansible-playbook -i inventory.ini ntp_setup.yml
-```
-
----
-
-## ⚙️ **3. Configuración de la Infraestructura de Balanceo (HAProxy + Keepalived)**
-
-Configurar HAProxy y Keepalived con IP virtual (VIP) es esencial para asegurar que los nodos del clúster Kubernetes puedan acceder al API Server de manera eficiente.
-
-### **Repositorio:**
-[ansible-haproxy-keepalived](https://github.com/vhgalvez/ansible-haproxy-keepalived)
-
-### **Pasos:**
-```bash
-# Clona el repositorio
-sudo git clone https://github.com/vhgalvez/ansible-haproxy-keepalived.git
-cd ansible-haproxy-keepalived
-
-# Instalar y configurar HAProxy + Keepalived con IP virtual (VIP)
-sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_haproxy_keepalived.yml
-```
-
-> 🧠 **Nota:** Es fundamental tener el VIP funcionando antes de desplegar K3s para generar certificados TLS correctos y permitir el acceso al API Server desde el Ingress Controller y otros componentes.
-
----
-
-## ☸️ **4. Despliegue de K3s con Alta Disponibilidad (etcd)**
-
-Configura un clúster K3s en alta disponibilidad (HA) utilizando etcd como almacenamiento distribuido, y asegúrate de que el VIP del API Server esté correctamente configurado.
-
-### **Repositorio:**
-[ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)
-
-### **Pasos:**
-
-1. **Instalación de K3s en modo HA con etcd, utilizando el VIP configurado:**
-   ```bash
-   sudo git clone https://github.com/vhgalvez/ansible-k3s-etcd-cluster.git
-   cd ansible-k3s-etcd-cluster
-   sudo ansible-playbook -i inventory.ini install_k3s.yaml
-   ```
-
----
-
-## 🌐 **5. Configuración del Ingress Controller (Traefik)**
-
-Traefik actúa como un Ingress Controller para gestionar el tráfico hacia tus servicios dentro del clúster Kubernetes. Este paso incluye la instalación de Traefik y la generación de certificados TLS autofirmados.
-
-### **Repositorio:**
-[traefik-k8s-ingress-controller-ansible](https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible)
-
-### **Pasos:**
-
-1. **Generar Certificados SSL Autofirmados para Traefik:**
-   ```bash
-   sudo git clone https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible.git
-   cd traefik-k8s-ingress-controller-ansible
-   sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/generate_certs.yml
-   ```
-
-2. **Instalar Traefik como Ingress Controller:**
-   ```bash
-   sudo ansible-playbook -i inventory/hosts.ini ansible/playbooks/install_traefik.yml
-   ```
-
----
-
-## 💾 **6. Configuración del Nodo de Almacenamiento (NFS + Longhorn)**
-
-Configura el almacenamiento persistente en tu clúster Kubernetes utilizando NFS y Longhorn para garantizar la alta disponibilidad y persistencia de los datos.
-
-### **Repositorio:**
-
-[flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)
-
-### **Pasos:**
-
-1. **Crear volúmenes LVM para PostgreSQL, datos compartidos y Longhorn:**
-   ```bash
-   sudo git clone https://github.com/vhgalvez/flatcar-k3s-storage-suite.git
-  
-   sudo ansible-playbook -i inventory/hosts.ini site.yml
-   ```
-
-2. **Exportar rutas NFS y activar el servicio:**
-   ```bash
-   sudo ansible-playbook -i inventory/hosts.ini nfs_config.yml
-   ```
-
-# ansible-monitoring-stack
-
-### **Repositorio:**
-
-[ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)
-
-### **Descripción rápida:**
-
-Automatiza el despliegue de un stack de monitoreo en Kubernetes con **Prometheus**, **Grafana** y **Node Exporter**, usando **Ansible** y **Helm**.
-
----
-
-### **Pasos:**
-
-1. **Clonar el repositorio:**
-
-   ```bash
-   sudo git clone https://github.com/vhgalvez/ansible-monitoring-stack.git
-   cd ansible-monitoring-stack
-   ```
-
-### Configurar inventario y variables
-
-Edita los archivos `inventory/hosts.ini` y `group_vars/all.yml` según tu infraestructura.
-
-### Desplegar el stack
-
-Ejecuta el siguiente comando para desplegar el stack de monitoreo:
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini playbook/deploy_monitoring_stack.yml
-```
-
-### (Opcional) Actualizar targets de scraping
-
-Si necesitas actualizar los targets de scraping, utiliza el siguiente comando:
-
-```bash
-sudo ansible-playbook -i inventory/hosts.ini playbook/03_update_scrape_targets.yml
-```
-
 ### Componentes
 
 - **Prometheus**: Servidor de métricas.
@@ -348,7 +179,7 @@ sudo ansible-playbook -i inventory/hosts.ini playbook/03_update_scrape_targets.y
 
 Al finalizar todos los pasos, tu entorno Kubernetes con alta disponibilidad estará completamente configurado y operativo, con los siguientes componentes:
 
-- **DNS y autenticación** gestionada con FreeIPA
+- **DNS**
 - **Balanceo de carga** con HAProxy + Keepalived (VIP)
 - **Clúster Kubernetes** con K3s en alta disponibilidad (etcd)
 - **Ingress Controller** con certificados TLS usando Traefik
@@ -386,14 +217,6 @@ Este proceso de automatización con Ansible te ayudará a gestionar y mantener t
 
 Provisionar y configurar VMs según especificaciones en la tabla de recursos, asegurando la asignación de CPU, RAM, y almacenamiento.
 
-### Paso 4: Configuración de Roles en las VMs
-
-- **Master y Worker Nodes**:
-  - Configurar K3s en los nodos Master.
-  - Desplegar Traefik para el balanceo de carga.
-- **FreeIPA Node**: Configurar para DNS y autenticación.
-- **Load Balancer1 Load Balancer2**: Configurar con Traefik para distribución de tráfico y controlador de ingress de k3s.
-- **PostgreSQL Node**: Configurar permisos y definir políticas de respaldo.
 
 ### Paso 5: Configuración de Almacenamiento Persistente
 
@@ -418,11 +241,11 @@ Configurar ArgoCD como herramienta de despliegue continuo (CD), conectando los c
 
 ### Paso 8: Configuración de Seguridad
 
-Configurar reglas de **firewall**, **Fail2Ban** y políticas de seguridad con **FreeIPA**.
+Configurar reglas de **firewall**, **Fail2Ban** y políticas de seguridad.
 
 ### Paso 9: Sincronización y NTP
 
-Configurar **chronyc** en todos los nodos para sincronización temporal con **FreeIPA**.
+Configurar **chronyc** en todos los nodos para sincronización temporal.
 
 ### Paso 10: Pruebas Finales y Puesta en Producción
 
@@ -460,34 +283,9 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 - **Longhorn**: Orquestar Longhorn en Kubernetes para almacenamiento persistente.
 - **NFS**: Configurar NFS para almacenamiento compartido entre nodos para base de datos postgresql.
 
-## Kubernetes Operaciones
-
-- **Kubernetes Operators**: Automatización de operaciones en Kubernetes.
-- **Kubernetes Helm Charts**: Plantillas predefinidas para despliegues en Kubernetes.
-- **Kubernetes Custom Resources**: Recursos personalizados para operaciones específicas en Kubernetes.
-- **Kubernetes Ingress**: Gestión de tráfico de red en Kubernetes.
-- **Kubernetes Services**: Exposición de servicios en Kubernetes.
-- **Kubernetes Volumes**: Almacenamiento persistente en Kubernetes.
-- **Kubernetes Namespaces**: Aislamiento de recursos en Kubernetes.
-- **Kubernetes RBAC**: Control de acceso basado en roles en Kubernetes.
-- **Kubernetes Secrets**: Gestión de secretos en Kubernetes.
-- **Kubernetes ConfigMaps**: Gestión de configuraciones en Kubernetes.
-- **Kubernetes Network Policies**: Políticas de red en Kubernetes.
-- **Kubernetes Pod Security Policies**: Políticas de seguridad en Kubernetes.
-- **Kubernetes Pod Disruption Budgets**: Control de la disponibilidad de pods en Kubernetes.
-- **Kubernetes Horizontal Pod Autoscaler**: Escalado automático de pods en Kubernetes.
-- **Kubernetes Vertical Pod Autoscaler**: Escalado automático de recursos en pods en Kubernetes.
-- **Kubernetes Cluster Autoscaler**: Escalado automático de nodos en Kubernetes.
-- **Kubernetes Pod Affinity**: Afinidad de pods en Kubernetes.
-- **Kubernetes Pod Anti-Affinity**: Anti-afinidad de pods en Kubernetes.
-- **Kubernetes Taints and Tolerations**: Tolerancias y restricciones en Kubernetes.
-- **Kubernetes DaemonSets**: Despliegue de pods en todos los nodos en Kubernetes.
-- **Kubernetes StatefulSets**: Despliegue de aplicaciones con estado en Kubernetes.
-- **Kubernetes Jobs**: Ejecución de tareas en Kubernetes.
 
 ## Seguridad y Monitoreo
 
-- **FreeIPA**: DNS y gestión de autenticación.
 - **Prometheus y Grafana**: Monitoreo avanzado y visualización de métricas.
 - **Longhorn y NFS**: Almacenamiento persistente en Kubernetes.
 - **Firewall y Fail2Ban**: Seguridad del entorno.
@@ -498,7 +296,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 | Red NAT         | Nodos         | Dirección IP | Rol del Nodo                             |
 | --------------- | ------------- | ------------ | ---------------------------------------- |
-| kube_network_02 | freeipa1      | 10.17.3.11   | Servidor de DNS y gestión de identidades |
+| kube_network_02 | infra-cluster | 10.17.3.11   | Servidor de DNS y gestión de identidades |
 | kube_network_02 | loadbalancer1 | 10.17.3.12   | Balanceo de carga para el clúster        |
 | kube_network_02 | loadbalancer2 | 10.17.3.13   | Balanceo de carga para el clúster        |
 | kube_network_02 | postgresql1   | 10.17.3.14   | Gestión de bases de datos                |
@@ -534,7 +332,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 - **DNS**:
 
-  - Primario: 10.17.3.11 (FreeIPA)
+  - Primario: 10.17.3.11 (infra-cluster)
   - Secundario: 8.8.8.8
 
 - **Zona Horaria**:
@@ -547,10 +345,10 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ## Configuración de Redes Virtuales
 
-### Red br0
+### Red nat_network_01
 
 ```hcl
-resource "libvirt_network" "br0" {
+resource "libvirt_network" "nat_network_01" {
   name      = var.rocky9_network_name
   mode      = "nat"
   autostart = true
@@ -587,90 +385,26 @@ resource "libvirt_network" "kube_network_03" {
 - **Red**: Configurada red NAT y red Bridge de kvm
 - **VPN**: WireGuard para acceso seguro SSH administrado por Bastion Node
 
-## FreeIPA (10.17.3.11)
-
-- **Servidor DNS y NTP (chronyc)**:
-  FreeIPA actúa como el servidor DNS, gestionando la resolución de nombres y autenticación dentro del clúster. Además, **chronyc** está configurado para sincronizar el tiempo en todo el clúster, utilizando FreeIPA como uno de los servidores NTP principales.
-
 ## Chronyc / NTP
 
 - **Sincronización de tiempo**:
-  FreeIPA también proporciona servicios NTP. Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc** y el servidor NTP de FreeIPA (`10.17.3.11`). Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
+  Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc**. Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
+  
+# Recursos de Automatización
 
-## Diagramas de Red y Arquitectura
+| Proyecto                     | Repositorio                                                                                                                              |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| CoreDNS                      | [https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)                       |
+| NTP / Chrony                 | [https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)                   |
+| HAProxy + Keepalived         | [https://github.com/vhgalvez/ansible-haproxy-keepalived](https://github.com/vhgalvez/ansible-haproxy-keepalived)                         |
+| K3s HA (etcd)                | [https://github.com/vhgalvez/ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                             |
+| Traefik Ingress Controller   | [https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible](https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible) |
+| Storage NFS + Longhorn       | [https://github.com/vhgalvez/flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)                           |
+| Stack de Monitoreo           | [https://github.com/vhgalvez/ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                             |
+| Generar Clave SSH Compartida | [https://github.com/vhgalvez/generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key)                               |
+| Jenkins CI/CD                | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
+| ArgoCD                       | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                           |
 
-```bash
-                                [Usuarios Públicos]  
-                                   |
-                   (Acceso HTTPS - Seguridad - Cache)
-                                   |
-                                   v
-+---------------------------+                                  +---------------------------+
-| Cloudflare CDN            |                                  | VPS (IP Pública)          |
-| WAF + Proxy + DDoS Protect|                                  | Exposición de IP pública  |
-| (Ejemplo: example.com)    |                                  | Tunel VPN Seguro          |
-+---------------------------+                                  | WireGuard VPN Gateway     |
-                                   |                           | IP: 10.17.0.1             |
-                                   +---------------------------+---------------------------+
-                                   |
-                                   v
-                     +--------------------------------------+ 
-                     |  WireGuard VPN (Servidor Físico)     |
-                     |  Seguridad y acceso interno          |
-                     |  Red LAN Física                      |
-                     |  192.168.0.0/24                      |
-                     +--------------------------------------+ 
-                                   |
-                                   v
-                     +--------------------------------------+ 
-                     |  pfSense Firewall & NAT              |
-                     |  Seguridad de red                    |
-                     |  VPN, Reglas, IDS/IPS                |
-                     |  IP: 192.168.0.200                   |
-                     +--------------------------------------+ 
-                                   |
-                                   v
-          +--------------------+--------------------+
-          |                                         |
-          v                                         v
-+---------------------------+         +---------------------------+
-|  Load Balancer 1 (Traefik)|         |  Load Balancer 2 (Traefik)|
-|      IP: 10.17.3.12       |         |      IP: 10.17.3.13       |
-|  (Ingress Controller)     |         |  (Ingress Controller)     |
-+---------------------------+         +---------------------------+
-                                   |
-                                   |
-                                   v
-          +--------------------------------------------------+
-          |   HAProxy + Keepalived (Alta Disponibilidad)     |
-          |           k8s-api-lb - VIP: 10.17.5.10           |
-          |             k8s-api-lb  ip 10.17.5.20            |
-          |  - Balanceo de la API de Kubernetes              |
-          |  - Failover automático entre Masters             |
-          +--------------------------------------------------+
-                                   |
-                                   v
-                   +---------------------------+---------------------------+---------------------------+
-                   |                           |                           |                           |
-                   v                           v                           v                           v
-          +------------------+       +------------------+       +------------------+       +------------------+
-          |  Master Node 1   |       |  Master Node 2   |       |  Master Node 3   |       |  Storage Node    |
-          |       (etcd)     |       |       (etcd)     |       |       (etcd)     |       |  Almacenamiento  |
-          |    10.17.4.21    |       |    10.17.4.22    |       |    10.17.4.23    |       |    10.17.4.27    |
-          +------------------+       +------------------+       +------------------+       +------------------+
-
-                                  |
-                                  v
-                   +---------------------------+---------------------------+ 
-                   |                           |                           | 
-                   v                           v                           v 
-          +---------------------------+   +---------------------------+   +---------------------------+
-          |     FreeIPA Node          |   |    PostgreSQL Node        |   |     Storage Node          |
-          | DNS/Auth (FreeIPA)        |   | Base de Datos             |   | Almacenamiento Persist.   |
-          | IP: 10.17.3.11            |   | IP: 10.17.3.14            |   | IP: 10.17.4.27            |
-          +---------------------------+   +---------------------------+   +---------------------------+                       
-
-```
 
 # Arquitectura de Infraestructura Global
 
@@ -839,8 +573,8 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 1. **Ingreso de Conexiones Externas**: Las conexiones HTTPS externas ingresan por la **IP pública (192.168.0.21)**.
 2. **Acceso Seguro**: El tráfico pasa por el **Bastion Node (192.168.0.20)** para acceder de manera segura a la red interna.
 3. **Distribución de Tráfico**: El **Load Balancer1 Load Balancer2 (Traefik)** distribuye el tráfico hacia los nodos maestros y workers.
-4. **Resolución de Nombres y Sincronización de Tiempo**: **FreeIPA** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
-5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal con **FreeIPA** a través de **chronyc**.
+4. **Resolución de Nombres y Sincronización de Tiempo**: **infra-cluster** actúa como servidor DNS y NTP, asegurando la resolución de nombres y la sincronización temporal en todo el clúster.
+5. **Ejecución de Aplicaciones**: Los **nodos workers** **nodos master** ejecutan las aplicaciones, manteniendo la sincronización temporal a través de **chronyc**.
 
 ## 🌐 Configuración de Redes Virtuales con pfSense
 

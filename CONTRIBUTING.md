@@ -76,7 +76,6 @@ Este repositorio se integra con varios módulos complementarios:
 | Nombre del Repositorio | Propósito |
 |-------------------------|-----------|
 | [ansible-storage-cluster](https://github.com/vhgalvez/ansible-storage-cluster) | Configura volúmenes LVM y NFS para almacenamiento |
-| [ansible-freeipa-dns-setup-rockylinux](https://github.com/vhgalvez/ansible-freeipa-dns-setup-rockylinux) | Configura FreeIPA como DNS y autenticación |
 | [ansible-ntp-freeipa-kubernetes](https://github.com/vhgalvez/ansible-ntp-freeipa-kubernetes) | Configura NTP sincronizado con FreeIPA |
 | [ansible-haproxy-keepalived](https://github.com/vhgalvez/ansible-haproxy-keepalived) | Configura balanceadores de carga con VIP |
 | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster) | Instala K3s en HA con etcd |
