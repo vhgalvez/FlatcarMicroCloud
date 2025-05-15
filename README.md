@@ -9,7 +9,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 - **K3s**, una distribución ligera de Kubernetes.
 - **Longhorn y NFS** para almacenamiento persistente.
 - **Prometheus y Grafana** para monitoreo y visualización avanzada.
-- **Apache redpanda y MQTT Mosquitto** para comunicación asincrónica entre microservicios.
+- **Redpanda y MQTT Mosquitto** para comunicación asincrónica entre microservicios.
 
 ## Hardware del Servidor
 
@@ -285,7 +285,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 | kube_network_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
 | kube_network_03 | storage1      | 10.17.4.27   | Almacenamiento                          |
 
-### Red br0
+### Red nat_network_01
 
 | Red NAT | Nodo       | Dirección IP | Rol del Nodo                             |
 | ------- | ---------- | ------------ |------------------------------------------|
@@ -551,6 +551,23 @@ Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
 Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
 
 ## Resumen del Flujo
+
+1. **Ingreso de Conexiones Externas**:  
+   Las conexiones HTTPS externas ingresan a través de la IP pública del servidor físico, pasando por un proxy seguro configurado en **Cloudflare CDN** para protección contra ataques DDoS y caché de contenido.
+
+2. **Acceso Seguro**:  
+   El tráfico es redirigido al **WireGuard VPN Gateway** (IP túnel: 10.17.0.1) y luego al **Bastion Node** (192.168.0.19), que actúa como punto de acceso seguro a la red interna.
+
+3. **Distribución de Tráfico**:  
+   Los balanceadores de carga **Load Balancer1** y **Load Balancer2** (Traefik) distribuyen el tráfico hacia los nodos maestros y workers, asegurando alta disponibilidad y balanceo eficiente.
+
+4. **Resolución de Nombres y Sincronización de Tiempo**:  
+   El nodo **infra-cluster** (10.17.3.11) actúa como servidor **DNS** (CoreDNS) y **NTP** (Chrony), proporcionando resolución de nombres y sincronización temporal precisa en todo el clúster.
+
+5. **Ejecución de Aplicaciones**:  
+   Los **nodos workers** ejecutan las aplicaciones y microservicios, mientras que los **nodos maestros** gestionan el plano de control de Kubernetes. Todos los nodos mantienen sincronización temporal mediante **chronyc**.
+
+---
 
 1. **Ingreso de Conexiones Externas**:
 
