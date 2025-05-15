@@ -1,6 +1,6 @@
 # FlatcarMicroCloud: Entorno Kubernetes Optimizado para Servidores Físicos
 
-## Descripción General del Proyecto
+## 1. Descripción General del Proyecto
 
 **FlatcarMicroCloud** es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico. El entorno se ejecuta sobre un servidor **ProLiant DL380 G7**, utilizando **Rocky Linux 9.5** como sistema operativo base para virtualización, junto con **AlmaLinux 9.4** en algunos nodos auxiliares. Las máquinas virtuales que componen el clúster Kubernetes utilizan **Flatcar Container Linux** como sistema operativo liviano y seguro.
 
@@ -11,7 +11,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 - **Prometheus y Grafana** para monitoreo y visualización avanzada.
 - **Redpanda y MQTT Mosquitto** para comunicación asincrónica entre microservicios.
 
-## Hardware del Servidor
+## 2. Hardware del Servidor
 
 ![ProLiant DL380 G7](additional_resources/image/hp_server.png)
 
@@ -23,14 +23,14 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
   - Disco Principal: 1.5TB
   - Disco Secundario: 3.0TB
 
-## Sistemas Operativos y Virtualización
+## 3. Sistemas Operativos y Virtualización
 
-- **Sistemas Operativos**: Rocky Linux 9.5 y Flatcar Container Linux y Alma Linux 9.4
-- **Virtualización**: KVM con Libvirt y Virt-Manager y oVirt
+- **Sistemas Operativos**: Rocky Linux 9.5, Flatcar Container Linux y Alma Linux 9.4
+- **Virtualización**: KVM con Libvirt y Virt-Manager
 - **Configuración de Red**: VPN con WireGuard, DHCP, firewall, y configuraciones de redes virtuales (NAT y Bridge) con KVM.
 - **Switch y Router**: Facilitan la comunicación y conectividad del clúster.
 
-## Resumen de Recursos para Máquinas Virtuales
+## 4. Resumen de Recursos para Máquinas Virtuales
 
 | **Hostname**    | **IP**        | **Dominio**                  | **CPU** | **Memoria (MB)** | **Disco (GB)** |
 |-----------------|---------------|-----------------------------|---------|------------------|----------------|
@@ -47,19 +47,19 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | postgresql1     | 10.17.3.14    | postgresql1.cefaslocalserver.com | 2     | 2048             | 32             |
 | k8s-api-lb      | 10.17.5.10    | k8s-api-lb.cefaslocalserver.com | 2     | 2048             | 80             |
 
-## Máquinas Virtuales y Roles
+## 5. Máquinas Virtuales y Roles
 
 | Nodo               | Sistema Operativo       | Función                                    | Cantidad |
 | ------------------ | ----------------------- | ------------------------------------------ | -------- |
-| k8s-api-lb         | Alma Linux              | gestion y seguridad                        | 1        |
+| k8s-api-lb         | Alma Linux              | Gestión y seguridad                        | 1        |
 | Load Balancer Node | Alma Linux              | Balanceo Traefik controlador de ingress    | 2        |
-| infra-cluster Node | Alma Linux              | DNS coredns / ntp  Chrony                  | 1        |
+| infra-cluster Node | Alma Linux              | DNS CoreDNS / NTP Chrony                  | 1        |
 | PostgreSQL Node    | Alma Linux              | Base de datos central para microservicios  | 1        |
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
-| storage1           | Alma Linux              | almacenacenamiento                         | 1        |
+| storage1           | Alma Linux              | Almacenamiento                            | 1        |
 
-## Explicación de Roles de las VMs
+## 6. Explicación de Roles de las VMs
 
 - **Maestros (master1, master2, master3)**:
   - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
@@ -68,22 +68,22 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
   - Nodos que ejecutan aplicaciones y microservicios, proporcionando la capacidad de escalar horizontalmente.
 
 - **infra-cluster (infra-cluster)**:
-  - Nodo que actúa como servidor DNS coredns y ntp  Chrony
+  - Nodo que actúa como servidor DNS CoreDNS y NTP Chrony.
 
-- **Load Balancer (load_balancer1,load_balancer2)**:
+- **Load Balancer (loadbalancer1, loadbalancer2)**:
   - Nodos que distribuyen el tráfico de red entre los nodos maestros y workers, asegurando un balanceo de carga eficiente.
 
 - **PostgreSQL (postgresql1)**:
   - Nodo dedicado para la base de datos, proporcionando almacenamiento persistente para las aplicaciones de microservicios.
 
-## Fases de Implementación
+## 7. Fases de Implementación
 
-### Fase 1: Instalación y Configuración de K3s en el Clúster de Kubernetes
+### 7.1 Instalación y Configuración de K3s en el Clúster de Kubernetes
 
 1. **Nodo Master1**: Instalación de K3s y configuración inicial del clúster.
 2. **Nodos Master y Worker**: Configuración de nodos maestros y workers, desplegando Traefik como balanceador.
 
-### Fase 2: Configuración de PostgreSQL
+### 7.2 Configuración de PostgreSQL
 
 | Aspecto                 | Configuración                                                            |
 | ----------------------- | ------------------------------------------------------------------------ |
@@ -91,24 +91,24 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | Permisos                | Ajusta permisos para permitir el acceso de microservicios en el clúster. |
 | Respaldo y Recuperación | Define políticas para almacenamiento y recuperación de datos.            |
 
-### Fase 3: Desarrollo e Implementación de Microservicios
+### 7.3 Desarrollo e Implementación de Microservicios
 
 - **Apache Kafka**: Canal de comunicación asíncrona entre microservicios.
 - **MQTT Mosquitto**: Protocolo ligero para notificaciones en tiempo real.
 - **Redis**: Base de datos en memoria para almacenamiento en caché y escalabilidad.
 
-### Fase 4: Desarrollo del Frontend con Vue.js
+### 7.4 Desarrollo del Frontend con Vue.js
 
 - **Vue.js** para la interfaz de usuario, conectada a APIs de FastAPI. Desplegado en el clúster con acceso a través del balanceador Traefik.
 
-## Automatización y Orquestación
+## 8. Automatización y Orquestación
 
 - **Terraform**: Automatización de infraestructura.
 - **Ansible**: Configuración y manejo de operaciones.
 
-## Pasos para la Implementación
+## 9. Pasos para la Implementación
 
-### Paso 1: Preparativos Iniciales
+### 9.1 Preparativos Iniciales
 
 Clonar el repositorio en el servidor Rocky Linux.
 
@@ -123,22 +123,12 @@ Clonar el repositorio en el servidor Rocky Linux.
 - [Terraform](https://www.terraform.io/downloads.html) v0.13 o superior
 - Acceso a un servidor KVM con libvirt
 
-## Red y Conectividad
+### 9.2 Configuración de Redes Virtuales con Terraform
 
-```bash
-# Clonar repositorio
-git clone https://github.com/vhgalvez/FlatcarMicroCloud.git
-cd FlatcarMicroCloud
-```
-
-### Paso 2: Configuración de Redes Virtuales con Terraform
-
-- **Red nat_network_02**:
+- **Red nat_network_01**:
 
   ```bash
-  # Navegar a nat_network_01
   cd nat_network_01
-  # Inicializar y aplicar Terraform
   sudo terraform init --upgrade
   sudo terraform apply
   ```
@@ -146,9 +136,7 @@ cd FlatcarMicroCloud
 - **Red nat_network_02**:
 
   ```bash
-  # Navegar a nat_network_02
   cd ../nat_network_02
-  # Inicializar y aplicar Terraform
   sudo terraform init --upgrade
   sudo terraform apply
   ```
@@ -156,68 +144,25 @@ cd FlatcarMicroCloud
 - **Red nat_network_03**:
 
   ```bash
-  # Navegar a nat_network_03
   cd ../nat_network_03
-  # Inicializar y aplicar Terraform
   sudo terraform init --upgrade
   sudo terraform apply
   ```
 
----
-
-### Componentes
-
-- **Prometheus**: Servidor de métricas.
-- **Grafana**: Visualización de dashboards.
-- **Node Exporter**: Métricas del sistema operativo.
-- **PushGateway**: Recepción de métricas push.
-- **Scrape Externo**: Monitorización de máquinas fuera del clúster.
-
----
-
-## ✅ **Infraestructura Lista**
-
-Al finalizar todos los pasos, tu entorno Kubernetes con alta disponibilidad estará completamente configurado y operativo, con los siguientes componentes:
-
-- **DNS**
-- **Balanceo de carga** con HAProxy + Keepalived (VIP)
-- **Clúster Kubernetes** con K3s en alta disponibilidad (etcd)
-- **Ingress Controller** con certificados TLS usando Traefik
-- **Almacenamiento persistente** con NFS y Longhorn listo para usarse
-
----
-
-### ✨ **Desarrollado para la solución FlatcarMicroCloud**
-
-Este flujo de trabajo está optimizado para ser desplegado sobre **servidores físicos o virtualizados**, garantizando una solución robusta y escalable.
----
-
-## Maquinas Virtuales Monitoreo y Gestión de Recursos
-
-![kvm_virt-top](additional_resources/image/kvm_virt-top.png)
-
----
-
-## Notas Adicionales
-
-- Asegúrese de tener las variables y configuraciones adecuadas en los archivos `terraform.tfvars` de cada subproyecto.
-- Cada subproyecto tiene su propio `main.tf` y configuración de variables, por lo que no debería haber conflictos de nombres si sigue las instrucciones anteriores.
-- Puede ajustar las configuraciones y variables según sea necesario para adaptarse a su entorno y necesidades específicas.
-
-### Paso 3: Instalación de VMs y Sistemas Operativos
+### 9.3 Instalación de VMs y Sistemas Operativos
 
 Provisionar y configurar VMs según especificaciones en la tabla de recursos, asegurando la asignación de CPU, RAM, y almacenamiento.
 
-### Paso 5: Configuración de Almacenamiento Persistente
+### 9.4 Configuración de Almacenamiento Persistente
 
 Instalar y configurar Longhorn y NFS en el clúster de Kubernetes para almacenamiento persistente.
 
-### Paso 6: Configuración de Monitoreo y Visualización
+### 9.5 Configuración de Monitoreo y Visualización
 
 - Configurar **Prometheus** y **Grafana** para monitoreo.
 - Configurar **ELK Stack** para análisis de logs y visualización de datos.
 
-### Paso 7: Configuración de CI/CD y Automatización
+### 9.6 Configuración de CI/CD y Automatización
 
 Configurar Jenkins y/o GitHub Actions para la integración continua (CI), ejecutando pruebas automáticas, análisis de código y construcción de imágenes de contenedor.
 
@@ -225,21 +170,23 @@ Configurar un Docker Registry (privado o público) para almacenar y versionar im
 
 Configurar ArgoCD como herramienta de despliegue continuo (CD), conectando los cambios en el repositorio con el entorno de Kubernetes mediante una estrategia GitOps.
 
-### Paso 8: Configuración de Seguridad
+### 9.7 Configuración de Seguridad
 
 Configurar reglas de **firewall**, **Fail2Ban** y políticas de seguridad.
 
-### Paso 9: Sincronización y NTP
+### 9.8 Sincronización y NTP
 
 Configurar **chronyc** en todos los nodos para sincronización temporal.
 
-### Paso 10: Pruebas Finales y Puesta en Producción
+### 9.9 Pruebas Finales y Puesta en Producción
 
 - Verificar configuración de red y DNS.
 - Probar despliegue de aplicaciones y monitorización de métricas.
 - Asegurar que el balanceador de carga y servicios en Kubernetes estén operativos.
 
-Este flujo garantiza que todas las dependencias y configuraciones sean instaladas en el orden correcto y optimizadas para un entorno de producción.
+---
+
+Siguiendo este flujo, todas las dependencias y configuraciones serán instaladas en el orden correcto y optimizadas para un entorno de producción.
 
 ## Microservicios en Pods
 
@@ -469,8 +416,6 @@ Pantalla de inicio de sesión de **Cockpit**, una interfaz web para administrar 
 ![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
 
 ---
-
-
 
 
 ## 🌐 Configuración de Redes Virtuales con pfSense
