@@ -117,3 +117,8 @@ firewall_backend = "nftables"
 max_clients = 20
 max_requests = 1000
 [victory@virtualizacion-server nat_network_03]$ sudo cat /etc/libvirt/libvirtd.conf
+
+
+
+
+

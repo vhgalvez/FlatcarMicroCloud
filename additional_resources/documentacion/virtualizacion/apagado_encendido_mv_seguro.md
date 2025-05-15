@@ -180,8 +180,3 @@ sudo virsh net-start br0
 [victory@physical1 ~]$
 
 
-
-| Equipo                | Sistema Operativo                    | CPU                                         | GPU                 | VRAM GPU  | RAM   | Almacenamiento Principal                     | Rol Ideal                                           |
-| --------------------- | ------------------------------------ | ------------------------------------------- | ------------------- | --------- | ----- | -------------------------------------------- | --------------------------------------------------- |
-| **PC con RTX 4070**   | Windows 11 Pro + WSL2 (Ubuntu 20.04) | AMD Ryzen 7 5700X (8 núcleos / 16 hilos)    | **NVIDIA RTX 4070** | **12 GB** | 32 GB | SSD NVMe + HDD 2 TB                          | ⚡ Generación IA de textos e imágenes (GPU + CPU)    |
-| **Servidor HP DL380** | Rocky Linux 9.5 (Blue Onyx)          | 2x Intel Xeon X5650 (12 núcleos / 24 hilos) | AMD ES1000 (básica) | N/A       | 35 GB | / (70 GB) + /home (3 TB) + /var/lib (500 GB) | 🌐 Publicación masiva, almacenamiento y backend NFS |

@@ -1,6 +1,8 @@
-**Guía para Generar Certificados y Firmar grubx64.efi**
+# Guía para Generar Certificados y Firmar grubx64.efi
 
-Este documento describe el proceso completo para generar un certificado autofirmado, configurarlo en una base de datos NSS y usar pesign para firmar el archivo grubx64.efi en un sistema con Secure Boot habilitado.
+Este documento describe el proceso completo para generar un certificado autofirmado, configurarlo en una base de datos NSS y usar **pesign** para firmar el archivo **grubx64.efi** en un sistema con **Secure Boot** habilitado.
+
+## Pasos para Generar y Firmar Certificados
 
 ### 1. Crear un Directorio para Certificados
 
@@ -20,6 +22,7 @@ openssl req -new -x509 -newkey rsa:2048 -keyout MOK.key -out MOK.crt -days 365 -
 ```
 
 Este comando creará dos archivos:
+
 - **MOK.key**: Clave privada.
 - **MOK.crt**: Certificado público.
 
@@ -61,6 +64,7 @@ sudo pk12util -i ~/secureboot-certificates/MOK.p12 -d sql:/root/pesign-nss-db
 ```
 
 Se te solicitarán dos contraseñas:
+
 - **Contraseña para la base de datos NSS**: Ingresa la contraseña que estableciste para la base de datos (**nssdb-password**).
 - **Contraseña para el archivo PKCS#12**: Ingresa la contraseña que estableciste para el archivo PKCS#12 (**qazwsxedc**).
 
@@ -74,7 +78,7 @@ sudo certutil -L -d sql:/root/pesign-nss-db
 
 Deberías ver una salida similar a esta:
 
-```
+```plaintext
 Certificate Nickname                                         Trust Attributes
                                                              SSL,S/MIME,JAR/XPI
 
@@ -83,7 +87,7 @@ Mi Certificado MOK                                           u,u,u
 
 ### 8. Configurar el Certificado como Confiable
 
-Configura el certificado como confiable para firmar código, lo cual es necesario para la firma del archivo grubx64.efi.
+Configura el certificado como confiable para firmar código, lo cual es necesario para la firma del archivo **grubx64.efi**.
 
 ```bash
 sudo certutil -M -d sql:/root/pesign-nss-db -n "Mi Certificado MOK" -t "C,,C"
@@ -97,7 +101,7 @@ sudo certutil -L -d sql:/root/pesign-nss-db
 
 La salida esperada debería ser:
 
-```
+```plaintext
 Certificate Nickname                                         Trust Attributes
                                                              SSL,S/MIME,JAR/XPI
 
@@ -124,23 +128,28 @@ pesign --show-signature --in ~/secureboot-certificates/grubx64-signed.efi
 
 Deberías ver detalles sobre la firma aplicada al archivo, lo que indica que el proceso de firma fue exitoso.
 
-### Notas Importantes
+## Limpieza
 
-- **Contraseñas utilizadas**:
-  - **Base de datos NSS**: nssdb-password
-  - **Archivo PKCS#12**: qazwsxedc
-- **Errores comunes y soluciones**:
-  - Error "The security password entered is incorrect": Asegúrate de usar la contraseña correcta (**nssdb-password**) cuando se te solicite.
-  - Error "Could not find certificate": Verifica que el certificado esté importado correctamente usando **certutil -L**.
-- **Organización y seguridad**:
-  - Mantén el directorio **~/secureboot-certificates** organizado y realiza copias de seguridad de los certificados importantes para evitar pérdida de datos.
-  - Recuerda las contraseñas establecidas en los pasos anteriores, ya que serán necesarias para futuras operaciones relacionadas con la base de datos NSS y la firma de archivos.
-
-Este procedimiento te permitirá firmar el archivo **grubx64.efi** correctamente, asegurando que sea reconocido por **Secure Boot** y no cause problemas de arranque.
-
-### Limpieza
+Elimina los archivos temporales y directorios creados durante el proceso para mantener el sistema limpio.
 
 ```bash
 sudo rm -rf /root/pesign-nss-db
 rm -rf ~/secureboot-certificates
 ```
+
+## Notas Importantes
+
+- **Contraseñas utilizadas**:
+
+  - **Base de datos NSS**: nssdb-password
+  - **Archivo PKCS#12**: qazwsxedc
+
+- **Errores comunes y soluciones**:
+
+  - Error "The security password entered is incorrect": Asegúrate de usar la contraseña correcta (**nssdb-password**) cuando se te solicite.
+  - Error "Could not find certificate": Verifica que el certificado esté importado correctamente usando **certutil -L**.
+
+- **Organización y seguridad**:
+
+  - Mantén el directorio **~/secureboot-certificates** organizado y realiza copias de seguridad de los certificados importantes para evitar pérdida de datos.
+  - Recuerda las contraseñas establecidas en los pasos anteriores, ya que serán necesarias para futuras operaciones relacionadas con la base de datos NSS y la firma de archivos.
