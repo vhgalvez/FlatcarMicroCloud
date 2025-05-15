@@ -382,10 +382,14 @@ resource "libvirt_network" "kube_network_03" {
 | Jenkins CI/CD                | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
 | ArgoCD                       | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                           |
 
-## Arquitectura de Infraestructura Global
+## Arquitectura de Infraestructura Global de FlatcarMicroCloud
 
 ![Infraestructura Global](additional_resources/image/infraestructura_global.jpg)
 
+Repositorio: [arquitectura_FlatcarMicroCloud](https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud)
+
+Este diagrama fue generado con **Python** utilizando la librería [Diagrams by Mingrammer](https://github.com/mingrammer/diagrams).  
+Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://github.com/vhgalvez/FlatcarMicroCloud), incluyendo red pública, túnel VPN, balanceadores Ingress, clúster Kubernetes con K3s, almacenamiento distribuido y servicios esenciales.
 
 ## Arquitectura de Kubernetes (Cluster K3s)
 
