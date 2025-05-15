@@ -270,12 +270,6 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 - **Longhorn**: Orquestar Longhorn en Kubernetes para almacenamiento persistente.
 - **NFS**: Configurar NFS para almacenamiento compartido entre nodos para base de datos postgresql.
 
-## Seguridad y Monitoreo
-
-- **Prometheus y Grafana**: Monitoreo avanzado y visualización de métricas.
-- **Longhorn y NFS**: Almacenamiento persistente en Kubernetes.
-- **Firewall y Fail2Ban**: Seguridad del entorno.
-
 ## Redes Virtuales y Arquitectura de Red
 
 ### Redes Virtuales Configuradas
@@ -307,7 +301,7 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
   - Fedora CoreOS: `/mnt/lv_data/organized_storage/images/fedora-coreos-40.20240906.3.0-qemu.x86_64.qcow2`
   - Rocky Linux: `/mnt/lv_data/organized_storage/images/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2`
   - Alma Linux: `/mnt/lv_data/organized_storage/images/AlmaLinux-9.4-x86_64.qcow2`
-  - pfsense: `/var/lib/libvirt/images/pfsense_base.qcow2 /mnt/lv_data/organized_storage/images/pfsense_base.qcow2`
+  - pfsense: `/mnt/lv_data/organized_storage/images/pfsense_base.qcow2`
   - Flatcar Container Linux: `/mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img`
 
 - **Red Gateway**:
