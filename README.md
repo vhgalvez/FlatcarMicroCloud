@@ -267,6 +267,12 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 - **Longhorn**: Orquestar Longhorn en Kubernetes para almacenamiento persistente.
 - **NFS**: Configurar NFS para almacenamiento compartido entre nodos para base de datos postgresql.
 
+## Chronyc / NTP
+
+- **Sincronización de tiempo**:
+  Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc**. Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
+
+
 ## Redes Virtuales y Arquitectura de Red
 
 ### Redes Virtuales Configuradas
@@ -362,10 +368,29 @@ resource "libvirt_network" "kube_network_03" {
 - **Red**: Configurada red NAT y red Bridge de kvm
 - **VPN**: WireGuard para acceso seguro SSH administrado por Bastion Node
 
-## Chronyc / NTP
+## Interfaz de Red
 
-- **Sincronización de tiempo**:
-  Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc**. Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
+| Interfaz     |
+| ------------ |
+| **enp3s0f0** |
+| **enp3s0f1** |
+| **enp4s0f0** |
+| **enp4s0f1** |
+| **lo**       |
+
+Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
+
+1. **Distribución de Tráfico**:
+
+   - Los Load Balancers (Traefik) distribuyen el tráfico hacia los nodos maestros y workers, asegurando un balanceo eficiente.
+
+2. **Resolución de Nombres y Sincronización de Tiempo**:
+
+   - El nodo `infra-cluster` actúa como servidor DNS y NTP, garantizando la resolución de nombres y la sincronización temporal en todo el clúster.
+
+3. **Ejecución de Aplicaciones**:
+
+   - Los nodos workers y maestros ejecutan las aplicaciones, manteniendo la sincronización temporal a través de `chronyc`.
 
 ## Recursos de Automatización
 
@@ -393,6 +418,25 @@ resource "libvirt_network" "kube_network_03" {
 
 Este diagrama fue generado con **Python** utilizando la librería [Diagrams by Mingrammer](https://github.com/mingrammer/diagrams).  
 Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://github.com/vhgalvez/FlatcarMicroCloud), incluyendo red pública, túnel VPN, balanceadores Ingress, clúster Kubernetes con K3s, almacenamiento distribuido y servicios esenciales.
+
+
+## Resumen del Flujo
+
+1. **Ingreso de Conexiones Externas**:  
+   Las conexiones HTTPS externas ingresan a través de la IP pública del servidor físico, pasando por un proxy seguro configurado en **Cloudflare CDN** para protección contra ataques DDoS y caché de contenido.
+
+2. **Acceso Seguro**:  
+   El tráfico es redirigido al **WireGuard VPN Gateway** (IP túnel: 10.17.0.1) y luego al **Bastion Node** (192.168.0.19), que actúa como punto de acceso seguro a la red interna.
+
+3. **Distribución de Tráfico**:  
+   Los balanceadores de carga **Load Balancer1** y **Load Balancer2** (Traefik) distribuyen el tráfico hacia los nodos maestros y workers, asegurando alta disponibilidad y balanceo eficiente.
+
+4. **Resolución de Nombres y Sincronización de Tiempo**:  
+   El nodo **infra-cluster** (10.17.3.11) actúa como servidor **DNS** (CoreDNS) y **NTP** (Chrony), proporcionando resolución de nombres y sincronización temporal precisa en todo el clúster.
+
+5. **Ejecución de Aplicaciones**:  
+   Los **nodos workers** ejecutan las aplicaciones y microservicios, mientras que los **nodos maestros** gestionan el plano de control de Kubernetes. Todos los nodos mantienen sincronización temporal mediante **chronyc**.
+
 
 ## Arquitectura de Kubernetes (Cluster K3s)
 
@@ -424,66 +468,10 @@ Pantalla de inicio de sesión de **Cockpit**, una interfaz web para administrar 
 
 ![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
 
-## Optimización para Producción
-
-| Aspecto                     | Detalle                                                                                            |
-| --------------------------- | -------------------------------------------------------------------------------------------------- |
-| Restricción de Recursos     | Configura límites en Kubernetes para cada servicio (Prometheus, PostgreSQL, Redpanda, Redis).         |
-| Control de Logs y Monitoreo | Define políticas de retención de logs en Prometheus y Kafka para reducir el consumo de disco.      |
-| Supervisión Activa          | Usa Grafana para monitoreo en tiempo real, ajustando recursos según los picos de carga detectados. |
-
-Estas optimizaciones aseguran un entorno escalable y eficiente para producción.
-
-## Interfaz de Red
-
-| Interfaz     |
-| ------------ |
-| **enp3s0f0** |
-| **enp3s0f1** |
-| **enp4s0f0** |
-| **enp4s0f1** |
-| **lo**       |
-
-Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
-
-## Resumen del Flujo
-
-1. **Ingreso de Conexiones Externas**:  
-   Las conexiones HTTPS externas ingresan a través de la IP pública del servidor físico, pasando por un proxy seguro configurado en **Cloudflare CDN** para protección contra ataques DDoS y caché de contenido.
-
-2. **Acceso Seguro**:  
-   El tráfico es redirigido al **WireGuard VPN Gateway** (IP túnel: 10.17.0.1) y luego al **Bastion Node** (192.168.0.19), que actúa como punto de acceso seguro a la red interna.
-
-3. **Distribución de Tráfico**:  
-   Los balanceadores de carga **Load Balancer1** y **Load Balancer2** (Traefik) distribuyen el tráfico hacia los nodos maestros y workers, asegurando alta disponibilidad y balanceo eficiente.
-
-4. **Resolución de Nombres y Sincronización de Tiempo**:  
-   El nodo **infra-cluster** (10.17.3.11) actúa como servidor **DNS** (CoreDNS) y **NTP** (Chrony), proporcionando resolución de nombres y sincronización temporal precisa en todo el clúster.
-
-5. **Ejecución de Aplicaciones**:  
-   Los **nodos workers** ejecutan las aplicaciones y microservicios, mientras que los **nodos maestros** gestionan el plano de control de Kubernetes. Todos los nodos mantienen sincronización temporal mediante **chronyc**.
-
 ---
 
-1. **Ingreso de Conexiones Externas**:
 
-   - Las conexiones HTTPS externas ingresan por la IP pública (192.168.0.21).
 
-2. **Acceso Seguro**:
-
-   - El tráfico pasa por el Bastion Node (192.168.0.20) para acceder de manera segura a la red interna.
-
-3. **Distribución de Tráfico**:
-
-   - Los Load Balancers (Traefik) distribuyen el tráfico hacia los nodos maestros y workers, asegurando un balanceo eficiente.
-
-4. **Resolución de Nombres y Sincronización de Tiempo**:
-
-   - El nodo `infra-cluster` actúa como servidor DNS y NTP, garantizando la resolución de nombres y la sincronización temporal en todo el clúster.
-
-5. **Ejecución de Aplicaciones**:
-
-   - Los nodos workers y maestros ejecutan las aplicaciones, manteniendo la sincronización temporal a través de `chronyc`.
 
 ## 🌐 Configuración de Redes Virtuales con pfSense
 
@@ -572,3 +560,5 @@ git clone https://github.com/vhgalvez/generate_shared_ssh_key.git
 ```
 
 Este script es útil si estás automatizando la creación de máquinas virtuales con Terraform y necesitas una clave reutilizable para conectarte vía SSH con Flatcar.
+
+
