@@ -384,11 +384,11 @@ resource "libvirt_network" "kube_network_03" {
 
 ## Arquitectura de Infraestructura Global de FlatcarMicroCloud
 
-![Infraestructura Global](additional_resources/image/infraestructura_global.jpg)
 
-Repositorio: [arquitectura_FlatcarMicroCloud](https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud)
+![Infraestructura Global](additional_resources/image/diagrams_image.png)
 
-https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud
+
+Repositorio: [arquitectura_FlatcarMicroCloud](https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud) - https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud
 
 Este diagrama fue generado con **Python** utilizando la librería [Diagrams by Mingrammer](https://github.com/mingrammer/diagrams).  
 Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://github.com/vhgalvez/FlatcarMicroCloud), incluyendo red pública, túnel VPN, balanceadores Ingress, clúster Kubernetes con K3s, almacenamiento distribuido y servicios esenciales.
