@@ -133,11 +133,11 @@ cd FlatcarMicroCloud
 
 ### Paso 2: Configuración de Redes Virtuales con Terraform
 
-- **Red br0_network**:
+- **Red nat_network_02**:
 
   ```bash
-  # Navegar a br0_network
-  cd br0_network
+  # Navegar a nat_network_01
+  cd nat_network_01
   # Inicializar y aplicar Terraform
   sudo terraform init --upgrade
   sudo terraform apply
@@ -253,32 +253,31 @@ Este flujo garantiza que todas las dependencias y configuraciones sean instalada
 
 ## Microservicios en Pods
 
-#### Análisis y Visualización de Datos
-
-- **ELK Stack Elasticsearch**: Visualización de métricas del clúster.
-- **ELK Stack Kibana**: Visualización de datos.
-- **ELK Stack Logstash**: Procesamiento de logs.
-- **Prometheus**: Herramientas para el monitoreo, alertas **alertmanager** y visualización de métricas.
-- **Grafana**: Visualización de métricas del clúster.
-- **cAdvisor**: Monitorear el rendimiento y uso de recursos por parte de los contenedores.
-- **Nagios**: Rendimiento del sistema.
-
 #### Microservicios de Servicios de Aplicaciones
 
 - **Nginx**: Servidor web aplicaciones web.
-- ** **: Plataforma de mensajería utilizada para la comunicación entre microservicios.
 - **Redis**: Almacenamiento en caché y base de datos en memoria para mejorar el rendimiento de las aplicaciones.
+- ** **: Plataforma de mensajería utilizada para la comunicación entre microservicios.
+
+#### Análisis y Visualización de Datos
+
+- **Prometheus**: Herramientas para el monitoreo, alertas **alertmanager** y visualización de métricas.
+- **Grafana**: Visualización de métricas del clúster.
+- **Nagios**: Rendimiento del sistema.
+- **cAdvisor**: Monitorear el rendimiento y uso de recursos por parte de los contenedores.
+- **ELK Stack Elasticsearch**: Visualización de métricas del clúster.
+- **ELK Stack Kibana**: Visualización de datos.
+- **ELK Stack Logstash**: Procesamiento de logs.
 
 ## Seguridad y Protección
 
-- **Firewall nftables**:  Configuración de reglas de firewall para proteger el clúster.
+- **Firewall nftables**: Configuración de reglas de firewall para proteger el clúster.
 - **Fail2Ban**: Protección contra accesos no autorizados y ataques.
 
 ## Almacenamiento Persistente
 
 - **Longhorn**: Orquestar Longhorn en Kubernetes para almacenamiento persistente.
 - **NFS**: Configurar NFS para almacenamiento compartido entre nodos para base de datos postgresql.
-
 
 ## Seguridad y Monitoreo
 
