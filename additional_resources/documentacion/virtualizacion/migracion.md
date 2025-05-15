@@ -1,20 +1,26 @@
-✅ Pasos para migrar de libvirtd a virtqemud correctamente
+# ✅ Pasos para Migrar de libvirtd a virtqemud Correctamente
 
-### Detener el servicio libvirtd:
+## 1. Detener el Servicio libvirtd
+
+Detén el servicio `libvirtd` y su socket asociado:
 
 ```bash
 sudo systemctl stop libvirtd
 sudo systemctl stop libvirtd.socket
 ```
 
-### Deshabilitar libvirtd para que no se inicie al arrancar:
+## 2. Deshabilitar libvirtd para que no se Inicie al Arrancar
+
+Deshabilita el servicio y el socket de `libvirtd`:
 
 ```bash
 sudo systemctl disable libvirtd
 sudo systemctl disable libvirtd.socket
 ```
 
-### Habilitar y arrancar los demonios modulares:
+## 3. Habilitar y Arrancar los Demonios Modulares
+
+Activa los demonios necesarios para la gestión modular, incluyendo `virtqemud`:
 
 ```bash
 for drv in qemu network nodedev nwfilter secret storage; do
@@ -25,9 +31,9 @@ for drv in qemu network nodedev nwfilter secret storage; do
 done
 ```
 
-Esto activará los demonios necesarios, incluyendo `virtqemud` para la gestión de QEMU.
+## 4. Verificar que virtqemud esté Activo
 
-### Verificar que virtqemud esté activo:
+Comprueba el estado del servicio `virtqemud`:
 
 ```bash
 systemctl is-active virtqemud
@@ -35,37 +41,37 @@ systemctl is-active virtqemud
 
 Si el estado es `active`, la migración ha sido exitosa.
 
-### Actualizar las conexiones de virsh y virt-manager:
+## 5. Actualizar las Conexiones de virsh y virt-manager
 
-Asegúrate de que tus herramientas de gestión de máquinas virtuales apunten a la nueva URI:
+### Configuración para virsh
 
-#### Para virsh:
+Asegúrate de que apunte a la nueva URI:
 
 ```bash
 virsh -c qemu:///system
 ```
 
-#### Para virt-manager:
+### Configuración para virt-manager
 
 Al abrir virt-manager, selecciona la conexión `qemu:///system`.
 
-### Migrar máquinas virtuales existentes:
+## 6. Migrar Máquinas Virtuales Existentes
 
 Si tienes máquinas virtuales definidas bajo `qemu:///session`, puedes migrarlas a `qemu:///system` exportando e importando sus definiciones:
 
-#### Exportar la definición de la máquina virtual:
+### Exportar la Definición de la Máquina Virtual
 
 ```bash
 virsh dumpxml nombre_vm > nombre_vm.xml
 ```
 
-#### Eliminar la definición actual:
+### Eliminar la Definición Actual
 
 ```bash
 virsh undefine nombre_vm
 ```
 
-#### Importar la definición bajo el nuevo URI:
+### Importar la Definición bajo el Nuevo URI
 
 ```bash
 sudo virsh -c qemu:///system define nombre_vm.xml
@@ -73,52 +79,46 @@ sudo virsh -c qemu:///system define nombre_vm.xml
 
 Asegúrate de que las imágenes de disco sean accesibles por el usuario `libvirt-qemu`.
 
----
+## 7. Configurar nftables como Firewall
 
-## ⚠️ Consideraciones adicionales
+Edita el archivo `/etc/libvirt/qemu.conf` para habilitar el soporte de `nftables`:
 
-- **Conexión remota**: Si planeas gestionar máquinas virtuales de forma remota, considera habilitar y configurar `virtproxyd` para facilitar las conexiones seguras.
-- **Compatibilidad de máquinas virtuales**: Al migrar máquinas virtuales, asegúrate de que las configuraciones de hardware virtual (como el tipo de máquina y los dispositivos) sean compatibles con la nueva configuración.
-- **Actualizaciones de sistema**: Si estás utilizando una distribución basada en Red Hat (como RHEL o CentOS), es posible que ya estés utilizando los demonios modulares por defecto.
+```ini
+firewall_driver = "nftables"
+```
+
+Reinicia los servicios de libvirt y virtqemud para aplicar los cambios:
+
+```bash
+sudo systemctl restart virtqemud
+```
+
+Verifica que el módulo `nftables` esté cargado correctamente:
+
+```bash
+lsmod | grep nft
+```
+
+## 8. Reiniciar Todos los Servicios Relacionados
+
+Reinicia todos los servicios relacionados con libvirt y QEMU:
+
+```bash
+sudo systemctl restart virtqemud.service virtlogd.service virtproxyd.service virtnetworkd.service virtstoraged.service
+```
+
+Para reiniciar todos juntos:
+
+```bash
+sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged nftables NetworkManager
+```
+
+## ⚠️ Consideraciones Adicionales
+
+- **Conexión Remota**: Si planeas gestionar máquinas virtuales de forma remota, considera habilitar y configurar `virtproxyd` para facilitar las conexiones seguras.
+- **Compatibilidad de Máquinas Virtuales**: Asegúrate de que las configuraciones de hardware virtual (como el tipo de máquina y los dispositivos) sean compatibles con la nueva configuración.
+- **Actualizaciones de Sistema**: Si estás utilizando una distribución basada en Red Hat (como RHEL o CentOS), es posible que ya estés utilizando los demonios modulares por defecto.
 
 ---
 
 Siguiendo estos pasos, podrás migrar de manera efectiva de `libvirtd` a `virtqemud`, aprovechando las ventajas de una arquitectura modular y mejorando la seguridad y el rendimiento de la gestión de tus máquinas virtuales.
-
-
-
-/etc/libvirt/qemu.conf. Añade o edita la línea para habilitar el soporte de nftables:
-
-ini
-Copiar
-Editar
-firewall_driver = "nftables"
-Reinicia los servicios de libvirt y virtqemud: Después de realizar los cambios, reinicia el servicio virtqemud y asegúrate de que no se detenga ni se reinicie:
-
-bash
-Copiar
-Editar
-sudo systemctl restart virtqemud
-Revisa los logs para errores adicionales: Después de hacer estos cambios, revisa los logs de nuevo para asegurarte de que el problema se ha resuelto:
-
-bash
-Copiar
-Editar
-sudo journalctl -u virtqemud.service
-Verifica que el módulo nftables esté cargado: Ya que has tenido problemas con modprobe nftables, verifica si el módulo nftables está cargado correctamente usando el siguiente comando:
-
-bash
-Copiar
-Editar
-lsmod | grep nft
-
-
-firewall_backend = "nftables"
-max_clients = 20
-max_requests = 1000
-[victory@virtualizacion-server nat_network_03]$ sudo cat /etc/libvirt/libvirtd.conf
-
-
-
-
-
