@@ -61,6 +61,15 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ## 6. Explicación de Roles de las VMs
 
+## Homelab Server (Servidor Físico ProLiant DL380 G7)
+
+![Virtualizacion KVM](additional_resources/image/virtualizacion_kvm.jpg)
+
+![Servidor en Rack](additional_resources/image/servidor_rack_01.jpg)
+
+![Servidor en Rack](additional_resources/image/servidor_rack_02.jpg)
+
+
 - **Maestros (master1, master2, master3)**:
   - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
 
@@ -388,14 +397,6 @@ Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://git
 ## Arquitectura de Kubernetes (Cluster K3s)
 
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
-
-## Homelab Server (Servidor Físico ProLiant DL380 G7)
-
-![Virtualizacion KVM](additional_resources/image/virtualizacion_kvm.jpg)
-
-![Servidor en Rack](additional_resources/image/servidor_rack_01.jpg)
-
-![Servidor en Rack](additional_resources/image/servidor_rack_02.jpg)
 
 ## Arquitectura de Red (Router fibra optica y Switch TP-Link LS1008G)
 
