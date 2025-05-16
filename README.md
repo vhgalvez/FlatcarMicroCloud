@@ -13,7 +13,6 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ## 2. Hardware del Servidor
 
-
 - **Modelo**: ProLiant DL380 G7
 - **CPU**: Intel Xeon X5650 (24 cores) @ 2.666GHz
 - **GPU**: AMD ATI ES1000
