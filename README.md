@@ -102,7 +102,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ### 7.3 Desarrollo e Implementación de Microservicios
 
-- **Apache Kafka**: Canal de comunicación asíncrona entre microservicios.
+- **Redpanda**: Canal de comunicación asíncrona entre microservicios.
 - **MQTT Mosquitto**: Protocolo ligero para notificaciones en tiempo real.
 - **Redis**: Base de datos en memoria para almacenamiento en caché y escalabilidad.
 
