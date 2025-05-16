@@ -13,7 +13,6 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ## 2. Hardware del Servidor
 
-![ProLiant DL380 G7](additional_resources/image/hp_server.png)
 
 - **Modelo**: ProLiant DL380 G7
 - **CPU**: Intel Xeon X5650 (24 cores) @ 2.666GHz
@@ -22,6 +21,16 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 - **Almacenamiento**:
   - Disco Principal: 1.5TB
   - Disco Secundario: 3.0TB
+  
+### Homelab Server (Servidor Físico ProLiant DL380 G7)
+
+![ProLiant DL380 G7](additional_resources/image/hp_server.png)
+
+![Virtualizacion KVM](additional_resources/image/virtualizacion_kvm.jpg)
+
+![Servidor en Rack](additional_resources/image/servidor_rack_01.jpg)
+
+![Servidor en Rack](additional_resources/image/servidor_rack_02.jpg)
 
 ## 3. Sistemas Operativos y Virtualización
 
@@ -60,15 +69,6 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | storage1           | Alma Linux              | Almacenamiento                            | 1        |
 
 ## 6. Explicación de Roles de las VMs
-
-## Homelab Server (Servidor Físico ProLiant DL380 G7)
-
-![Virtualizacion KVM](additional_resources/image/virtualizacion_kvm.jpg)
-
-![Servidor en Rack](additional_resources/image/servidor_rack_01.jpg)
-
-![Servidor en Rack](additional_resources/image/servidor_rack_02.jpg)
-
 
 - **Maestros (master1, master2, master3)**:
   - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
@@ -336,6 +336,10 @@ resource "libvirt_network" "kube_network_03" {
 
 Estas interfaces están conectadas a un switch y un router de fibra óptica, operando bajo DHCP y facilitando la conectividad y administración del clúster.
 
+## Arquitectura de Red (Router fibra optica y Switch TP-Link LS1008G)
+
+![Switch TP-Link LS1008G](additional_resources/image/switch-tplink-ls1008g.jpg)
+
 1. **Distribución de Tráfico**:
 
    - Los Load Balancers (Traefik) distribuyen el tráfico hacia los nodos maestros y workers, asegurando un balanceo eficiente.
@@ -397,10 +401,6 @@ Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://git
 ## Arquitectura de Kubernetes (Cluster K3s)
 
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
-
-## Arquitectura de Red (Router fibra optica y Switch TP-Link LS1008G)
-
-![Switch TP-Link LS1008G](additional_resources/image/switch-tplink-ls1008g.jpg)
 
 ## Interfaz Web de Administración (Cockpit en Rocky Linux)
 
