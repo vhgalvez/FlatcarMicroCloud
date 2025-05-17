@@ -93,13 +93,11 @@ sudo systemctl status virtqemud.service
 Realiza pruebas de conectividad con los siguientes comandos:
 
 ```bash
-ping -c 4 192.168.0.50
 ping -c 4 10.17.4.21
 ping -c 4 10.17.3.11
 ping -c 4 192.168.0.1
 ping -c 4 10.17.3.1
 ping -c 4 8.8.8.8
-ping -c 4 192.168.0.55
 ping -c 4 10.17.5.20
 ping -c 4 10.17.5.1
 ping -c 4 10.17.5.10
