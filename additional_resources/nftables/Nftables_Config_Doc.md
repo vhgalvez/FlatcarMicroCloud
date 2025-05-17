@@ -193,3 +193,19 @@ sudo sysctl -p
 ## Recursos adicionales
 
 - [libvirt-nft-ruler](https://github.com/clemensschlipfinger/libvirt-nft-ruler)
+
+sudo nft add rule inet nat postrouting ip saddr 10.17.3.0/24 ip daddr 10.42.0.0/16 masquerade
+
+
+worker1
+sudo nft add rule inet nat postrouting ip daddr 10.17.3.0/24 ip saddr 10.42.0.0/16 masquerade
+
+
+sudo nft add rule inet nat postrouting ip saddr 10.17.3.0/24 ip daddr 10.42.0.0/16 masquerade
+
+
+sudo nft add rule inet filter input ip saddr 10.17.3.0/24 tcp dport 8080 accept
+
+sudo nft list ruleset | grep 8080
+
+
