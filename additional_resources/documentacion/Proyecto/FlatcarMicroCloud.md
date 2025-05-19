@@ -94,3 +94,4 @@ Automatizar una infraestructura moderna de Kubernetes con almacenamiento distrib
 - Escalable: Longhorn y NFS en nodo dedicado
 - Ideal para: entornos educativos, laboratorios, entornos de pruebas y MVPs reales
 
+troubleshooting  linux

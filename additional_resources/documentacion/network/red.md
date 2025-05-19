@@ -138,4 +138,3 @@ sudo ip route add 10.42.0.0/16 via 10.17.5.1 dev eth0
 ```
 
 💡 **Nota:** Esta ruta solo funcionará si `10.17.5.1` (pfSense o router) está configurado para enrutar a `10.42.0.0/16`, o si tienes una ruta adicional en el router hacia, por ejemplo, `10.17.4.21`.
-
