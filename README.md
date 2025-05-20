@@ -505,5 +505,3 @@ git clone https://github.com/vhgalvez/generate_shared_ssh_key.git
 ```
 
 Este script es útil si estás automatizando la creación de máquinas virtuales con Terraform y necesitas una clave reutilizable para conectarte vía SSH con Flatcar.
-
-
