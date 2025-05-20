@@ -101,3 +101,28 @@
 ---
 
 Este documento refleja la arquitectura actualizada de FlatcarMicroCloud con una configuración de producción robusta y modular.
+
+
+
+                               Tráfico HTTP/HTTPS Público
+                                          ↓
+                          +-----------------------------+
+                          |  VIP: 10.17.5.11 (HAProxy)  |
+                          +-----------------------------+
+                                      ↓
+                      Redirige al servicio Traefik interno
+                                      ↓
+                           Traefik (Deployment en K3s)
+                                      ↓
+                          Services, Pods y Microservicios
+
+                      ───────────────────────────────────
+
+                             Acceso interno y Kubelets
+                                         ↓
+                          +-----------------------------+
+                          |  VIP: 10.17.5.10 (HAProxy)  |
+                          |      Kubernetes API         |
+                          +-----------------------------+
+                                       ↓
+                     Se comunica con Master1, Master2, Master3
