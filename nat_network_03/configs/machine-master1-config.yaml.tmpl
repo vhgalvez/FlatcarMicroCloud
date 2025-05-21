@@ -35,31 +35,32 @@ storage:
     - path: /etc/systemd/network/10-eth0.network
       filesystem: root
       mode: 0644
-      contents: |
-        [Match]
-        Name=eth0
+      contents:
+        inline: |
+          [Match]
+          Name=eth0
 
-        [Network]
-        Address=${ip}/24
-        Gateway=${gateway}
-        DNS=${dns1}
-        DNS=${dns2}
+          [Network]
+          Address=${ip}/24
+          Gateway=${gateway}
+          DNS=${dns1}
+          DNS=${dns2}
 
-        [Route]
-        Destination=10.17.3.0/24
-        Gateway=10.17.4.1
+          [Route]
+          Destination=10.17.3.0/24
+          Gateway=10.17.4.1
 
-        [Route]
-        Destination=10.17.4.0/24
-        Gateway=10.17.3.1
+          [Route]
+          Destination=10.17.4.0/24
+          Gateway=10.17.3.1
 
-        [Route]
-        Destination=10.17.5.0/24
-        Gateway=10.17.4.1
+          [Route]
+          Destination=10.17.5.0/24
+          Gateway=10.17.4.1
 
-        [Route]
-        Destination=192.168.0.0/24
-        Gateway=10.17.4.1
+          [Route]
+          Destination=192.168.0.0/24
+          Gateway=10.17.4.1
 
     - path: /etc/tmpfiles.d/hosts.conf
       filesystem: root
@@ -144,6 +145,7 @@ systemd:
     - name: systemd-timesyncd.service
       enabled: true
 
+    # Unidad de systemd para crear el swap
     - name: swapfile.service
       enabled: true
       contents: |
@@ -158,8 +160,3 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
-
-    # ✅ Desactivar reinicio automático por actualizaciones
-    - name: locksmithd.service
-      enabled: false
-      mask: true
