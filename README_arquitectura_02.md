@@ -20,8 +20,8 @@
        │
        ▼
 +-----------------------------+
-| WireGuard Server LAN       |
-| NAT + VPN (192.168.0.19)   |
+| WireGuard Server LAN        |
+| NAT + VPN (192.168.0.15)    |
 +-----------------------------+
        │
        ▼
@@ -30,14 +30,14 @@
 🟢 Tráfico Kubernetes API:                  🔹 Tráfico Ingress Web:
        ▼                                            ▼
 +-----------------------------------+     +-----------------------------------+
-| Keepalived + HAProxy (API)        |     | Keepalived + HAProxy (Ingress)   |
-| VIP: 10.17.5.10:6443              |     | VIP: 10.17.5.11:80,443           |
+| Keepalived + HAProxy (API)        |     | Keepalived + HAProxy (Ingress)    |
+| VIP: 10.17.5.10:6443              |     | VIP: 10.17.5.30:80,443            |
 +-----------------------------------+     +-----------------------------------+
        │                                            │
        ▼                                            ▼
-+----------------+  +----------------+  +----------------+       +------------------------+
-| master1        |  | master2        |  | master3        | <----> | Traefik Deployment     |
-| 10.17.4.21     |  | 10.17.4.22     |  | 10.17.4.23     |         | (en pods del clúster)  |
++----------------+  +----------------+  +----------------+         +------------------------+
+| master1        |  | master2        |  | master3        | <---->  | Traefik Deployment      |
+| 10.17.4.21     |  | 10.17.4.22     |  | 10.17.4.23     |         | (en pods del clúster)   |
 | etcd + API     |  | etcd           |  | etcd           |         +------------------------+
 +----------------+  +----------------+  +----------------+                  │
                                                                        Rutas internas
@@ -87,8 +87,8 @@
 | loadbalancer1 | 10.17.3.12 | Ingress Controller (HAProxy LB1) | 2   | 2048     | 32         |
 | loadbalancer2 | 10.17.3.13 | Ingress Controller (HAProxy LB2) | 2   | 2048     | 32         |
 | postgresql1   | 10.17.3.14 | Base de datos PostgreSQL         | 2   | 2048     | 32         |
-| k8s-api-lb    | 10.17.5.10 | VIP API HAProxy + Keepalived     | 2   | 2048     | 80         |
-| ingress-vip   | 10.17.5.11 | VIP Ingress HAProxy + Keepalived | N/A | N/A      | N/A        |
+| k8s-api-lb    | 10.17.5.20 | VIP API HAProxy + Keepalived     | 2   | 2048     | 80         |
+
 
 ### ✅ Características Clave
 
@@ -107,7 +107,7 @@ Este documento refleja la arquitectura actualizada de FlatcarMicroCloud con una 
                                Tráfico HTTP/HTTPS Público
                                           ↓
                           +-----------------------------+
-                          |  VIP: 10.17.5.11 (HAProxy)  |
+                          |  VIP: 10.17.5.30 (HAProxy)  |
                           +-----------------------------+
                                       ↓
                       Redirige al servicio Traefik interno
