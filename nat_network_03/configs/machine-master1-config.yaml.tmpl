@@ -35,32 +35,31 @@ storage:
     - path: /etc/systemd/network/10-eth0.network
       filesystem: root
       mode: 0644
-      contents:
-        inline: |
-          [Match]
-          Name=eth0
+      contents: |
+        [Match]
+        Name=eth0
 
-          [Network]
-          Address=${ip}/24
-          Gateway=${gateway}
-          DNS=${dns1}
-          DNS=${dns2}
+        [Network]
+        Address=${ip}/24
+        Gateway=${gateway}
+        DNS=${dns1}
+        DNS=${dns2}
 
-          [Route]
-          Destination=10.17.3.0/24
-          Gateway=10.17.4.1
+        [Route]
+        Destination=10.17.3.0/24
+        Gateway=10.17.4.1
 
-          [Route]
-          Destination=10.17.4.0/24
-          Gateway=10.17.3.1
+        [Route]
+        Destination=10.17.4.0/24
+        Gateway=10.17.3.1
 
-          [Route]
-          Destination=10.17.5.0/24
-          Gateway=10.17.4.1
+        [Route]
+        Destination=10.17.5.0/24
+        Gateway=10.17.4.1
 
-          [Route]
-          Destination=192.168.0.0/24
-          Gateway=10.17.4.1
+        [Route]
+        Destination=192.168.0.0/24
+        Gateway=10.17.4.1
 
     - path: /etc/tmpfiles.d/hosts.conf
       filesystem: root
@@ -111,6 +110,22 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
+    - name: apply-network-routes.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Apply custom network routes
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
     - name: set-hosts.service
       enabled: true
       contents: |
@@ -148,25 +163,3 @@ systemd:
     - name: locksmithd.service
       enabled: false
       mask: true
-
-    # ✅ Desactivar el error de espera de red
-    - name: systemd-networkd-wait-online.service
-      enabled: false
-      mask: true
-
-    # ✅ Aplicar rutas solo cuando red esté lista
-    - name: apply-network-routes.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Apply custom network routes
-        After=network-online.target
-        Wants=network-online.target
-
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
-        RemainAfterExit=true
-
-        [Install]
-        WantedBy=multi-user.target
