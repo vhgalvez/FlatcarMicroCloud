@@ -145,7 +145,6 @@ systemd:
     - name: systemd-timesyncd.service
       enabled: true
 
-    # Unidad de systemd para crear el swap
     - name: swapfile.service
       enabled: true
       contents: |
@@ -160,3 +159,8 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+
+    # ✅ Desactivar reinicio automático por actualizaciones
+    - name: locksmithd.service
+      enabled: false
+      mask: true
