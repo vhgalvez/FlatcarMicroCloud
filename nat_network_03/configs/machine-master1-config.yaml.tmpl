@@ -111,22 +111,6 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
-    - name: apply-network-routes.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Apply custom network routes
-        After=network-online.target
-        Wants=network-online.target
-
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
-        RemainAfterExit=true
-
-        [Install]
-        WantedBy=multi-user.target
-
     - name: set-hosts.service
       enabled: true
       contents: |
@@ -145,7 +129,6 @@ systemd:
     - name: systemd-timesyncd.service
       enabled: true
 
-    # Unidad de systemd para crear el swap
     - name: swapfile.service
       enabled: true
       contents: |
@@ -156,6 +139,33 @@ systemd:
         [Service]
         Type=oneshot
         ExecStart=/bin/bash -c 'fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile'
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
+    # ✅ Desactivar reinicio automático por actualizaciones
+    - name: locksmithd.service
+      enabled: false
+      mask: true
+
+    # ✅ Desactivar el error de espera de red
+    - name: systemd-networkd-wait-online.service
+      enabled: false
+      mask: true
+
+    # ✅ Aplicar rutas solo cuando red esté lista
+    - name: apply-network-routes.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Apply custom network routes
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl restart systemd-networkd.service
         RemainAfterExit=true
 
         [Install]
