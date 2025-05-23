@@ -171,7 +171,7 @@ Incluye:
          │                                 │
          ▼                                 ▼
 +-------------------------+     +-------------------------+
-| Load Balancer 1 (Traefik)|     | Load Balancer 2 (Traefik)|
+| Load Balancer 1 (HAProxy)|     | Load Balancer 2 (HAProxy)|
 | IP: 10.17.3.12           |     | IP: 10.17.3.13           |
 +-------------------------+     +-------------------------+
          │                                 │
