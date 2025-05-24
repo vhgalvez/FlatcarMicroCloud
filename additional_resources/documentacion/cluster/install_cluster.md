@@ -190,6 +190,17 @@
     worker3.cefaslocalserver.com   Ready    <none>                      5d8h   v1.31.2+k3s1
     ```
 
+
+
+
+#### 3. Configuración de Traefik para el Acceso Externo
+
+```bash
+nohup kubectl port-forward -n kube-system svc/traefik --address 0.0.0.0 32003:80 > /tmp/traefik-port-forward.log 2>&1 &
+```
+
+
+
 #### Notas Importantes
 
 - Asegúrate de que el nodo Bastion tiene conectividad de red hacia el balanceador de carga o los nodos maestros.

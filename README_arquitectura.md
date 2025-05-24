@@ -283,6 +283,10 @@ Incluye:
 
 
 
+
+
+
+
 ## Resumen Final
 
 - **Alta Disponibilidad:** K3s HA, balanceadores redundantes, almacenamiento distribuido.
