@@ -391,9 +391,9 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 
 
-| Proyecto                                | Repositorio                                                                                                                              |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Traefik Ingress Controller *(opcional)* | [https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible](https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible) |
+| Proyecto                                         | Repositorio                                                                                                                              |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Traefik Ingress Controller external *(opcional)* | [https://github.com/vhgalvez/traefik-ansible-external-k3s-ingress](https://github.com/vhgalvez/traefik-ansible-external-k3s-ingress.git) |
 
 ## Arquitectura de Infraestructura Global de FlatcarMicroCloud
 
