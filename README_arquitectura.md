@@ -25,6 +25,25 @@ Incluye:
   - Disco Secundario: 3.0 TB
 - GPU: AMD ATI ES1000
 
+## 🧱 Prerrequisitos del Proyecto
+
+### 📦 Sistemas Operativos Compatibles
+
+- **Rocky Linux 9.5**: Sistema base para nodos de administración y servicios core.
+- **Flatcar Container Linux (versión estable actual)**: Sistema inmutable optimizado para contenedores, ideal para nodos worker y cargas K3s.
+- **AlmaLinux 9.4**: Alternativa empresarial compatible con RHEL para nodos de infraestructura como balanceadores de carga o almacenamiento.
+
+### ⚙️ Virtualización y Automatización
+
+#### Hipervisor
+- **KVM/QEMU**: Virtualización nativa de alto rendimiento para entornos Linux.
+- **Virt-Manager** *(opcional)*: Interfaz gráfica para la gestión de máquinas virtuales.
+
+#### Provisión de Infraestructura
+- **Libvirt** como backend de virtualización.
+- **Terraform** con el proveedor `libvirt`: Automatización del ciclo de vida de las máquinas virtuales.
+
+
 ## Sistemas Operativos y Virtualización
 
 - **Rocky Linux 9.5** (Host principal)
