@@ -532,4 +532,9 @@ Puedes clonarlo directamente con:
 git clone https://github.com/vhgalvez/generate_shared_ssh_key.git
 ```
 
+## Repositorio de Kubectl AI kubernetes agente de inteligencia artificial
+```bash
+https://github.com/GoogleCloudPlatform/kubectl-ai.git
+```
+
 Este script es útil si estás automatizando la creación de máquinas virtuales con Terraform y necesitas una clave reutilizable para conectarte vía SSH con Flatcar.
