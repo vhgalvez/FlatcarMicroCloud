@@ -375,19 +375,19 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 ## Recursos de Automatización
 
 
-| Proyecto                                | Repositorio                                                                                                                              |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Generar Clave SSH Compartida            | [https://github.com/vhgalvez/generate\_shared\_ssh\_key](https://github.com/vhgalvez/generate_shared_ssh_key)                            |
-| CoreDNS                                 | [https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)                       |
-| NTP / Chrony                            | [https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)                   |
-| HAProxy + Keepalived HA BALACEADOR      | [https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer)                       |
-| K3s HA (etcd)                           | [https://github.com/vhgalvez/ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                             |
-| VIP Bootstrap Master1                   | [https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap)             |
-| Storage NFS + Longhorn                  | [https://github.com/vhgalvez/flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)                           |
-| Stack de Monitoreo                      | [https://github.com/vhgalvez/ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                             |
-| ArgoCD                                  | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                           |
-| Jenkins CI/CD                           | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
-
+| Proyecto                                | Repositorio                                                                                                                               |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 🔐 Generador de Clave SSH Compartida    | [https://github.com/vhgalvez/generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key)                               |
+| 🌐 Configuración de CoreDNS             | [https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)                       |
+| 🕒 Sincronización de Tiempo (NTP/Chrony)| [https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)                   |
+| ⚖️ Balanceador HAProxy + Keepalived     | [https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer)                       |
+| ☸️ Despliegue K3s HA con etcd           | [https://github.com/vhgalvez/ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                             |
+| 🧩 Cambio a VIP en Master1              | [https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap)             |
+| 💾 Almacenamiento NFS + Longhorn        | [https://github.com/vhgalvez/flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)                           |
+| 🚪 Ingress Controller con Traefik (K3s) | [https://github.com/vhgalvez/traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster)                       |
+| 📊 Stack de Monitoreo Avanzado          | [https://github.com/vhgalvez/ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                             |
+| 🚀 Automatización con ArgoCD            | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                           |
+| 🔄 CI/CD con Jenkins + Ansible          | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
 
 
 
