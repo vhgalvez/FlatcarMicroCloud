@@ -533,6 +533,7 @@ git clone https://github.com/vhgalvez/generate_shared_ssh_key.git
 ```
 
 ## Repositorio de Kubectl AI kubernetes agente de inteligencia artificial
+
 ```bash
 https://github.com/GoogleCloudPlatform/kubectl-ai.git
 ```
