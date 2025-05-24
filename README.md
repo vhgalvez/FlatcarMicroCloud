@@ -387,6 +387,12 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 | Stack de Monitoreo                      | [https://github.com/vhgalvez/ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                             |
 | ArgoCD                                  | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                           |
 | Jenkins CI/CD                           | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
+
+
+
+
+| Proyecto                                | Repositorio                                                                                                                              |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Traefik Ingress Controller *(opcional)* | [https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible](https://github.com/vhgalvez/traefik-k8s-ingress-controller-ansible) |
 
 ## Arquitectura de Infraestructura Global de FlatcarMicroCloud
