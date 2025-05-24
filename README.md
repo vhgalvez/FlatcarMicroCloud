@@ -4,12 +4,33 @@
 
 **FlatcarMicroCloud** es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico. El entorno se ejecuta sobre un servidor **ProLiant DL380 G7**, utilizando **Rocky Linux 9.5** como sistema operativo base para virtualización, junto con **AlmaLinux 9.4** en algunos nodos auxiliares. Las máquinas virtuales que componen el clúster Kubernetes utilizan **Flatcar Container Linux** como sistema operativo liviano y seguro.
 
+
+
 Esta arquitectura permite desplegar aplicaciones en contenedores mediante herramientas modernas como:
 
 - **K3s**, una distribución ligera de Kubernetes.
 - **Longhorn y NFS** para almacenamiento persistente.
 - **Prometheus y Grafana** para monitoreo y visualización avanzada.
 - **Redpanda y MQTT Mosquitto** para comunicación asincrónica entre microservicios.
+
+### 🧱 Prerrequisitos del Proyecto
+
+#### 📦 Sistemas Operativos Compatibles
+
+- **Rocky Linux 9.5**: Sistema base para nodos de administración y servicios core.
+- **Flatcar Container Linux (versión estable actual)**: Sistema inmutable optimizado para contenedores, ideal para nodos worker y cargas K3s.
+- **AlmaLinux 9.4**: Alternativa empresarial compatible con RHEL para nodos de infraestructura como balanceadores de carga o almacenamiento.
+
+#### ⚙️ Virtualización y Automatización
+
+##### Hipervisor
+- **KVM/QEMU**: Virtualización nativa de alto rendimiento para entornos Linux.
+- **Virt-Manager** *(opcional)*: Interfaz gráfica para la gestión de máquinas virtuales.
+
+##### Provisión de Infraestructura
+- **Libvirt** como backend de virtualización.
+- **Terraform** con el proveedor `libvirt`: Automatización del ciclo de vida de las máquinas virtuales.
+
 
 ## 2. Hardware del Servidor
 
