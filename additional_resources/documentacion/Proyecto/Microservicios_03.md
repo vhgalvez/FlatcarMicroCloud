@@ -199,3 +199,119 @@ Implementar un entorno de integración y entrega continua (CI/CD) para una arqui
 - **Despliega** las imágenes automáticamente a **K3s** usando **GitOps** y **Helm**.
 
 Esta es la estructura general para la automatización del flujo de trabajo de **CI/CD** en tu entorno **Kubernetes** con **microservicios**.
+----
+✅ Resumen de la Implementación CI/CD y Arquitectura DevOps en FlatcarMicroCloud
+1. Controlador de Ingress
+Usas Traefik v3 como Ingress Controller dentro del clúster K3s.
+
+Instalado vía Helm y gestionado con Ansible.
+
+Expuesto externamente por el VIP 10.17.5.30 (balanceado con HAProxy + Keepalived).
+
+Soporta HTTPS con certificados autofirmados válidos para *.cefaslocalserver.com.
+
+Traefik controla:
+
+Acceso externo a microservicios frontend (https://nginx.cefaslocalserver.com)
+
+Interfaces de administración (https://grafana.cefaslocalserver.com, etc.)
+
+Protegido por middlewares (basicAuth, TLS, etc.).
+
+2. Balanceadores de Carga + Alta Disponibilidad
+Dos balanceadores (loadbalancer1, loadbalancer2) con HAProxy y Keepalived.
+
+VIPs:
+
+10.17.5.10 → tráfico Kubernetes API (puerto 6443)
+
+10.17.5.30 → tráfico HTTP/HTTPS web (puertos 80/443)
+
+Balancean internamente hacia nodos master1/2/3 (K3s control plane).
+
+Redireccionan tráfico web a los NodePorts que expone Traefik dentro del clúster.
+
+3. DNS Interno (CoreDNS)
+Tienes dos CoreDNS diferenciados:
+
+🧠 CoreDNS interno (dentro del clúster K3s)
+Gestiona resoluciones de servicios y pods dentro del clúster.
+
+Incluido por defecto con K3s.
+
+🌍 CoreDNS externo (infra-cluster - 10.17.3.11)
+Instalado en AlmaLinux vía Ansible.
+
+Sirve como DNS LAN para:
+
+.cefaslocalserver.com
+
+Subdominios de microservicios (traefik., grafana., nginx., etc.).
+
+Redirecciona (forward) a DNS públicos si no puede resolver (fallback: 8.8.8.8).
+
+Ejemplo: Resuelve nginx.cefaslocalserver.com → VIP 10.17.5.30.
+
+Este DNS debe ser configurado como primario en resolv.conf de clientes LAN para que .cefaslocalserver.com funcione.
+
+4. Exposición de Microservicios
+🌐 Para usuarios públicos:
+Expuestos a través de Traefik:
+
+https://nginx.cefaslocalserver.com
+
+https://cefaslocalserver.com
+
+Traefik enruta solicitudes al servicio correspondiente mediante reglas Ingress.
+
+🔐 Para administración interna:
+También expuestos por Traefik pero con seguridad adicional (TLS + BasicAuth):
+
+https://grafana.cefaslocalserver.com
+
+https://prometheus.cefaslocalserver.com
+
+https://jenkins.cefaslocalserver.com
+
+https://argocd.cefaslocalserver.com
+
+5. Certificados TLS (Self-signed)
+Generados automáticamente con Ansible (openssl req).
+
+Válidos para *.cefaslocalserver.com gracias a subjectAltName=DNS:*.cefaslocalserver.com.
+
+Montados en /ssl y usados por Traefik como tls.certFile y tls.keyFile.
+
+6. CI/CD Pipeline
+🔨 CI con Jenkins
+Construye imágenes de contenedor (FastAPI, Vue.js, etc.).
+
+Pruebas automáticas.
+
+Publica en GHCR (ghcr.io/user/project).
+
+🚀 CD con ArgoCD
+Detecta cambios en manifiestos Git (microservices-apps).
+
+Despliega automáticamente al clúster con Helm + GitOps.
+
+Supervisa sincronización en tiempo real.
+
+7. Almacenamiento
+Longhorn + NFS:
+
+RWO: PostgreSQL, microservicios backend.
+
+RWX: Nginx frontend, Prometheus, archivos compartidos.
+
+Automatizado vía Ansible.
+
+🧩 Recomendación de acceso
+Servicio	URL	Acceso
+Frontend Vue.js	https://nginx.cefaslocalserver.com	Público
+Dashboard Traefik	https://traefik.cefaslocalserver.com/dashboard	Interno/Secure
+Grafana	https://grafana.cefaslocalserver.com	Interno/Secure
+Prometheus	https://prometheus.cefaslocalserver.com	Interno/Secure
+Jenkins	https://jenkins.cefaslocalserver.com	Interno/Secure
+ArgoCD	https://argocd.cefaslocalserver.com	Interno/Secure
+
