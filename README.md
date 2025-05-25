@@ -389,7 +389,7 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 | 🚀 Automatización con ArgoCD            | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                           |
 | 🔄 CI/CD con Jenkins + Ansible          | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
 
-
+https://github.com/vhgalvez/postgres-ansible-nfs
 https://github.com/vhgalvez/k3s-secrets-cluster
 
 
