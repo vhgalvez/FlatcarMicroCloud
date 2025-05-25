@@ -390,6 +390,8 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 | 🔄 CI/CD con Jenkins + Ansible          | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                             |
 
 
+https://github.com/vhgalvez/k3s-secrets-cluster
+
 
 | Proyecto                                         | Repositorio                                                                                                                              |
 | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
