@@ -88,6 +88,12 @@ sudo systemctl status virtqemud.service
     sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged nftables NetworkManager
     ```
 
+# Configuración de Red para el Clúster K3s
+
+    ```bash
+     sudo nft -f /etc/sysconfig/nftables.conf
+     ```
+
 ## Verificación de conectividad
 
 Realiza pruebas de conectividad con los siguientes comandos:
