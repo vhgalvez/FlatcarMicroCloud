@@ -19,6 +19,7 @@ resource "libvirt_network" "kube_network_01" {
   mode    = "bridge"                    # Cambiar NAT por BRIDGE
   bridge  = "br0"                       # Asegúrate de que br0 esté creado en el host
   autostart = true
+  addresses = ["192.168.0.0/24"]
 }
 
 # Configuración del pool de almacenamiento

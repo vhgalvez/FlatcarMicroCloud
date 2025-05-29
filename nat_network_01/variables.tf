@@ -28,7 +28,7 @@ variable "rocky9_network_name" {
 variable "timezone" {
   description = "Timezone for the infrastructure"
   type        = string
-  default     = "Europe/London"
+  default     = "Europe/madrid"
 }
 
 variable "vm_rockylinux_definitions" {
