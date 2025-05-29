@@ -31,7 +31,7 @@ variable "timezone" {
 }
 
 variable "vm_role_name" {
-  description = "VM role name used to name pools, folders, etc."
+  description = "Name of the VM role (used for dynamic resource naming)"
   type        = string
 }
 
