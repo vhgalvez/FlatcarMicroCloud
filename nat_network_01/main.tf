@@ -1,6 +1,8 @@
 # kube_network_01_network\main.tf
+
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
+
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
@@ -13,86 +15,81 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# Configuración de la red kube_network_01
 resource "libvirt_network" "kube_network_01" {
-  name    = "kube_network_01"
-  mode    = "bridge"                    # Cambiar NAT por BRIDGE
-  bridge  = "br0"                       # Asegúrate de que br0 esté creado en el host
+  name      = "kube_network_01"
+  mode      = "bridge"
+  bridge    = "br0"
   autostart = true
   addresses = ["192.168.0.0/24"]
 }
 
-# Configuración del pool de almacenamiento
 resource "libvirt_pool" "volumetmp_k8s-api-lb" {
   name = "${var.cluster_name}_k8s-api-lb"
   type = "dir"
+
   target {
     path = "/var/lib/libvirt/images/volumes/${var.cluster_name}_k8s-api-lb"
   }
 }
 
-# Configuración del volumen de la imagen de Rocky Linux
 resource "libvirt_volume" "rocky9_image" {
-  name    = "${var.cluster_name}-rocky9_image"
-  source  = var.rocky9_image
-  pool    = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
-  format  = "qcow2"
+  name   = "${var.cluster_name}-rocky9_image"
+  source = var.rocky9_image
+  pool   = libvirt_pool.volumetmp_k8s-api-lb.name
+  format = "qcow2"
 }
 
-# Configuración de los archivos de configuración para cada VM
 data "template_file" "vm_configs" {
   for_each = var.vm_rockylinux_definitions
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
+
   vars = {
-    ssh_keys      = jsonencode(var.ssh_keys),
-    hostname      = each.value.hostname,
-    short_hostname = each.value.short_hostname,
-    timezone      = var.timezone,
-    ip            = each.value.ip,
-    gateway       = each.value.gateway,
-    dns1          = each.value.dns1,
-    dns2          = each.value.dns2
+    ssh_keys       = jsonencode(var.ssh_keys)
+    hostname       = each.value.hostname
+    short_hostname = each.value.short_hostname
+    timezone       = var.timezone
+    ip             = each.value.ip
+    gateway        = each.value.gateway
+    dns1           = each.value.dns1
+    dns2           = each.value.dns2
   }
 }
 
-# Configuración de los discos de CloudInit
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_rockylinux_definitions
 
-  name        = "${each.key}_cloudinit.iso"
-  pool        = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
-  user_data   = data.template_file.vm_configs[each.key].rendered
+  name           = "${each.key}_cloudinit.iso"
+  pool           = libvirt_pool.volumetmp_k8s-api-lb.name
+  user_data      = data.template_file.vm_configs[each.key].rendered
   network_config = templatefile("${path.module}/config/network-config.tpl", {
-    ip      = each.value.ip,
-    gateway = each.value.gateway,
-    dns1    = each.value.dns1,
+    ip      = each.value.ip
+    gateway = each.value.gateway
+    dns1    = each.value.dns1
     dns2    = each.value.dns2
   })
 }
 
-# Configuración de los discos de las máquinas virtuales
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_rockylinux_definitions
 
-  name          = each.value.volume_name
+  name           = each.value.volume_name
   base_volume_id = libvirt_volume.rocky9_image.id
-  pool          = libvirt_pool.volumetmp_k8s-api-lb.name # Usando el pool correcto
-  format        = each.value.volume_format
-  size          = each.value.volume_size * 1024 * 1024 * 1024 # Convierte GB a bytes
+  pool           = libvirt_pool.volumetmp_k8s-api-lb.name
+  format         = each.value.volume_format
+  size           = each.value.volume_size * 1024 * 1024 * 1024
 }
 
-# Configuración de las máquinas virtuales (VMs)
 resource "libvirt_domain" "vm" {
   for_each = var.vm_rockylinux_definitions
 
-  name    = each.value.hostname
-  memory  = each.value.memory
-  vcpu    = each.value.cpus
+  name   = each.value.hostname
+  memory = each.value.memory
+  vcpu   = each.value.cpus
 
   network_interface {
     network_id = libvirt_network.kube_network_01.id
-    addresses  = [each.value.ip] # Asignar la IP estática
+    addresses  = [each.value.ip] # ⚠️ Eliminar si confías solo en CloudInit
   }
 
   disk {
@@ -123,7 +120,8 @@ resource "libvirt_domain" "vm" {
   }
 }
 
-# Salida de las IPs de las máquinas virtuales
 output "vm_ip_addresses" {
-  value = { for vm, config in var.vm_rockylinux_definitions : vm => config.ip }
+  value = {
+    for vm, config in var.vm_rockylinux_definitions : vm => config.ip
+  }
 }
