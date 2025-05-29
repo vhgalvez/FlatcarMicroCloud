@@ -18,7 +18,6 @@ resource "libvirt_network" "kube_network_01" {
   name    = "kube_network_01"
   mode    = "bridge"                    # Cambiar NAT por BRIDGE
   bridge  = "br0"                       # Asegúrate de que br0 esté creado en el host
-  domain  = "kube.internal"
   autostart = true
 }
 
