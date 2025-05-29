@@ -1,4 +1,5 @@
-# br0_network\main.tf
+# br0_network/main.tf
+
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
   required_providers {
@@ -13,7 +14,7 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# 🔌 Configuración de red en bridge
+# 🔌 Red en modo bridge (br0)
 resource "libvirt_network" "br0" {
   name      = var.so_network_name
   mode      = "bridge"
@@ -22,16 +23,16 @@ resource "libvirt_network" "br0" {
   addresses = ["192.168.0.0/24"]
 }
 
-# 🗃️ Pool de almacenamiento genérico según rol
+# 🗃️ Pool de almacenamiento dinámico según el rol de VM
 resource "libvirt_pool" "volumetmp" {
-  name = "${var.cluster_name}_${var.vm_role_name}"
+  name = "volumetmp_${var.vm_role_name}"
   type = "dir"
   target {
-    path = "/var/lib/libvirt/images/volumes/${var.cluster_name}_${var.vm_role_name}"
+    path = "/var/lib/libvirt/images/volumes/volumetmp_${var.vm_role_name}"
   }
 }
 
-# 📦 Imagen base del sistema operativo
+# 📦 Volumen base de AlmaLinux
 resource "libvirt_volume" "so_image" {
   name   = "${var.cluster_name}-so_image"
   source = var.so_image
@@ -39,7 +40,7 @@ resource "libvirt_volume" "so_image" {
   format = "qcow2"
 }
 
-# ⚙️ Plantillas de configuración por máquina
+# ⚙️ Archivos cloud-init personalizados por VM
 data "template_file" "vm_configs" {
   for_each = var.vm_rockylinux_definitions
 
@@ -56,7 +57,7 @@ data "template_file" "vm_configs" {
   }
 }
 
-# 💽 Disco de cloud-init con config y red
+# 💽 Disco de configuración cloud-init
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_rockylinux_definitions
 
@@ -71,7 +72,7 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   })
 }
 
-# 💾 Disco raíz de cada VM
+# 💾 Disco raíz personalizado
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_rockylinux_definitions
 
@@ -82,7 +83,7 @@ resource "libvirt_volume" "vm_disk" {
   size           = each.value.volume_size * 1024 * 1024 * 1024
 }
 
-# 🖥️ Máquina virtual
+# 🖥️ Definición de máquina virtual
 resource "libvirt_domain" "vm" {
   for_each = var.vm_rockylinux_definitions
 
@@ -123,7 +124,7 @@ resource "libvirt_domain" "vm" {
   }
 }
 
-# 📤 IPs generadas
+# 📤 IPs de todas las VMs
 output "vm_ip_addresses" {
   value = { for vm, config in var.vm_rockylinux_definitions : vm => config.ip }
 }
