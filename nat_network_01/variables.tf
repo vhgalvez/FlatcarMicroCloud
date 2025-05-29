@@ -1,5 +1,4 @@
 # br0_network\variables.tf
-
 variable "ssh_keys" {
   description = "SSH keys for the VMs"
   type        = list(string)
@@ -29,6 +28,11 @@ variable "timezone" {
   description = "Timezone for the infrastructure"
   type        = string
   default     = "Europe/madrid"
+}
+
+variable "vm_role_name" {
+  description = "VM role name used to name pools, folders, etc."
+  type        = string
 }
 
 variable "vm_rockylinux_definitions" {
