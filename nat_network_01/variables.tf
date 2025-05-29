@@ -15,12 +15,12 @@ variable "cluster_domain" {
   type        = string
 }
 
-variable "rocky9_image" {
+variable "so_image" {
   description = "Path to the AlmaLinux 9 image"
   type        = string
 }
 
-variable "rocky9_network_name" {
+variable "so_network_name" {
   description = "The network name for the VMs"
   type        = string
 }
