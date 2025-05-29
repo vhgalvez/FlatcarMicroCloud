@@ -262,3 +262,70 @@ Después de la instalación:
 #### Prueba Final
 
 Comprueba que las máquinas conectadas al puente `br1` puedan acceder a la red LAN.
+_____
+# Paso a paso para configurar un bridge (br0) en Rocky/AlmaLinux para KVM
+
+# 1. Instalar herramientas necesarias
+sudo dnf install bridge-utils -y
+
+# 2. Crear conexión bridge br0 y asignar IP estática
+sudo nmcli connection add type bridge autoconnect yes con-name br0 ifname br0
+sudo nmcli connection modify br0 \
+  ipv4.method manual \
+  ipv4.addresses 192.168.0.20/24 \
+  ipv4.gateway 192.168.0.1 \
+  ipv4.dns "192.168.0.1 8.8.8.8"
+
+# 3. Agregar interfaz física como esclava del bridge
+sudo nmcli connection add type ethernet slave-type bridge \
+  con-name br0-port1 ifname enp3s0f0 master br0
+
+# 4. Activar el bridge
+sudo nmcli connection up br0
+
+# 5. Verificar la configuración
+ip a | grep br0
+
+# Alternativa persistente con archivos (NetworkManager)
+# Archivo: /etc/NetworkManager/system-connections/br0.nmconnection
+
+[connection]
+id=br0
+type=bridge
+interface-name=br0
+autoconnect=true
+
+[bridge]
+stp=false
+
+[ipv4]
+method=manual
+address1=192.168.0.20/24,192.168.0.1
+dns=192.168.0.11;
+dns-search=
+
+[ipv6]
+method=ignore
+
+# Archivo: /etc/NetworkManager/system-connections/enp3s0f0.nmconnection
+
+[connection]
+id=enp3s0f0
+type=ethernet
+interface-name=enp3s0f0
+master=br0
+slave-type=bridge
+autoconnect=true
+
+[ipv4]
+method=disabled
+
+[ipv6]
+method=ignore
+
+# Reiniciar NetworkManager
+dnf reload NetworkManager
+nmcli connection reload
+nmcli connection up br0
+
+# Resultado esperado: br0 con IP 192.168.0.20 y enp3s0f0 sin IP

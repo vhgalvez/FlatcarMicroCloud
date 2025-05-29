@@ -15,18 +15,13 @@ provider "libvirt" {
 
 # Configuración de la red kube_network_01
 resource "libvirt_network" "kube_network_01" {
-  name = "kube_network_01"
-  mode = "nat"
-  bridge    = "virbr_kube01"
-  domain    = "kube.internal"
+  name    = "kube_network_01"
+  mode    = "bridge"                    # Cambiar NAT por BRIDGE
+  bridge  = "br0"                       # Asegúrate de que br0 esté creado en el host
+  domain  = "kube.internal"
   autostart = true
-  addresses = ["10.17.5.0/24"]
-  #mode = "bridge"
-  #bridge    = "br0"
-  dhcp {
-    enabled = true
-  }
 }
+
 # Configuración del pool de almacenamiento
 resource "libvirt_pool" "volumetmp_k8s-api-lb" {
   name = "${var.cluster_name}_k8s-api-lb"
