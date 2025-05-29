@@ -29,5 +29,3 @@ ssh_keys = [
 
 timezone = "Europe/madrid"
 
-
-
