@@ -1,4 +1,4 @@
-# kube_network_01_network\main.tf
+# br0_network\main.tf
 
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
@@ -15,8 +15,8 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-resource "libvirt_network" "kube_network_01" {
-  name      = "kube_network_01"
+resource "libvirt_network" "br0" {
+  name      = "br0"
   mode      = "bridge"
   bridge    = "br0"
   autostart = true
@@ -88,7 +88,7 @@ resource "libvirt_domain" "vm" {
   vcpu   = each.value.cpus
 
   network_interface {
-    network_id = libvirt_network.kube_network_01.id
+    network_id = libvirt_network.br0.id
     addresses  = [each.value.ip] # ⚠️ Eliminar si confías solo en CloudInit
   }
 
