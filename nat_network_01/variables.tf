@@ -37,7 +37,7 @@ variable "vm_role_name" {
 }
 
 variable "vm_linux_definitions" {
-  description = "Definitions of virtual machines including CPU, memory, IP, storage, and network configuration"
+  description = "Definitions of virtual machines including CPU and memory configuration"
   type = map(object({
     cpus           = number
     memory         = number
