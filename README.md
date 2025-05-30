@@ -379,25 +379,24 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 ---
 # 🔁 Proceso Modular de Automatización para Clúster K3s HA sobre Bare Metal
 
-| #   | Proyecto                                       | Motivo de Ejecución                                                       | Repositorio                                                                 |
+| Nº  | Proyecto                                       | Motivo de Ejecución                                                       | Repositorio                                                                 |
 |-----|------------------------------------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| 1️⃣ | 🔐 Generador de Clave SSH Compartida           | Base para acceso entre nodos con Ansible sin contraseña                   | [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key) |
-| 2️⃣ | 🌉 Bridge de Red para KVM/libvirt              | Permite VMs con acceso LAN real (modo bridge)                             | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config)         |
-| 3️⃣ | 🌐 Configuración de CoreDNS                    | DNS interno para resolución de servicios y nodos                          | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux) |
-| 4️⃣ | 🕒 Sincronización de Tiempo (NTP/Chrony)        | Requisito para etcd, certificados y coherencia temporal                   | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes) |
-| 5️⃣ | ⚖️ Balanceador HAProxy + Keepalived            | Alta disponibilidad con VIPs para API y tráfico web                       | [ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer) |
-| 6️⃣ | ☸️ Despliegue K3s HA con etcd                  | Clúster K3s multi-master con almacenamiento distribuido                   | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster) |
-| 7️⃣ | 🧩 Cambio a VIP en Master1 (Bootstrap)          | Redirecciona el primer nodo a usar la VIP como servidor                   | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap) |
-| 8️⃣ | 🔐 Configuración de Acceso Remoto `kubectl`     | Permite administrar el clúster desde una estación externa                 | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access) |
-| 9️⃣ | 🔐 Gestión de Secretos con Sealed Secrets       | Encripta secretos para GitOps con ArgoCD                                  | [ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal) |
-| 🔟 | 🚪 Ingress Controller con Traefik (K3s)         | Entrada segura HTTP(S) para servicios internos y externos                 | [traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster) |
-| 1️⃣1️⃣ | 💾 Almacenamiento Persistente (Longhorn + NFS) | Volúmenes distribuidos y resilientes para pods                            | [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite) |
-| 1️⃣2️⃣ | 📊 Stack de Monitoreo                         | Observabilidad con Prometheus, Grafana y Alertmanager                     | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack) |
-| 1️⃣3️⃣ | 🚀 Automatización con ArgoCD                  | GitOps: aplica despliegues automáticamente desde Git                      | [ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes) |
-| 1️⃣4️⃣ | 🔄 CI/CD con Jenkins + Ansible               | Compila imágenes y las despliega usando Git + ArgoCD                      | [jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook) |
-| 1️⃣5️⃣ | 🐘 PostgreSQL sobre NFS                       | Base de datos persistente accesible desde Kubernetes                      | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)   |
-| 1️⃣6️⃣ | ☁️ Cloudflare DDNS + IP Dinámica             | Actualiza el DNS de Cloudflare si cambia tu IP pública                    | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns) |
-
+| 1   | Generador de Clave SSH Compartida             | Base para acceso entre nodos con Ansible sin contraseña                   | [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key) |
+| 2   | Bridge de Red para KVM/libvirt                | Permite VMs con acceso LAN real (modo bridge)                             | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config)         |
+| 3   | Configuración de CoreDNS                      | DNS interno para resolución de servicios y nodos                          | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux) |
+| 4   | Sincronización de Tiempo (NTP/Chrony)         | Requisito para etcd, certificados y coherencia temporal                   | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes) |
+| 5   | Balanceador HAProxy + Keepalived              | Alta disponibilidad con VIPs para API y tráfico web                       | [ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer) |
+| 6   | Despliegue K3s HA con etcd                    | Clúster K3s multi-master con almacenamiento distribuido                   | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster) |
+| 7   | Cambio a VIP en Master1 (Bootstrap)           | Redirecciona el primer nodo a usar la VIP como servidor                   | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap) |
+| 8   | Configuración de Acceso Remoto kubectl        | Permite administrar el clúster desde una estación externa                 | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access) |
+| 9   | Gestión de Secretos con Sealed Secrets        | Encripta secretos para GitOps con ArgoCD                                  | [ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal) |
+| 10  | Ingress Controller con Traefik (K3s)          | Entrada segura HTTP(S) para servicios internos y externos                 | [traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster) |
+| 11  | Almacenamiento Persistente (Longhorn + NFS)   | Volúmenes distribuidos y resilientes para pods                            | [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite) |
+| 12  | Stack de Monitoreo                            | Observabilidad con Prometheus, Grafana y Alertmanager                     | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack) |
+| 13  | Automatización con ArgoCD                     | GitOps: aplica despliegues automáticamente desde Git                      | [ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes) |
+| 14  | CI/CD con Jenkins + Ansible                   | Compila imágenes y las despliega usando Git + ArgoCD                      | [jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook) |
+| 15  | PostgreSQL sobre NFS                          | Base de datos persistente accesible desde Kubernetes                      | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)   |
+| 16  | Cloudflare DDNS + IP Dinámica                 | Actualiza el DNS de Cloudflare si cambia tu IP pública                    | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns) |
 ---
 
 ## ✅ Validaciones Importantes
