@@ -185,3 +185,18 @@ runcmd:
   - ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0 
   - ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0 
   - ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
+
+
+
+
+analiza y dame ordenamante las rutas correctas para haya conetividad entre estars redes y maquinas
+
+10.17.3.0/24 → DNS/NTP/infra cloud-config 
+
+10.17.4.0/24 → Clúster K3s: masters, workers y storage Ignition 
+
+10.17.5.0/24 → VIPs de API y de Ingress
+
+192.168.0.0/24 → Red física del host y acceso exterior puente br0
+
+maquina virtual kvm/qmue librb 192.168.0.30 banaceador conecion con las mv y el host exterion y red fisica
