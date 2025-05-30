@@ -262,7 +262,12 @@ Después de la instalación:
 #### Prueba Final
 
 Comprueba que las máquinas conectadas al puente `br1` puedan acceder a la red LAN.
+
+
+
 _____
+
+
 # Paso a paso para configurar un bridge (br0) en Rocky/AlmaLinux para KVM
 
 # 1. Instalar herramientas necesarias
