@@ -14,7 +14,6 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# 🔌 Red en modo bridge (br0)
 resource "libvirt_network" "br0" {
   name      = var.so_network_name
   mode      = "bridge"
@@ -23,7 +22,6 @@ resource "libvirt_network" "br0" {
   addresses = ["192.168.0.0/24"]
 }
 
-# 🗃️ Pool de almacenamiento dinámico según el rol de VM
 resource "libvirt_pool" "volumetmp" {
   name = "volumetmp_${var.vm_role_name}"
   type = "dir"
@@ -32,7 +30,6 @@ resource "libvirt_pool" "volumetmp" {
   }
 }
 
-# 📦 Volumen base de AlmaLinux
 resource "libvirt_volume" "so_image" {
   name   = "${var.cluster_name}-so_image"
   source = var.so_image
@@ -40,9 +37,8 @@ resource "libvirt_volume" "so_image" {
   format = "qcow2"
 }
 
-# ⚙️ Archivos cloud-init personalizados por VM
 data "template_file" "vm_configs" {
-  for_each = var.vm_rockylinux_definitions
+  for_each = var.vm_linux_definitions
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
   vars = {
@@ -57,13 +53,12 @@ data "template_file" "vm_configs" {
   }
 }
 
-# 💽 Disco de configuración cloud-init
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
-  for_each = var.vm_rockylinux_definitions
+  for_each = var.vm_linux_definitions
 
-  name           = "${each.key}_cloudinit.iso"
-  pool           = libvirt_pool.volumetmp.name
-  user_data      = data.template_file.vm_configs[each.key].rendered
+  name      = "${each.key}_cloudinit.iso"
+  pool      = libvirt_pool.volumetmp.name
+  user_data = data.template_file.vm_configs[each.key].rendered
   network_config = templatefile("${path.module}/config/network-config.tpl", {
     ip      = each.value.ip
     gateway = each.value.gateway
@@ -72,9 +67,8 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   })
 }
 
-# 💾 Disco raíz personalizado
 resource "libvirt_volume" "vm_disk" {
-  for_each = var.vm_rockylinux_definitions
+  for_each = var.vm_linux_definitions
 
   name           = each.value.volume_name
   base_volume_id = libvirt_volume.so_image.id
@@ -83,9 +77,8 @@ resource "libvirt_volume" "vm_disk" {
   size           = each.value.volume_size * 1024 * 1024 * 1024
 }
 
-# 🖥️ Definición de máquina virtual
 resource "libvirt_domain" "vm" {
-  for_each = var.vm_rockylinux_definitions
+  for_each = var.vm_linux_definitions
 
   name   = each.value.hostname
   memory = each.value.memory
@@ -124,7 +117,6 @@ resource "libvirt_domain" "vm" {
   }
 }
 
-# 📤 IPs de todas las VMs
 output "vm_ip_addresses" {
-  value = { for vm, config in var.vm_rockylinux_definitions : vm => config.ip }
+  value = { for vm, config in var.vm_linux_definitions : vm => config.ip }
 }

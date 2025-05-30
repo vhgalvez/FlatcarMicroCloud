@@ -1,4 +1,5 @@
 # br0_network\variables.tf
+
 variable "ssh_keys" {
   description = "SSH keys for the VMs"
   type        = list(string)
@@ -15,7 +16,7 @@ variable "cluster_domain" {
 }
 
 variable "so_image" {
-  description = "Path to the AlmaLinux 9 image"
+  description = "Path to the base Linux image"
   type        = string
 }
 
@@ -35,8 +36,8 @@ variable "vm_role_name" {
   type        = string
 }
 
-variable "vm_rockylinux_definitions" {
-  description = "Definitions of virtual machines including CPU and memory configuration"
+variable "vm_linux_definitions" {
+  description = "Definitions of virtual machines including CPU, memory, IP, storage, and network configuration"
   type = map(object({
     cpus           = number
     memory         = number
