@@ -73,6 +73,7 @@ runcmd:
   - echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab # Hacer swap persistente
   - ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0
   - ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0
+  - ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
   - ip route add default via 192.168.0.1 dev eth0
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
   - ["dnf", "install", "-y", "firewalld"]

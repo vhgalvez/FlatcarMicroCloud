@@ -144,3 +144,44 @@ sudo ip route add 10.42.0.0/16 via 10.17.5.1 dev eth0
 ```
 
 💡 **Nota:** Esta ruta solo funcionará si `10.17.5.1` (pfSense o router) está configurado para enrutar a `10.42.0.0/16`, o si tienes una ruta adicional en el router hacia, por ejemplo, `10.17.4.21`.
+
+
+
+## host servidor de virtualización
+sudo ip route add 10.17.3.0/24 dev virbr_kube02
+sudo ip route add 10.17.4.0/24 dev virbr_kube03
+
+
+
+  
+
+esta configuración es persistente?
+esta es correcta?
+nat_network_02
+runcmd:
+  - ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0 
+  - ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0 
+  - ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
+
+## host servidor de virtualización
+sudo ip route add 10.17.3.0/24 dev virbr_kube02
+sudo ip route add 10.17.4.0/24 dev virbr_kube03
+
+esta configuración es persistente ?
+esta es correcta?
+k8s-api-lb 
+runcmd:
+- ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0
+  - ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0
+  - ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
+  - ip route add default via 192.168.0.1 dev eth0
+
+
+
+
+runcmd:
+  - ip route add 10.17.3.0/24 via 10.17.4.1 dev eth0 
+
+  - ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0 
+  - ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0 
+  - ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
