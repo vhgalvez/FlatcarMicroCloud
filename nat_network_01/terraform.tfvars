@@ -18,7 +18,7 @@ vm_linux_definitions = {
   }
 }
 
-cluster_name    = "cluster_cefaslocalserver"
+cluster_name    = "cluster_socialdevs"
 cluster_domain  = "socialdevs.site"
 so_network_name = "br0"
 vm_role_name    = "k8s-api-lb"
@@ -28,3 +28,8 @@ ssh_keys = [
 ]
 
 timezone = "Europe/Madrid"
+
+# Verificación adicional:
+# - Asegúrate de que la red "br0" esté configurada correctamente en el host.
+# - Confirma que el archivo de imagen especificado en "so_image" existe y tiene los permisos adecuados.
+# - Valida que las claves SSH sean correctas y funcionales.

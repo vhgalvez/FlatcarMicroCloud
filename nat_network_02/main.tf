@@ -26,8 +26,7 @@ resource "libvirt_network" "kube_network_02" {
   domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.3.0/24"]
-#mode = "bridge"
-#bridge    = "br0"
+
 
   dhcp {
     enabled = true
