@@ -74,7 +74,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | loadbalancer1   | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 2   | 2048             | 32             |
 | loadbalancer2   | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 2   | 2048             | 32             |
 | postgresql1     | 10.17.3.14    | postgresql1.cefaslocalserver.com | 2     | 2048             | 32             |
-| k8s-api-lb      | 10.17.5.10    | k8s-api-lb.cefaslocalserver.com | 2     | 2048             | 80             |
+| k8s-api-lb      | 192.168.0.30  | k8s-api-lb.cefaslocalserver.com | 2     | 2048             | 80             |
 
 ## 5. Máquinas Virtuales y Roles
 
