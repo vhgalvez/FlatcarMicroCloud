@@ -42,6 +42,26 @@ write_files:
     path: /etc/resolv.conf
     permissions: "0644"
 
+  - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+    permissions: "0600"
+    content: |
+      [connection]
+      id=eth0
+      type=ethernet
+      interface-name=eth0
+      autoconnect=true
+
+      [ipv4]
+      method=manual
+      addresses1=${ip}/24,${gateway}
+      dns=${dns1};${dns2};
+      dns-search=${cluster_domain}
+      may-fail=false
+      route-metric=10
+
+      [ipv6]
+      method=ignore
+
   - path: /usr/local/bin/set-hosts.sh
     content: |
       #!/bin/bash
@@ -95,6 +115,7 @@ runcmd:
   - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${gateway}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${gateway}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${gateway}"
+  - nmcli connection modify eth0 +ipv4.routes "192.168.0.0/24 ${gateway}"
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
   - echo " Rutas estáticas aplicadas" >> /var/log/cloud-init-output.log
