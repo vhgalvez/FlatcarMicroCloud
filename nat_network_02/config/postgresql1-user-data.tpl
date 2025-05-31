@@ -37,38 +37,30 @@ write_files:
     permissions: "0644"
 
   - encoding: b64
-    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDEwLjE3LjMuMTEKbmFtZXNlcnZlciA4LjguOC44
+    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDguOC44Ljg=
     owner: root:root
     path: /etc/resolv.conf
     permissions: "0644"
 
-  - path: /etc/systemd/network/10-static-en.network
+  - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+    permissions: "0600"
     content: |
-      [Match]
-      Name=eth0
+      [connection]
+      id=eth0
+      type=ethernet
+      interface-name=eth0
+      autoconnect=true
 
-      [Network]
-      Address=${ip}/24
-      Gateway=${gateway}
-      DNS=${dns1}
-      DNS=${dns2}
+      [ipv4]
+      method=manual
+      addresses1=${ip}/24,${gateway}
+      dns=${dns1};${dns2};
+      dns-search=${cluster_domain}
+      may-fail=false
+      route-metric=10
 
-      [Route]
-      Destination=10.17.4.0/24
-      Gateway=10.17.3.1
-
-      [Route]
-      Destination=10.17.5.0/24
-      Gateway=10.17.3.1
-
-      [Route]
-      Destination=192.168.0.0/24
-      Gateway=10.17.3.1
-
-      [Route]
-      Destination=0.0.0.0/0
-      Gateway=10.17.3.1
-
+      [ipv6]
+      method=ignore
 
   - path: /usr/local/bin/set-hosts.sh
     content: |
@@ -87,39 +79,46 @@ write_files:
       [main]
       dns=none
 
-  - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+  - path: /etc/chrony.conf
+    permissions: "0644"
     content: |
-      [connection]
-      id=eth0
-      type=ethernet
-      interface-name=eth0
-      permissions=
-
-      [ipv4]
-      method=manual
-      addresses1=${ip}/24,${gateway}
-      dns=${dns1};${dns2};
-      dns-search=${cluster_domain}
-      may-fail=false
-
-      [ipv6]
-      method=ignore
-
+      server 10.17.3.11 iburst prefer
+      server 0.pool.ntp.org iburst
+      server 1.pool.ntp.org iburst
+      server 2.pool.ntp.org iburst
+      allow 10.17.0.0/16
 
 runcmd:
-  - sudo fallocate -l 2G /swapfile                                              # Crear archivo swap de 2GB
-  - sudo chmod 600 /swapfile                                                    # Ajustar permisos de seguridad
-  - sudo mkswap /swapfile                                                       # Configurar el archivo swap
-  - sudo swapon /swapfile                                                       # Activar el swap  
-  - echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab                  # Hacer swap persistente
-  - echo "Instance setup completed" >> /var/log/cloud-init-output.log
-  - ["dnf", "install", "-y", "firewalld", "resolvconf"]
-  - ["systemctl", "enable", "--now", "firewalld"]
+  - echo " Iniciando cloud-init en $(hostname)" >> /var/log/cloud-init-output.log
+  - fallocate -l 2G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo "/swapfile none swap sw 0 0" >> /etc/fstab
+  - echo " Swap configurado" >> /var/log/cloud-init-output.log
+  - dnf install -y firewalld resolvconf chrony
+  - systemctl enable --now chronyd
+  - firewall-cmd --permanent --add-port=443/tcp
+  - firewall-cmd --permanent --add-port=123/tcp
+  - firewall-cmd --permanent --add-port=80/tcp
+  - firewall-cmd --permanent --add-port=6443/tcp
+  - firewall-cmd --reload
+  - echo " Firewall y NTP configurados" >> /var/log/cloud-init-output.log
   - /usr/local/bin/set-hosts.sh
   - sysctl -p
   - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
   - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
+  - nmcli connection reload
+  - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
+  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${gateway}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${gateway}"
+  - nmcli connection modify eth0 +ipv4.routes "192.168.0.0/24 ${gateway}"
+  - nmcli connection down eth0 || true
+  - nmcli connection up eth0
+  - echo " Rutas estáticas aplicadas" >> /var/log/cloud-init-output.log
+  - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
+  - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
