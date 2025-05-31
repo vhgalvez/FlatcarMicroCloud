@@ -1,4 +1,4 @@
-# nat_network_01\config\k8s-api-lb-user-data.tpl
+# br0_network_01\config\k8s-api-lb-user-data.tpl
 # cloud-config
 hostname: ${hostname}
 manage_etc_hosts: false

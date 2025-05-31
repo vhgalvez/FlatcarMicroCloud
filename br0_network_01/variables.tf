@@ -1,4 +1,4 @@
-# br0_network\variables.tf
+# br0_network_01\variables.tf
 
 variable "ssh_keys" {
   description = "SSH keys for the VMs"

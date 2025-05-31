@@ -1,4 +1,4 @@
-# br0_network/terraform.tfvars
+# br0_network_01/terraform.tfvars
 so_image = "/var/lib/libvirt/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 
 vm_linux_definitions = {
