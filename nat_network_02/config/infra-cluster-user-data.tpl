@@ -59,7 +59,6 @@ write_files:
       may-fail=false
       route-metric=10
       routes1=\
-        10.17.3.0/24,${gateway},0;\
         10.17.4.0/24,${gateway},0;\
         10.17.5.0/24,${gateway},0;\
         192.168.0.0/24,${gateway},0;
@@ -94,12 +93,13 @@ write_files:
       allow 10.17.0.0/16
 
 runcmd:
+  - echo "🟢 Iniciando configuración..." >> /var/log/cloud-init-output.log
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
   - mkswap /swapfile
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
-  - echo "Instance setup completed" >> /var/log/cloud-init-output.log
+  - echo "✅ Swap configurado" >> /var/log/cloud-init-output.log
   - dnf install -y firewalld resolvconf chrony
   - systemctl enable --now chronyd
   - firewall-cmd --permanent --add-port=443/tcp
@@ -107,6 +107,7 @@ runcmd:
   - firewall-cmd --permanent --add-port=80/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload
+  - echo "🔥 Firewall y NTP listos" >> /var/log/cloud-init-output.log
   - /usr/local/bin/set-hosts.sh
   - sysctl -p
   - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
@@ -117,5 +118,6 @@ runcmd:
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
   - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
+  - echo "✅ cloud-init finalizado correctamente en ${hostname}" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
