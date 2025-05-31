@@ -95,6 +95,7 @@ resource "libvirt_domain" "vm" {
     network_id = libvirt_network.br0.id
     bridge     = "br0"
     addresses  = [each.value.ip]
+    model  = "virtio"
   }
 
   disk {
