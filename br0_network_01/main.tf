@@ -37,7 +37,8 @@ resource "libvirt_volume" "so_image" {
   format = "qcow2"
 }
 
-data "template_file" "vm-configs" {
+# Corrección: Declaración de data.template_file.vm_configs
+data "template_file" "vm_configs" {
   for_each = var.vm_linux_definitions
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
@@ -47,13 +48,12 @@ data "template_file" "vm-configs" {
     short_hostname = each.value.short_hostname
     timezone       = var.timezone
     ip             = each.value.ip
-    gateway        = var.gateway
-    dns1           = var.dns1
-    dns2           = var.dns2
+    gateway        = each.value.gateway
+    dns1           = each.value.dns1
+    dns2           = each.value.dns2
     cluster_domain = var.cluster_domain
   }
 }
-
 
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_linux_definitions

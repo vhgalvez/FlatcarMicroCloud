@@ -1,3 +1,4 @@
+# br0_network_01\config\network-config.tpl
 version: 2
 ethernets:
   eth0:
