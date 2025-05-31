@@ -10,6 +10,10 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "cluster_domain" {
+  description = "Domain of the cluster"
+  type        = string
+}
 
 variable "so_image" {
   description = "Path to the base Linux image"

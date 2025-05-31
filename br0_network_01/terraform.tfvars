@@ -15,11 +15,11 @@ vm_linux_definitions = {
     dns1           = "10.17.3.11"
     dns2           = "8.8.8.8"
     short_hostname = "k8s-api-lb"
-    cluster_domain = "socialdevs.site"
   }
 }
 
 cluster_name    = "cluster_socialdevs"
+cluster_domain  = "socialdevs.site"
 so_network_name = "br0"
 vm_role_name    = "k8s-api-lb"
 
