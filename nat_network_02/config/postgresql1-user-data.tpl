@@ -53,6 +53,23 @@ write_files:
       DNS=${dns1}
       DNS=${dns2}
 
+      [Route]
+      Destination=10.17.4.0/24
+      Gateway=10.17.3.1
+
+      [Route]
+      Destination=10.17.5.0/24
+      Gateway=10.17.3.1
+
+      [Route]
+      Destination=192.168.0.0/24
+      Gateway=10.17.3.1
+
+      [Route]
+      Destination=0.0.0.0/0
+      Gateway=10.17.3.1
+
+
   - path: /usr/local/bin/set-hosts.sh
     content: |
       #!/bin/bash
