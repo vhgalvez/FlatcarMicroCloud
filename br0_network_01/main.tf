@@ -37,29 +37,34 @@ resource "libvirt_volume" "so_image" {
   format = "qcow2"
 }
 
-# Corrección: Declaración de data.template_file.vm_configs
-data "template_file" "vm-configs" {
+
+data "template_file" "vm_configs" {
   for_each = var.vm_linux_definitions
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
+
   vars = {
-    ssh_keys       = jsonencode(var.ssh_keys)
-    hostname       = each.value.hostname
-    short_hostname = each.value.short_hostname
-    timezone       = var.timezone
-    ip             = each.value.ip
-    gateway        = var.gateway
-    dns1           = var.dns1
-    dns2           = var.dns2
+    ssh_keys        = join("\n", var.ssh_keys)
+    cluster_name    = var.cluster_name
+    cluster_domain  = var.cluster_domain
+    hostname        = each.value.hostname
+    short_hostname  = each.value.short_hostname
+    timezone        = var.timezone
+    role_name       = var.vm_role_name
+    ip              = each.value.ip
+    gateway         = each.value.gateway
+    dns1            = each.value.dns1
+    dns2            = each.value.dns2
   }
 }
+
 
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_linux_definitions
 
-  name      = "${each.key}_cloudinit.iso"
-  pool      = libvirt_pool.volumetmp.name
-  user_data = data.template_file.vm_configs[each.key].rendered
+  name           = "${each.key}_cloudinit.iso"
+  pool           = libvirt_pool.volumetmp.name
+  user_data      = data.template_file.vm_configs[each.key].rendered
   network_config = templatefile("${path.module}/config/network-config.tpl", {
     ip      = each.value.ip
     gateway = each.value.gateway
@@ -67,6 +72,7 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
     dns2    = each.value.dns2
   })
 }
+
 
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_linux_definitions
