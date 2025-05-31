@@ -1,4 +1,5 @@
-#cloud-config
+# nat_network_01\config\k8s-api-lb-user-data.tpl
+# cloud-config
 hostname: ${hostname}
 manage_etc_hosts: false
 
@@ -42,32 +43,29 @@ write_files:
     path: /etc/resolv.conf
     permissions: "0644"
 
-  - path: /etc/systemd/network/10-static-en.network
+  - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+    permissions: "0600"
     content: |
-      [Match]
-      Name=eth0
+      [connection]
+      id=eth0
+      type=ethernet
+      interface-name=eth0
+      permissions=
 
-      [Network]
-      Address=${ip}/24
-      Gateway=${gateway}
-      DNS=${dns1}
-      DNS=${dns2}
+      [ipv4]
+      method=manual
+      addresses1=${ip}/24,${gateway}
+      dns=${dns1};${dns2};
+      dns-search=${cluster_domain}
+      may-fail=false
+      routes1=\
+        10.17.3.0/24,${gateway},0;\
+        10.17.4.0/24,${gateway},0;\
+        10.17.5.0/24,${gateway},0;\
+        192.168.0.0/24,${gateway},0;
 
-      [Route]
-      Destination=10.17.3.0/24
-      Gateway=192.168.0.1
-
-      [Route]
-      Destination=10.17.4.0/24
-      Gateway=192.168.0.1
-
-      [Route]
-      Destination=10.17.5.0/24
-      Gateway=192.168.0.1
-
-      [Route]
-      Destination=0.0.0.0/0
-      Gateway=192.168.0.1
+      [ipv6]
+      method=ignore
 
   - path: /usr/local/bin/set-hosts.sh
     content: |
@@ -82,17 +80,17 @@ write_files:
       net.ipv4.ip_forward = 1
 
 runcmd:
-  - sudo fallocate -l 2G /swapfile                # Crear archivo swap de 2GB
-  - sudo chmod 600 /swapfile                      # Ajustar permisos de seguridad
-  - sudo mkswap /swapfile                         # Configurar el archivo swap
-  - sudo swapon /swapfile                         # Activar el swap
-  - echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab # Hacer swap persistente
+  - fallocate -l 2G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo "/swapfile none swap sw 0 0" >> /etc/fstab
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
-  - ["dnf", "install", "-y", "firewalld"]
-  - ["systemctl", "enable", "--now", "firewalld"]
+  - dnf install -y firewalld
+  - systemctl enable --now firewalld
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload
-  - ["systemctl", "restart", "NetworkManager.service"]
+  - systemctl restart NetworkManager.service
   - /usr/local/bin/set-hosts.sh
   - sysctl -p
 
