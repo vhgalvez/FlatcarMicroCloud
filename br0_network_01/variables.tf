@@ -53,18 +53,3 @@ variable "vm_linux_definitions" {
     short_hostname = string
   }))
 }
-
-variable "gateway" {
-  description = "Default gateway for the VMs"
-  type        = string
-}
-
-variable "dns1" {
-  description = "Primary DNS server for the VMs"
-  type        = string
-}
-
-variable "dns2" {
-  description = "Secondary DNS server for the VMs"
-  type        = string
-}
