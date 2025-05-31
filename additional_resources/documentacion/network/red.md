@@ -109,6 +109,17 @@ ping -c 4 10.17.5.10
 ping -c 4 10.17.5.30
 ```
 
+# verifica las rutas y la configuración de red
+
+```bash
+ping -c 4 10.17.4.21; ping -c 4 10.17.3.11; ping -c 4 10.17.3.1; ping -c 4 8.8.8.8; ping -c 4 192.168.0.30; ping -c 4 192.168.0.1 && ip route show && ip a && cat /proc/sys/net/ipv4/ip_forward
+```
+
+ip route show
+ip a
+cat /proc/sys/net/ipv4/ip_forward
+
+
 ## Configuración de rutas necesarias para Kubernetes
 
 ### Máquinas donde debes configurar rutas manualmente
@@ -227,3 +238,9 @@ nat network_02
 sudo ip route add 10.17.4.0/24 via 10.17.3.1
 sudo ip route add 10.17.5.0/24 via 10.17.3.1
 sudo ip route add 192.168.0.0/24 via 10.17.3.1
+
+
+nodo balancer
+sudo ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0 
+sudo ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0
+sudo ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
