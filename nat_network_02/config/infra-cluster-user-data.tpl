@@ -37,10 +37,35 @@ write_files:
     permissions: "0644"
 
   - encoding: b64
-    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDEwLjE3LjMuMTEKbmFtZXNlcnZlciA4LjguOC44
+    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDguOC44Ljg=
     owner: root:root
     path: /etc/resolv.conf
     permissions: "0644"
+
+  - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+    permissions: "0600"
+    content: |
+      [connection]
+      id=eth0
+      type=ethernet
+      interface-name=eth0
+      autoconnect=true
+
+      [ipv4]
+      method=manual
+      addresses1=${ip}/24,${gateway}
+      dns=${dns1};${dns2};
+      dns-search=${cluster_domain}
+      may-fail=false
+      route-metric=10
+      routes1=\
+        10.17.3.0/24,${gateway},0;\
+        10.17.4.0/24,${gateway},0;\
+        10.17.5.0/24,${gateway},0;\
+        192.168.0.0/24,${gateway},0;
+
+      [ipv6]
+      method=ignore
 
   - path: /usr/local/bin/set-hosts.sh
     content: |
@@ -59,29 +84,6 @@ write_files:
       [main]
       dns=none
 
-  - path: /etc/NetworkManager/system-connections/eth0.nmconnection
-    permissions: "0600"
-    content: |
-      [connection]
-      id=eth0
-      type=ethernet
-      interface-name=eth0
-      permissions=
-
-      [ipv4]
-      method=manual
-      addresses1=${ip}/24,${gateway}
-      dns=${dns1};${dns2};
-      dns-search=${cluster_domain}
-      may-fail=false
-      routes1=\
-        10.17.4.0/24,${gateway},0;\
-        10.17.5.0/24,${gateway},0;\
-        192.168.0.0/24,${gateway},0;
-
-      [ipv6]
-      method=ignore
-
 runcmd:
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
@@ -97,5 +99,9 @@ runcmd:
   - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
+  - nmcli connection reload
+  - nmcli connection down eth0 || true
+  - nmcli connection up eth0
+  - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
 
 timezone: ${timezone}
