@@ -18,7 +18,7 @@
        │
        ▼
 +-----------------------------+
-| Router ISP (LAN: 192.198.0.x) |
+| Router ISP (LAN: 192.198.0.30) |
 | NAT + Port Forwarding        |
 | Puertos 80, 443, 51820/UDP   |
 +-----------------------------+
@@ -77,13 +77,7 @@ Estas VIPs son gestionadas por HAProxy + Keepalived. Traefik maneja el tráfico 
 
 **🌐 Interfaces de Red del Servidor:**
 
-| Interfaz | IP           | Uso Sugerido                                   |
-| -------- | ------------ | ---------------------------------------------- |
-| enp3s0f0 | 192.168.0.20 | Nodo `k8s-api-lb`, puente para tráfico clúster |
-| enp3s0f1 | 192.168.0.28 | Libre                                          |
-| enp4s0f0 | 192.168.0.15 | Nodo VPN WireGuard                             |
-| enp4s0f1 | 192.168.0.29 | Libre                                          |
-| lo       | 127.0.0.1    | Interno del sistema                            |
+|
 
 > Interfaces asignadas a bridges virtuales con KVM. `enp3s0f0` enlazado a bridge `br-api` para tráfico VIP de API y servicios Ingress.
 
@@ -102,7 +96,7 @@ Estas VIPs son gestionadas por HAProxy + Keepalived. Traefik maneja el tráfico 
 | loadbalancer1 | 10.17.3.12   | Ingress Controller Traefik | 2   | 2048     | 32         |
 | loadbalancer2 | 10.17.3.13   | Ingress Controller Traefik | 2   | 2048     | 32         |
 | postgresql1   | 10.17.3.14   | Base de datos PostgreSQL   | 2   | 2048     | 32         |
-| k8s-api-lb    | 192.168.0.20 | Nodo físico puente VIPs    | 2   | 2048     | 80         |
+| k8s-api-lb    | 192.168.0.30 | Nodo físico puente VIPs    | 2   | 2048     | 80         |
 
 ---
 

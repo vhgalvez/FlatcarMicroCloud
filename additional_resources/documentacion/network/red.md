@@ -244,3 +244,19 @@ nodo balancer
 sudo ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0 
 sudo ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0
 sudo ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
+
+sudo ip route add 10.17.3.0/24 via 192.168.0.1
+sudo ip route add 10.17.4.0/24 via 192.168.0.1
+sudo ip route add 10.17.5.0/24 via 192.168.0.1
+
+
+sudo ip route add 10.17.4.0/24 via 192.168.0.30
+
+sudo ip route add 10.17.3.0/24 via 192.168.0.30
+sudo ip route add 10.17.4.0/24 via 192.168.0.30
+sudo ip route add 10.17.5.0/24 via 192.168.0.30
+
+
+10.17.3.0/24 via 192.168.0.30 dev eth0
+10.17.4.0/24 via 192.168.0.30 dev eth0
+10.17.5.0/24 via 192.168.0.30 dev eth0

@@ -93,6 +93,7 @@ resource "libvirt_domain" "vm" {
 
   network_interface {
     network_id = libvirt_network.br0.id
+    bridge     = "br0"
     addresses  = [each.value.ip]
   }
 
