@@ -53,6 +53,22 @@ write_files:
       DNS=${dns1}
       DNS=${dns2}
 
+      [Route]
+      Destination=10.17.3.0/24
+      Gateway=192.168.0.1
+
+      [Route]
+      Destination=10.17.4.0/24
+      Gateway=192.168.0.1
+
+      [Route]
+      Destination=10.17.5.0/24
+      Gateway=192.168.0.1
+
+      [Route]
+      Destination=0.0.0.0/0
+      Gateway=192.168.0.1
+
   - path: /usr/local/bin/set-hosts.sh
     content: |
       #!/bin/bash
@@ -71,10 +87,6 @@ runcmd:
   - sudo mkswap /swapfile                         # Configurar el archivo swap
   - sudo swapon /swapfile                         # Activar el swap
   - echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab # Hacer swap persistente
-  - ip route add 10.17.3.0/24 via 192.168.0.1 dev eth0
-  - ip route add 10.17.4.0/24 via 192.168.0.1 dev eth0
-  - ip route add 10.17.5.0/24 via 192.168.0.1 dev eth0
-  - ip route add default via 192.168.0.1 dev eth0
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
   - ["dnf", "install", "-y", "firewalld"]
   - ["systemctl", "enable", "--now", "firewalld"]
