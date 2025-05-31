@@ -84,6 +84,15 @@ write_files:
       [main]
       dns=none
 
+  - path: /etc/chrony.conf
+    permissions: "0644"
+    content: |
+      server 10.17.3.11 iburst prefer
+      server 0.pool.ntp.org iburst
+      server 1.pool.ntp.org iburst
+      server 2.pool.ntp.org iburst
+      allow 10.17.0.0/16
+
 runcmd:
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
@@ -91,8 +100,13 @@ runcmd:
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
-  - dnf install -y firewalld resolvconf
-  - systemctl enable --now firewalld
+  - dnf install -y firewalld resolvconf chrony
+  - systemctl enable --now chronyd
+  - firewall-cmd --permanent --add-port=443/tcp
+  - firewall-cmd --permanent --add-port=123/tcp
+  - firewall-cmd --permanent --add-port=80/tcp
+  - firewall-cmd --permanent --add-port=6443/tcp
+  - firewall-cmd --reload
   - /usr/local/bin/set-hosts.sh
   - sysctl -p
   - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
