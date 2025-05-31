@@ -200,3 +200,24 @@ analiza y dame ordenamante las rutas correctas para haya conetividad entre estar
 192.168.0.0/24 → Red física del host y acceso exterior puente br0
 
 maquina virtual kvm/qmue librb 192.168.0.30 banaceador conecion con las mv y el host exterion y red fisica
+
+
+
+_____
+
+ configurados dos puertos públicos en tu router que redirigen a la máquina con IP interna 192.168.0.30:
+
+Puerto público	Redirige a puerto	Protocolo	Servicio
+8443	80	TCP	HTTP
+2052	443	TCP	HTTPS
+
+Entonces, para que tu servidor Python responda correctamente:
+
+✅ Opción 1: Usar el puerto 80 para que funcione con el 8443 externo
+Ejecuta este comando en la VM 192.168.0.30:
+
+bash
+Copiar
+Editar
+sudo python3 -m http.server 80 --bind 0.0.0.0
+🔁 Esto servirá contenido HTTP desde http://<tu-ip-publica>:8443
