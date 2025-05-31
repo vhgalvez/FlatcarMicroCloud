@@ -92,9 +92,8 @@ resource "libvirt_domain" "vm" {
   vcpu   = each.value.cpus
 
   network_interface {
-    network_id = libvirt_network.br0.id
-    bridge     = "br0"
-    addresses  = [each.value.ip]
+    bridge    = "br0"
+    addresses = [each.value.ip]
   }
 
   disk {
