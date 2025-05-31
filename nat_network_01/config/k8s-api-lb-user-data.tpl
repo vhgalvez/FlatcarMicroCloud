@@ -88,6 +88,8 @@ runcmd:
   - echo "Instance setup completed" >> /var/log/cloud-init-output.log
   - dnf install -y firewalld
   - systemctl enable --now firewalld
+  - firewall-cmd --permanent --add-port=443/tcp
+  - firewall-cmd --permanent --add-port=80/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload
   - systemctl restart NetworkManager.service
