@@ -61,7 +61,7 @@ vm_rockylinux_definitions = {
   }
 }
 
-cluster_name        = "cluster_cefaslocalserver"
+cluster_name        = "cluster_socialdevs"
 cluster_domain      = "socialdevs.site"
 rocky9_network_name = "kube_network_02"
 gateway             = "10.17.3.1"

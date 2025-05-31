@@ -42,33 +42,6 @@ write_files:
     path: /etc/resolv.conf
     permissions: "0644"
 
-  - path: /etc/systemd/network/10-static-en.network
-    content: |
-      [Match]
-      Name=eth0
-
-      [Network]
-      Address=${ip}/24
-      Gateway=${gateway}
-      DNS=${dns1}
-      DNS=${dns2}
-
-      [Route]
-      Destination=10.17.4.0/24
-      Gateway=10.17.3.1
-
-      [Route]
-      Destination=10.17.5.0/24
-      Gateway=10.17.3.1
-
-      [Route]
-      Destination=192.168.0.0/24
-      Gateway=10.17.3.1
-
-      [Route]
-      Destination=0.0.0.0/0
-      Gateway=10.17.3.1
-
 
   - path: /usr/local/bin/set-hosts.sh
     content: |
@@ -88,22 +61,27 @@ write_files:
       dns=none
 
   - path: /etc/NetworkManager/system-connections/eth0.nmconnection
-    content: |
-      [connection]
-      id=eth0
-      type=ethernet
-      interface-name=eth0
-      permissions=
+  content: |
+    [connection]
+    id=eth0
+    type=ethernet
+    interface-name=eth0
+    permissions=
 
-      [ipv4]
-      method=manual
-      addresses1=${ip}/24,${gateway}
-      dns=${dns1};${dns2};
-      dns-search=${cluster_domain}
-      may-fail=false
+    [ipv4]
+    method=manual
+    addresses1=${ip}/24,${gateway}
+    dns=${dns1};${dns2};
+    dns-search=${cluster_domain}
+    may-fail=false
+    routes1=\
+      10.17.4.0/24,${gateway},0;\
+      10.17.5.0/24,${gateway},0;\
+      192.168.0.0/24,${gateway},0;
 
-      [ipv6]
-      method=ignore
+    [ipv6]
+    method=ignore
+    permissions: "0600"
 
 
 runcmd:

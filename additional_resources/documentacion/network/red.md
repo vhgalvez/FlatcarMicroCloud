@@ -221,3 +221,9 @@ Copiar
 Editar
 sudo python3 -m http.server 80 --bind 0.0.0.0
 🔁 Esto servirá contenido HTTP desde http://<tu-ip-publica>:8443
+
+
+nat network_02
+sudo ip route add 10.17.4.0/24 via 10.17.3.1
+sudo ip route add 10.17.5.0/24 via 10.17.3.1
+sudo ip route add 192.168.0.0/24 via 10.17.3.1
