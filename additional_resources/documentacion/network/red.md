@@ -87,6 +87,16 @@ sudo systemctl status virtqemud.service
     ```bash
     sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged nftables NetworkManager
     ```
+sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged nftables NetworkManager
+
+sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd nftables NetworkManager
+
+
+sudo virsh net-dumpxml br0
+sudo virsh net-dumpxml kube_network_02
+sudo virsh net-dumpxml kube_network_03
+
+
 
 # Configuración de Red para el Clúster K3s
 
