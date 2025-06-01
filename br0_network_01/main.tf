@@ -55,7 +55,6 @@ data "template_file" "vm_configs" {
     gateway        = each.value.gateway
     dns1           = each.value.dns1
     dns2           = each.value.dns2
-    host_ip        = var.host_ip
   }
 }
 
