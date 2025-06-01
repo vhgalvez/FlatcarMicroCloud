@@ -14,7 +14,7 @@ vm_linux_definitions = {
     gateway        = "192.168.0.1"
     dns1           = "10.17.3.11"
     dns2           = "8.8.8.8"
-    short_hostname = "k8s-api-lb"    
+    short_hostname = "k8s-api-lb"
   }
 }
 
