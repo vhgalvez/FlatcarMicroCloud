@@ -28,7 +28,6 @@ cluster_name    = "cluster_socialdevs"
 cluster_domain  = "socialdevs.site"
 so_network_name = "br0"
 vm_role_name    = "k8s-api-lb"
-host_ip         = "192.168.0.40"
 
 
 timezone = "Europe/Madrid"
