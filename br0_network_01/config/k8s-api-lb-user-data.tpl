@@ -89,22 +89,21 @@ write_files:
       allow 10.17.0.0/16
 
 runcmd:
-  - echo "Iniciando cloud-init en $(hostname)" >> /var/log/cloud-init-output.log
+  - echo " Iniciando cloud-init en $(hostname)" >> /var/log/cloud-init-output.log
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
   - mkswap /swapfile
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
-  - echo "Swap configurado" >> /var/log/cloud-init-output.log
+  - echo " Swap configurado" >> /var/log/cloud-init-output.log
   - dnf install -y firewalld resolvconf chrony
   - systemctl enable --now chronyd
   - firewall-cmd --permanent --add-port=443/tcp
   - firewall-cmd --permanent --add-port=123/tcp
   - firewall-cmd --permanent --add-port=80/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
-  - firewall-cmd --permanent --add-port=22/tcp
   - firewall-cmd --reload
-  - echo "Firewall y NTP configurados" >> /var/log/cloud-init-output.log
+  - echo " Firewall y NTP configurados" >> /var/log/cloud-init-output.log
   - /usr/local/bin/set-hosts.sh
   - sysctl -p
   - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
@@ -112,14 +111,14 @@ runcmd:
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
   - nmcli connection reload
-  - echo "Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
+  - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
   - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${gateway}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${gateway}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${gateway}"
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
-  - echo "Rutas estáticas aplicadas" >> /var/log/cloud-init-output.log
+  - echo " Rutas estáticas aplicadas" >> /var/log/cloud-init-output.log
   - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
-  - echo "cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
+  - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
