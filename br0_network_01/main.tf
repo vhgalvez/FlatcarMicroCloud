@@ -2,6 +2,7 @@
 
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
+  
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
@@ -25,6 +26,7 @@ resource "libvirt_network" "br0" {
 resource "libvirt_pool" "volumetmp" {
   name = "volumetmp_${var.vm_role_name}"
   type = "dir"
+  
   target {
     path = "/var/lib/libvirt/images/volumes/volumetmp_${var.vm_role_name}"
   }
@@ -36,7 +38,6 @@ resource "libvirt_volume" "so_image" {
   pool   = libvirt_pool.volumetmp.name
   format = "qcow2"
 }
-
 
 data "template_file" "vm_configs" {
   for_each = var.vm_linux_definitions
@@ -58,7 +59,6 @@ data "template_file" "vm_configs" {
   }
 }
 
-
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_linux_definitions
 
@@ -72,7 +72,6 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
     dns2    = each.value.dns2
   })
 }
-
 
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_linux_definitions
