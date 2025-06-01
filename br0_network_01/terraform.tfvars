@@ -1,4 +1,5 @@
 # br0_network_01/terraform.tfvars
+
 so_image = "/var/lib/libvirt/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 
 vm_linux_definitions = {
@@ -8,10 +9,10 @@ vm_linux_definitions = {
     ip             = "192.168.0.30"
     volume_format  = "qcow2"
     volume_pool    = "default"
-    volume_size    = 20 # Tamaño en GB (entero)
+    volume_size    = 20
     volume_name    = "k8s-api-lb-volume"
     hostname       = "k8s-api-lb.socialdevs.site"
-    gateway        = "192.168.0.40" # ip fija de interfas del host
+    gateway        = "192.168.0.40"
     dns2           = "8.8.8.8"
     short_hostname = "k8s-api-lb"
   }
@@ -27,8 +28,3 @@ ssh_keys = [
 ]
 
 timezone = "Europe/Madrid"
-
-# Verificación adicional:
-# - Asegúrate de que la red "br0" esté configurada correctamente en el host.
-# - Confirma que el archivo de imagen especificado en "so_image" existe y tiene los permisos adecuados.
-# - Valida que las claves SSH sean correctas y funcionales.
