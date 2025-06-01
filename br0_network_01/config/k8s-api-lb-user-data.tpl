@@ -113,9 +113,9 @@ runcmd:
   - nmcli connection reload
   - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
   - nmcli connection modify eth0 ipv4.addresses "${ip}/24"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${gateway}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${gateway}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${gateway}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${host_ip}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${host_ip}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${host_ip}"
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
   - echo " Rutas estáticas aplicadas" >> /var/log/cloud-init-output.log
