@@ -5,7 +5,7 @@ vm_linux_definitions = {
   k8s-api-lb = {
     cpus           = 1
     memory         = 512
-    ip             = "192.168.0.30"
+    ip             = "192.168.0.100"
     volume_format  = "qcow2"
     volume_pool    = "default"
     volume_size    = 20 # Tamaño en GB (entero)
@@ -28,6 +28,8 @@ cluster_name    = "cluster_socialdevs"
 cluster_domain  = "socialdevs.site"
 so_network_name = "br0"
 vm_role_name    = "k8s-api-lb"
+
+host_ip = "192.168.0.40" 
 
 
 timezone = "Europe/Madrid"
