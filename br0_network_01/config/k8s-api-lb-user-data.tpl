@@ -102,6 +102,7 @@ runcmd:
   - firewall-cmd --permanent --add-port=123/tcp
   - firewall-cmd --permanent --add-port=80/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
+  - firewall-cmd --permanent --add-port=22/tcp
   - firewall-cmd --reload
   - echo " Firewall y NTP configurados" >> /var/log/cloud-init-output.log
   - /usr/local/bin/set-hosts.sh
