@@ -264,3 +264,86 @@ sudo ip route add 10.17.5.0/24 via 192.168.0.30
 10.17.3.0/24 via 192.168.0.30 dev eth0
 10.17.4.0/24 via 192.168.0.30 dev eth0
 10.17.5.0/24 via 192.168.0.30 dev eth0
+
+
+___
+✅ 1. Mostrar todas las interfaces físicas detectadas:
+bash
+Copiar
+Editar
+lshw -class network -short
+Este comando te mostrará una lista resumida de todas las interfaces de red físicas detectadas, con sus nombres y descripciones.
+
+Si no tienes lshw, instálalo con:
+
+bash
+Copiar
+Editar
+sudo dnf install lshw -y    # En Rocky Linux
+✅ 2. Listar solo interfaces físicas (sin virtuales):
+bash
+Copiar
+Editar
+ls /sys/class/net/
+Esto mostrará todos los interfaces, pero puedes filtrar los físicos así:
+
+bash
+Copiar
+Editar
+for iface in /sys/class/net/*; do 
+  if [[ -e "$iface/device" ]]; then 
+    basename "$iface"
+  fi
+done
+✅ 3. Ver interfaces con detalles PCI (útil en servidores):
+bash
+Copiar
+Editar
+lspci | grep -i ethernet
+Esto mostrará cuántas interfaces Ethernet reales tienes instaladas en la placa base o en tarjetas PCIe.
+
+✅ 4. Ver interfaces con ip link y estado:
+bash
+Copiar
+Editar
+ip -br link show
+Esto muestra de forma compacta el estado (UP o DOWN) de cada interfaz.
+
+Ejemplo de salida esperada de lshw -class network -short:
+python-repl
+Copiar
+Editar
+H/W path       Device     Class      Description
+================================================
+...            enp3s0f0   network    NetXtreme BCM5720 Gigabit Ethernet PCIe
+...            enp4s0f0   network    NetXtreme BCM5720 Gigabit Ethernet PCIe
+...            enp5s0f0   network    NetXtreme BCM5720 Gigabit Ethernet PCIe
+...            enp6s0f0   network    NetXtreme BCM5720 Gigabit Ethernet PCIe
+
+
+
+[victory@virtualizacion-server ~]$ sudo ip -br link show
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP>
+enp3s0f0         UP             2c:76:8a:ac:de:bc <BROADCAST,MULTICAST,UP,LOWER_UP>
+enp3s0f1         UP             2c:76:8a:ac:de:be <BROADCAST,MULTICAST,UP,LOWER_UP>
+enp4s0f0         UP             2c:76:8a:ac:de:c0 <BROADCAST,MULTICAST,UP,LOWER_UP>
+enp4s0f1         UP             2c:76:8a:ac:de:c2 <BROADCAST,MULTICAST,UP,LOWER_UP>
+br0              UP             2c:76:8a:ac:de:bc <BROADCAST,MULTICAST,UP,LOWER_UP>
+virbr_kube02     UP             52:54:00:0a:69:c8 <BROADCAST,MULTICAST,UP,LOWER_UP>
+virbr_kube03     UP             52:54:00:e3:23:4d <BROADCAST,MULTICAST,UP,LOWER_UP>
+docker0          DOWN           1e:fd:c5:ea:5a:ef <NO-CARRIER,BROADCAST,MULTICAST,UP>
+vnet0            UNKNOWN        fe:54:00:be:a8:7c <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet1            UNKNOWN        fe:54:00:ee:2c:fa <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet2            UNKNOWN        fe:54:00:06:e9:bc <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet3            UNKNOWN        fe:54:00:56:2d:6e <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet4            UNKNOWN        fe:54:00:26:18:40 <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet5            UNKNOWN        fe:54:00:a2:a4:e5 <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet6            UNKNOWN        fe:54:00:1e:07:74 <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet7            UNKNOWN        fe:54:00:b2:5c:f6 <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet8            UNKNOWN        fe:54:00:26:e8:3b <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet9            UNKNOWN        fe:54:00:aa:07:84 <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet11           UNKNOWN        fe:54:00:ea:1e:14 <BROADCAST,MULTICAST,UP,LOWER_UP>
+vnet12           UNKNOWN        fe:54:00:16:a7:ce <BROADCAST,MULTICAST,UP,LOWER_UP>
+[victory@virtualizacion-server ~]$
+
+
