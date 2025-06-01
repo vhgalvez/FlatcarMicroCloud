@@ -82,3 +82,87 @@ sudo systemctl restart network
 ## Conclusión
 
 Con esta solución, la máquina `k8s-api-lb` podrá comunicarse correctamente con las redes `10.17.3.x` y `10.17.4.x`, y el tráfico hacia Internet continuará siendo gestionado por el router físico `192.168.0.1`.
+
+__
+## Recursos Adicionales
+Configuración 1:
+Gateway predeterminado: 192.168.0.40 (host de virtualización)
+
+bash
+Copiar
+Editar
+default via 192.168.0.40 dev eth0 proto static metric 10
+Redes internas de KVM/Libvirt gestionadas por el host (192.168.0.40):
+
+bash
+Copiar
+Editar
+10.17.3.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.4.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.5.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+Red de la LAN (192.168.0.0/24) conectada al host:
+
+bash
+Copiar
+Editar
+192.168.0.0/24 dev eth0 proto kernel scope link src 192.168.0.30 metric 10
+Configuración 2:
+Gateway predeterminado: 192.168.0.1 (router físico de la red LAN)
+
+bash
+Copiar
+Editar
+default via 192.168.0.1 dev eth0 proto static metric 10
+Redes internas de KVM/Libvirt gestionadas por el host (192.168.0.40):
+
+bash
+Copiar
+Editar
+10.17.3.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.4.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.5.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+Red de la LAN (192.168.0.0/24) conectada al host:
+
+bash
+Copiar
+Editar
+192.168.0.0/24 dev eth0 proto kernel scope link src 192.168.0.30 metric 10
+Comparación entre ambas configuraciones:
+Diferencia principal:
+
+En la Configuración 1, la gateway predeterminado es 192.168.0.40, que es el host de virtualización. Esto significa que el tráfico hacia las redes internas (10.17.x.x) se enruta a través del host de virtualización.
+
+En la Configuración 2, la gateway predeterminado es 192.168.0.1, que es el router físico. Esto significa que todo el tráfico que no tenga una ruta específica será enviado al router físico para ser gestionado (normalmente para acceder a Internet).
+
+Redes internas:
+Ambas configuraciones contienen las mismas rutas para las redes internas 10.17.x.x que deben ser enrutadas a través del host de virtualización 192.168.0.40.
+
+Red de la LAN:
+En ambas configuraciones, la red 192.168.0.0/24 es local, conectada directamente a la interfaz eth0 del host de virtualización, y no requiere una ruta especial.
+
+Recomendación:
+Para que las VMs puedan comunicarse correctamente con las redes internas y externas, deberías asegurarte de que el tráfico hacia las redes 10.17.x.x sea manejado por el host de virtualización (192.168.0.40) y el tráfico externo (Internet) sea manejado por el router físico (192.168.0.1).
+
+En resumen:
+
+Si deseas que el host de virtualización maneje las redes internas y el router físico maneje el tráfico hacia Internet, Configura la ruta predeterminada a 192.168.0.1 (como en la Configuración 2).
+
+Asegúrate de que las VMs tengan rutas configuradas correctamente para alcanzar 10.17.x.x a través del host de virtualización.
+
+usando 192.168.0.40 como gateway para las redes internas.
+o usando 192.168.0.1 como gateway para el tráfico externo.
+
+
+default via 192.168.0.40 dev eth0 proto static metric 10
+10.17.3.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.4.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.5.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+192.168.0.0/24 dev eth0 proto kernel scope link src 192.168.0.30 metric 10
+
+
+
+default via 192.168.0.1 dev eth0 proto static metric 10
+10.17.3.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.4.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.5.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+192.168.0.0/24 dev eth0 proto kernel scope link src 192.168.0.30 metric 10

@@ -383,3 +383,18 @@ sudo nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 192.168.0.40"
 sudo nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 192.168.0.40"
 sudo nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 192.168.0.40"
 sudo nmcli connection down eth0 && sudo nmcli connection up eth0
+
+
+default via 192.168.0.40 dev eth0 proto static metric 10
+10.17.3.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.4.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.5.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+192.168.0.0/24 dev eth0 proto kernel scope link src 192.168.0.30 metric 10
+
+
+
+default via 192.168.0.1 dev eth0 proto static metric 10
+10.17.3.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.4.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+10.17.5.0/24 via 192.168.0.40 dev eth0 proto static metric 10
+192.168.0.0/24 dev eth0 proto kernel scope link src 192.168.0.30 metric 10
