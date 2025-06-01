@@ -36,6 +36,10 @@ variable "vm_role_name" {
   type        = string
 }
 
+variable "host_ip" {
+  description = "IP address of the host machine"
+  type        = string
+}
 
 variable "vm_linux_definitions" {
   description = "Configuration map for each Linux VM to be provisioned"
@@ -52,6 +56,5 @@ variable "vm_linux_definitions" {
     dns1           = string
     dns2           = string
     short_hostname = string
-    host_ip        = string
   }))
 }
