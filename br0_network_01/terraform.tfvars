@@ -11,8 +11,7 @@ vm_linux_definitions = {
     volume_size    = 20 # Tamaño en GB (entero)
     volume_name    = "k8s-api-lb-volume"
     hostname       = "k8s-api-lb.socialdevs.site"
-    gateway        = "192.168.0.40"
-    dns1           = "10.17.3.11"
+    gateway        = "192.168.0.40" # ip fija de interfas del host
     dns2           = "8.8.8.8"
     short_hostname = "k8s-api-lb"
   }
