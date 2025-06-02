@@ -564,7 +564,9 @@ Este script es útil si estás automatizando la creación de máquinas virtuales
 
 ## ✍️ Autor
 
-**Víctor Hugo Gálvez Sastoque**
-DevOps | Infraestructura | Automatización | Kubernetes
-GitHub: [vhgalvez](https://github.com/vhgalvez)
-LinkedIn: [vhgalvez](https://www.linkedin.com/in/vhgalvez/)
+**Víctor Hugo Gálvez Sastoque**  
+Especialista en DevOps, Infraestructura, Kubernetes y Automatización.  
+Ingeniero con visión estratégica orientado a soluciones escalables y eficientes.
+
+- 🌐 **GitHub:** [@vhgalvez](https://github.com/vhgalvez)  
+- 💼 **LinkedIn:** [victor-hugo-galvez-sastoque](https://www.linkedin.com/in/victor-hugo-galvez-sastoque/)
