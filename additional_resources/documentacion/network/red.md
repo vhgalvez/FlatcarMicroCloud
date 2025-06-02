@@ -398,3 +398,12 @@ default via 192.168.0.1 dev eth0 proto static metric 10
 10.17.4.0/24 via 192.168.0.40 dev eth0 proto static metric 10
 10.17.5.0/24 via 192.168.0.40 dev eth0 proto static metric 10
 192.168.0.0/24 dev eth0 proto kernel scope link src 192.168.0.30 metric 10
+
+
+[victory@virtualizacion-server br0_network_01]$ sudo virsh domiflist k8s-api-lb.socialdevs.site
+[sudo] password for victory:
+ Interfaz   Tipo     Fuente   Modelo   MAC
+----------------------------------------------------------
+ vnet0      bridge   br0      virtio   52:54:00:aa:bb:cc
+
+[victory@virtualizacion-server br0_network_01]$
