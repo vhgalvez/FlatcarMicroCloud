@@ -559,3 +559,12 @@ https://github.com/GoogleCloudPlatform/kubectl-ai.git
 ```
 
 Este script es útil si estás automatizando la creación de máquinas virtuales con Terraform y necesitas una clave reutilizable para conectarte vía SSH con Flatcar.
+
+---
+
+## ✍️ Autor
+
+**Víctor Hugo Gálvez Sastoque**
+DevOps | Infraestructura | Automatización | Kubernetes
+GitHub: [vhgalvez](https://github.com/vhgalvez)
+LinkedIn: [vhgalvez](https://www.linkedin.com/in/vhgalvez/)
