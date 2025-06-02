@@ -6,6 +6,7 @@ vm_linux_definitions = {
     cpus           = 1
     memory         = 512
     ip             = "192.168.0.30"
+    mac            = "52:54:00:aa:bb:cc"
     volume_format  = "qcow2"
     volume_pool    = "default"
     volume_size    = 20 # Tamaño en GB (entero)

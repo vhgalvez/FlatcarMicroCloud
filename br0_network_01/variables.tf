@@ -56,5 +56,6 @@ variable "vm_linux_definitions" {
     dns1           = string
     dns2           = string
     short_hostname = string
+    mac            = string
   }))
 }

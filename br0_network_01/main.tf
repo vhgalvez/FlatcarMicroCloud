@@ -94,6 +94,7 @@ resource "libvirt_domain" "vm" {
   network_interface {
     bridge    = "br0"
     addresses = [each.value.ip]
+    mac       = each.value.mac
   }
 
   disk {
