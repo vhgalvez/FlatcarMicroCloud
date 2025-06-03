@@ -120,6 +120,16 @@ ping -c 4 10.17.5.10
 ping -c 4 10.17.5.30
 ```
 
+
+ping 10.17.4.21
+ping 10.17.4.22
+ping 10.17.4.23
+ping 10.17.4.24
+ping 10.17.4.25
+ping 10.17.4.26
+
+# Y cualquier otro worker si tienes (ej. 10.17.4.27)
+
 # verifica las rutas y la configuración de red
 
 ```bash
