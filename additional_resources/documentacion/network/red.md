@@ -87,6 +87,7 @@ sudo systemctl status virtqemud.service
     ```bash
     sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged nftables NetworkManager
     ```
+    
 sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd virtstoraged nftables NetworkManager
 
 sudo systemctl restart virtqemud virtlogd virtproxyd virtnetworkd nftables NetworkManager
