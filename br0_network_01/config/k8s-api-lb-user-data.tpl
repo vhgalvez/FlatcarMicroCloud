@@ -63,16 +63,21 @@ write_files:
       method=ignore
 
   - path: /usr/local/bin/set-hosts.sh
+    permissions: "0755"
     content: |
       #!/bin/bash
       echo "127.0.0.1   localhost" > /etc/hosts
       echo "::1         localhost" >> /etc/hosts
       echo "${ip}  ${hostname} ${short_hostname}" >> /etc/hosts
-    permissions: "0755"
 
   - path: /etc/sysctl.conf
     content: |
       net.ipv4.ip_forward = 1
+
+  - path: /etc/sysctl.d/99-haproxy-nonlocal-bind.conf
+    permissions: "0644"
+    content: |
+      net.ipv4.ip_nonlocal_bind = 1
 
   - path: /etc/NetworkManager/conf.d/dns.conf
     content: |
@@ -105,7 +110,7 @@ runcmd:
   - firewall-cmd --reload
   - echo " Firewall y NTP configurados" >> /var/log/cloud-init-output.log
   - /usr/local/bin/set-hosts.sh
-  - sysctl -p
+  - sysctl --system
   - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
   - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
@@ -117,7 +122,6 @@ runcmd:
   - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${host_ip}"
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
-  - echo " Rutas estáticas aplicadas" >> /var/log/cloud-init-output.log
   - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
   - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
