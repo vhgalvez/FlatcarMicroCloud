@@ -7,12 +7,12 @@ variable "base_image" {
 variable "vm_definitions" {
   description = "Definitions of virtual machines"
   type = map(object({
-    cpus             = number
-    memory           = number
-    ip               = string
-    name_dominio     = string
-    disk_size        = number
-    node_name        = string
+    cpus         = number
+    memory       = number
+    ip           = string
+    name_dominio = string
+    disk_size    = number
+    node_name    = string
     additional_disks = optional(list(object({
       size = number
       type = string
