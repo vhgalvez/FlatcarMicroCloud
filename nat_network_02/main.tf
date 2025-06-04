@@ -20,8 +20,8 @@ provider "libvirt" {
 
 # ✅ Red NAT sin atributos conflictivos
 resource "libvirt_network" "kube_network_02" {
-  name = "kube_network_02"
-  mode = "nat"
+  name      = "kube_network_02"
+  mode      = "nat"
   bridge    = "virbr_kube02"
   domain    = "kube.internal"
   autostart = true
@@ -105,6 +105,11 @@ resource "libvirt_domain" "vm_nat_02" {
     addresses  = [each.value.ip]
   }
 
+
+  # Segunda interfaz conectada a red de VIPs (br-vip)
+  network_interface {
+    bridge = "br-vip"
+  }
 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
