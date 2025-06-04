@@ -62,7 +62,6 @@ write_files:
       [ipv6]
       method=ignore
 
-
   - path: /etc/NetworkManager/system-connections/eth1.nmconnection
     permissions: "0600"
     content: |
@@ -74,14 +73,12 @@ write_files:
 
       [ipv4]
       method=manual
-      addresses1=10.17.5.2/24
+      addresses1=${ipvip}/24
       may-fail=false
       route-metric=20
 
       [ipv6]
       method=ignore
-
-
 
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
