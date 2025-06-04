@@ -62,22 +62,6 @@ write_files:
       [ipv6]
       method=ignore
 
-  - path: /etc/NetworkManager/system-connections/br-vip.nmconnection
-    permissions: "0600"
-    content: |
-      [connection]
-      id=br-vip
-      type=bridge
-      interface-name=br-vip
-      autoconnect=true
-
-      [ipv4]
-      method=manual
-      address1=0.0.0.0/24
-      may-fail=true
-
-      [ipv6]
-      method=ignore
 
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
@@ -133,7 +117,6 @@ runcmd:
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
   - nmcli connection reload
-  - nmcli con up br-vip || true
   - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
   - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${host_ip}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${host_ip}"
