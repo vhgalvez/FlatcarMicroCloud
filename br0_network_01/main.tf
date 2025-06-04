@@ -97,6 +97,29 @@ resource "libvirt_domain" "vm" {
     mac       = each.value.mac
   }
 
+# interface for VIP
+  network_interface {
+    bridge    = "br-vip"
+  }
+
+  os_type = "hvm"
+  arch    = "x86_64"
+
+  boot_device {
+    dev = "hd"
+  }
+
+  boot_device {
+    dev = "cdrom"
+  }
+
+  disk {
+    volume_id = libvirt_volume.so_image.id
+  }
+network_interface {
+    bridge = "br-vip"
+  }
+
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
