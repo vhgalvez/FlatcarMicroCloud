@@ -63,6 +63,26 @@ write_files:
       method=ignore
 
 
+  - path: /etc/NetworkManager/system-connections/eth1.nmconnection
+    permissions: "0600"
+    content: |
+      [connection]
+      id=eth1
+      type=ethernet
+      interface-name=eth1
+      autoconnect=true
+
+      [ipv4]
+      method=manual
+      addresses1=10.17.5.2/24
+      may-fail=false
+      route-metric=20
+
+      [ipv6]
+      method=ignore
+
+
+
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
     content: |
@@ -118,11 +138,13 @@ runcmd:
   - resolvconf -u
   - nmcli connection reload
   - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
-  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${host_ip}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${host_ip}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${host_ip}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${gateway}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${gateway}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${gateway}"
+  - nmcli connection reload
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
+  - nmcli connection up eth1
   - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
   - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 

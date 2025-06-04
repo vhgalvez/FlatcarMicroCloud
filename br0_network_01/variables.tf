@@ -47,6 +47,7 @@ variable "vm_linux_definitions" {
     cpus           = number
     memory         = number
     ip             = string
+    ipvip          = string
     volume_format  = string
     volume_pool    = string
     volume_size    = number

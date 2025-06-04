@@ -15,6 +15,7 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
+# 🔌 Red principal puenteada hacia LAN (br0)
 resource "libvirt_network" "br0" {
   name      = var.so_network_name
   mode      = "bridge"
@@ -23,6 +24,16 @@ resource "libvirt_network" "br0" {
   addresses = ["192.168.0.0/24"]
 }
 
+# 🔌 Red puenteada interna para tráfico VIP (br-vip)
+resource "libvirt_network" "br_vip" {
+  name      = "br-vip"
+  mode      = "bridge"
+  bridge    = "br-vip"
+  autostart = true
+  addresses = ["10.17.5.0/24"]
+}
+
+# 📦 Pool temporal de volúmenes
 resource "libvirt_pool" "volumetmp" {
   name = "volumetmp_${var.vm_role_name}"
   type = "dir"
@@ -32,6 +43,7 @@ resource "libvirt_pool" "volumetmp" {
   }
 }
 
+# 📦 Imagen base del sistema operativo
 resource "libvirt_volume" "so_image" {
   name   = "${var.cluster_name}-so_image"
   source = var.so_image
@@ -39,6 +51,7 @@ resource "libvirt_volume" "so_image" {
   format = "qcow2"
 }
 
+# 📄 Plantilla cloud-init renderizada por máquina
 data "template_file" "vm_configs" {
   for_each = var.vm_linux_definitions
 
@@ -53,6 +66,7 @@ data "template_file" "vm_configs" {
     timezone       = var.timezone
     role_name      = var.vm_role_name
     ip             = each.value.ip
+    ipvip          = each.value.ipvip
     gateway        = each.value.gateway
     dns1           = each.value.dns1
     dns2           = each.value.dns2
@@ -60,20 +74,25 @@ data "template_file" "vm_configs" {
   }
 }
 
+# 💿 Disco cloud-init con config y red
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_linux_definitions
 
-  name           = "${each.key}_cloudinit.iso"
-  pool           = libvirt_pool.volumetmp.name
-  user_data      = data.template_file.vm_configs[each.key].rendered
+  name      = "${each.key}_cloudinit.iso"
+  pool      = libvirt_pool.volumetmp.name
+  user_data = data.template_file.vm_configs[each.key].rendered
+
+  # Opcional, si usas archivos .nmconnection no es imprescindible
   network_config = templatefile("${path.module}/config/network-config.tpl", {
     ip      = each.value.ip
+    ipvip   = each.value.ipvip
     gateway = each.value.gateway
     dns1    = each.value.dns1
     dns2    = each.value.dns2
   })
 }
 
+# 📦 Disco raíz personalizado por máquina
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_linux_definitions
 
@@ -84,6 +103,7 @@ resource "libvirt_volume" "vm_disk" {
   size           = each.value.volume_size * 1024 * 1024 * 1024
 }
 
+# 🖥️ Máquina virtual completa
 resource "libvirt_domain" "vm" {
   for_each = var.vm_linux_definitions
 
@@ -91,18 +111,18 @@ resource "libvirt_domain" "vm" {
   memory = each.value.memory
   vcpu   = each.value.cpus
 
-  # Interfaz principal conectada a la red LAN (br0)
+  # NIC principal conectada a la LAN
   network_interface {
     bridge    = "br0"
     addresses = [each.value.ip]
     mac       = each.value.mac
   }
 
-  # Segunda interfaz conectada a red de VIPs (br-vip)
+  # NIC secundaria para Keepalived VIPs
   network_interface {
-    bridge = "br-vip"
+    bridge    = "br-vip"
+    addresses = [each.value.ipvip]
   }
-
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
@@ -135,6 +155,7 @@ resource "libvirt_domain" "vm" {
   }
 }
 
+# 🔎 Salida de IPs por VM
 output "vm_ip_addresses" {
   value = { for vm, config in var.vm_linux_definitions : vm => config.ip }
 }
