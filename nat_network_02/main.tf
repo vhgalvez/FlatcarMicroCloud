@@ -18,7 +18,7 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# ✅ Red NAT sin atributos conflictivos
+#  Red NAT principal para la red de servicio
 resource "libvirt_network" "kube_network_02" {
   name      = "kube_network_02"
   mode      = "nat"
@@ -27,23 +27,13 @@ resource "libvirt_network" "kube_network_02" {
   autostart = true
   addresses = ["10.17.3.0/24"]
 
-
   dhcp {
     enabled = true
   }
 }
 
-# 🔌 Red puenteada interna para tráfico VIP (br-vip)
-resource "libvirt_network" "br_vip" {
-  name      = "br-vip"
-  mode      = "bridge"
-  bridge    = "br-vip"
-  autostart = true
-  addresses = ["10.17.5.0/24"]
-}
 
-
-# 📦 Pool de almacenamiento
+#  Pool de almacenamiento
 resource "libvirt_pool" "volumetmp_nat_02" {
   name = "${var.cluster_name}_nat_02"
   type = "dir"
@@ -52,7 +42,7 @@ resource "libvirt_pool" "volumetmp_nat_02" {
   }
 }
 
-# 📄 Volumen base
+#  Imagen base del sistema
 resource "libvirt_volume" "rocky9_image" {
   name   = "${var.cluster_name}_rocky9_image"
   source = var.rocky9_image
@@ -60,7 +50,7 @@ resource "libvirt_volume" "rocky9_image" {
   format = "qcow2"
 }
 
-# 🧩 Archivos de configuración por VM
+#  User-data por VM
 data "template_file" "vm-configs" {
   for_each = var.vm_rockylinux_definitions
 
@@ -79,7 +69,7 @@ data "template_file" "vm-configs" {
   }
 }
 
-# ☁️ Disco cloudinit
+#  Cloud-init por VM
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_rockylinux_definitions
 
@@ -88,7 +78,7 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   user_data = data.template_file.vm-configs[each.key].rendered
 }
 
-# 💽 Disco VM
+#  Disco raíz por VM
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_rockylinux_definitions
 
@@ -98,7 +88,7 @@ resource "libvirt_volume" "vm_disk" {
   format         = "qcow2"
 }
 
-# 🖥️ Definición de cada VM
+#  Definición de VMs
 resource "libvirt_domain" "vm_nat_02" {
   for_each = var.vm_rockylinux_definitions
 
@@ -109,16 +99,16 @@ resource "libvirt_domain" "vm_nat_02" {
   arch    = "x86_64"
   machine = "pc"
 
-
+  # Conexión NAT (red de servicio)
   network_interface {
     network_id = libvirt_network.kube_network_02.id
     addresses  = [each.value.ip]
   }
 
-
-  # Segunda interfaz conectada a red de VIPs (br-vip)
+  # Conexión br-vip (no se crea aquí, solo se usa)
   network_interface {
-    bridge = "br-vip"
+    addresses = [each.value.ipvip]
+    bridge    = "br-vip"
   }
 
   disk {
@@ -143,7 +133,7 @@ resource "libvirt_domain" "vm_nat_02" {
   }
 }
 
-# 🔍 Salida de IPs asignadas
+#  Mostrar IPs asignadas
 output "ip_addresses" {
   value = {
     for key, machine in libvirt_domain.vm_nat_02 :
