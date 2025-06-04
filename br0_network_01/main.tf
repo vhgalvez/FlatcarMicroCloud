@@ -2,7 +2,7 @@
 
 terraform {
   required_version = ">= 1.11.3, < 2.0.0"
-  
+
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
@@ -26,7 +26,7 @@ resource "libvirt_network" "br0" {
 resource "libvirt_pool" "volumetmp" {
   name = "volumetmp_${var.vm_role_name}"
   type = "dir"
-  
+
   target {
     path = "/var/lib/libvirt/images/volumes/volumetmp_${var.vm_role_name}"
   }
@@ -63,9 +63,9 @@ data "template_file" "vm_configs" {
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_linux_definitions
 
-  name      = "${each.key}_cloudinit.iso"
-  pool      = libvirt_pool.volumetmp.name
-  user_data = data.template_file.vm_configs[each.key].rendered
+  name           = "${each.key}_cloudinit.iso"
+  pool           = libvirt_pool.volumetmp.name
+  user_data      = data.template_file.vm_configs[each.key].rendered
   network_config = templatefile("${path.module}/config/network-config.tpl", {
     ip      = each.value.ip
     gateway = each.value.gateway
@@ -91,32 +91,15 @@ resource "libvirt_domain" "vm" {
   memory = each.value.memory
   vcpu   = each.value.cpus
 
+  # Interfaz principal conectada a la red LAN (br0)
   network_interface {
     bridge    = "br0"
     addresses = [each.value.ip]
     mac       = each.value.mac
   }
 
-# interface for VIP
+  # Segunda interfaz conectada a red de VIPs (br-vip)
   network_interface {
-    bridge    = "br-vip"
-  }
-
-  os_type = "hvm"
-  arch    = "x86_64"
-
-  boot_device {
-    dev = "hd"
-  }
-
-  boot_device {
-    dev = "cdrom"
-  }
-
-  disk {
-    volume_id = libvirt_volume.so_image.id
-  }
-network_interface {
     bridge = "br-vip"
   }
 
@@ -125,6 +108,10 @@ network_interface {
   }
 
   cloudinit = libvirt_cloudinit_disk.vm_cloudinit[each.key].id
+
+  boot_device {
+    dev = ["hd"]
+  }
 
   graphics {
     type        = "vnc"
