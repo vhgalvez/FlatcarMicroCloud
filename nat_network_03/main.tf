@@ -32,8 +32,6 @@ resource "libvirt_network" "kube_network_03" {
   domain    = "kube.internal"
   autostart = true
   addresses = ["10.17.4.0/24"]
-  #mode = "bridge"
-  #bridge    = "br0"
   dhcp {
     enabled = true
   }
@@ -177,7 +175,4 @@ output "ip_addresses" {
     key => machine.network_interface[0].addresses[0] if length(machine.network_interface[0].addresses) > 0
   }
 }
-
-
-
 

@@ -51,6 +51,7 @@ variable "vm_rockylinux_definitions" {
     cpus           = number
     memory         = number
     ip             = string
+    ipvip          = string
     cloudinit_disk = string
     cloudinit_pool = string
     domain_memory  = string

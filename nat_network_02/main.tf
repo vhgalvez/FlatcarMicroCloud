@@ -33,6 +33,15 @@ resource "libvirt_network" "kube_network_02" {
   }
 }
 
+# 🔌 Red puenteada interna para tráfico VIP (br-vip)
+resource "libvirt_network" "br_vip" {
+  name      = "br-vip"
+  mode      = "bridge"
+  bridge    = "br-vip"
+  autostart = true
+  addresses = ["10.17.5.0/24"]
+}
+
 
 # 📦 Pool de almacenamiento
 resource "libvirt_pool" "volumetmp_nat_02" {
@@ -62,6 +71,7 @@ data "template_file" "vm-configs" {
     short_hostname = each.value.short_hostname
     timezone       = var.timezone
     ip             = each.value.ip
+    ipvip          = each.value.ipvip
     gateway        = var.gateway
     dns1           = var.dns1
     dns2           = var.dns2
