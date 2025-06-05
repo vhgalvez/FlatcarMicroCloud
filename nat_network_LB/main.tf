@@ -18,7 +18,7 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# 🔌 Red puenteada LAN (br0 físico)
+# 🔌 Red puenteada LAN (br0 físico o definida por var.so_network_name)
 resource "libvirt_network" "br0" {
   name      = var.so_network_name
   mode      = "bridge"
@@ -100,13 +100,6 @@ resource "libvirt_domain" "vm_NET_LB" {
     mac          = each.value.mac
   }
 
-  # 🔁 NIC #2: br0 (LAN real)
-  network_interface {
-    bridge    = "br0"
-    addresses = [each.value.ip_lan]
-    mac       = each.value.mac_lan
-  }
-
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
@@ -134,8 +127,7 @@ output "ip_addresses" {
   value = {
     for key, machine in libvirt_domain.vm_NET_LB :
     key => {
-      ip_nat = var.vm_linux_definitions[key].ip
-      ip_lan = var.vm_linux_definitions[key].ip_lan
+      ip = var.vm_linux_definitions[key].ip
     }
   }
 }
