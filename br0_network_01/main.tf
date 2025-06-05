@@ -118,11 +118,7 @@ resource "libvirt_domain" "vm" {
     mac       = each.value.mac
   }
 
-  # NIC secundaria para Keepalived VIPs
-  network_interface {
-    bridge    = "br-vip"
-    addresses = [each.value.ipvip]
-  }
+ 
   disk {
     volume_id = libvirt_volume.vm_disk[each.key].id
   }
