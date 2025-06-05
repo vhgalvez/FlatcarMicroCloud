@@ -31,7 +31,7 @@ variable "cluster_domain" {
 }
 
 variable "host_ip" {
-  description = "Dirección IP del host de virtualización que actúa como gateway"
+  description = "IP del gateway para enrutar hacia redes 10.17.3.0/24, 10.17.4.0/24 y 10.17.5.0/24"
   type        = string
 }
 

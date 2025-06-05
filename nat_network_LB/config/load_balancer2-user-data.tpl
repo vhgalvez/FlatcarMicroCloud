@@ -62,23 +62,7 @@ write_files:
       [ipv6]
       method=ignore
 
-  - path: /etc/NetworkManager/system-connections/eth1.nmconnection
-    permissions: "0600"
-    content: |
-      [connection]
-      id=eth1
-      type=ethernet
-      interface-name=eth1
-      autoconnect=true
 
-      [ipv4]
-      method=manual
-      addresses1=${ipvip}/24
-      may-fail=false
-      route-metric=20
-
-      [ipv6]
-      method=ignore
 
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
@@ -141,7 +125,6 @@ runcmd:
   - nmcli connection reload
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
-  - nmcli connection up eth1
   - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
   - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
