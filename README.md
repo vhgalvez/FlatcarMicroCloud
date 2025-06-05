@@ -584,6 +584,22 @@ Este script es útil si estás automatizando la creación de máquinas virtuales
 | 16 | Cloudflare DDNS + IP Dinámica           | Actualiza el dominio si tu IP pública cambia                     | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns) |
 
 
+1. generate_shared_ssh_key
+2. kvm-bridge-config
+3. ansible-CoreDNS-setup-Linux
+4. ansible-ntp-chrony-kubernetes
+5. ansible-k8s-ha-loadbalancer
+6. ansible-k3s-etcd-cluster
+7. k3s-vip-switch-master1-bootstrap
+8. ansible-k3s-configure-access
+9. ansible-SealedSecrets-kubeseal
+10. traefik-ansible-k3s-cluster
+11. flatcar-k3s-storage-suite
+12. ansible-monitoring-stack
+13. ArgoCD-ansible-kubernetes
+14. jenkins-ansible-playbook
+15. postgres-ansible-nfs
+16. cloudflare-dynamic-dns
 
 ---
 
