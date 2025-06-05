@@ -30,6 +30,11 @@ variable "cluster_domain" {
   type        = string
 }
 
+variable "host_ip" {
+  description = "Dirección IP del host de virtualización que actúa como gateway"
+  type        = string
+}
+
 variable "vm_linux_definitions" {
   description = "Definitions of virtual machines including CPU and memory configuration"
   type = map(object({
