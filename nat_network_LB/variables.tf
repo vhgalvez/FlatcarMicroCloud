@@ -59,7 +59,7 @@ variable "vm_linux_definitions" {
 
 variable "additional_disks" {
   description = "Map of additional disks for each VM"
-  type        = map(object({
+  type = map(object({
     size = number
     type = string
   }))
