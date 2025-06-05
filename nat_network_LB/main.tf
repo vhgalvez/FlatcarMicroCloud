@@ -55,6 +55,7 @@ data "template_file" "vm-configs" {
     short_hostname = each.value.short_hostname
     timezone       = var.timezone
     ip             = each.value.ip
+    mac            = each.value.mac
     gateway        = each.value.gateway
     dns1           = each.value.dns1
     dns2           = each.value.dns2
