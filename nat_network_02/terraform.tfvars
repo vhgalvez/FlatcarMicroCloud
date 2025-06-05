@@ -7,7 +7,6 @@ vm_rockylinux_definitions = {
     cpus           = 1
     memory         = 512
     ip             = "10.17.3.11"
-    ipvip          = "10.17.5.2"
     hostname       = "infra-cluster.socialdevs.site"
     volume_name    = "infra-cluster_volume"
     volume_format  = "qcow2"
@@ -22,7 +21,6 @@ vm_rockylinux_definitions = {
     cpus           = 1
     memory         = 512
     ip             = "10.17.3.12"
-    ipvip          = "10.17.5.3"
     hostname       = "loadbalancer1.socialdevs.site"
     volume_name    = "loadbalancer1_volume"
     volume_format  = "qcow2"
@@ -37,7 +35,6 @@ vm_rockylinux_definitions = {
     cpus           = 1
     memory         = 512
     ip             = "10.17.3.13"
-    ipvip          = "10.17.5.4"
     hostname       = "loadbalancer2.socialdevs.site"
     volume_name    = "loadbalancer2_volume"
     volume_format  = "qcow2"
@@ -48,22 +45,7 @@ vm_rockylinux_definitions = {
     domain_memory  = "512"
     short_hostname = "loadbalancer2"
   },
-  "postgresql1" = {
-    cpus           = 2
-    memory         = 1024
-    ip             = "10.17.3.14"
-    ipvip          = "10.17.5.4"
-    hostname       = "postgresql1.socialdevs.site"
-    volume_name    = "postgresql1_volume"
-    volume_format  = "qcow2"
-    volume_pool    = "default"
-    volume_size    = "32212254720"
-    cloudinit_disk = "AlmaLinux-9_cloudinit_disk.iso"
-    cloudinit_pool = "default"
-    domain_memory  = "1024"
-    short_hostname = "postgresql1"
-  }
-}
+  
 
 cluster_name        = "cluster_socialdevs"
 cluster_domain      = "socialdevs.site"

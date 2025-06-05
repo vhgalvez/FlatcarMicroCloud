@@ -18,40 +18,36 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-#  Red NAT principal para la red de servicio
-resource "libvirt_network" "kube_network_02" {
-  name      = "kube_network_02"
-  mode      = "nat"
-  bridge    = "virbr_kube02"
-  domain    = "kube.internal"
+# 🔌 Red principal puenteada hacia LAN (br0)
+resource "libvirt_network" "br0" {
+  name      = var.so_network_name
+  mode      = "bridge"
+  bridge    = "br1"
   autostart = true
-  addresses = ["10.17.3.0/24"]
-
-  dhcp {
-    enabled = true
-  }
+  addresses = ["192.168.0.0/24"]
 }
 
+
 #  Pool de almacenamiento
-resource "libvirt_pool" "volumetmp_nat_02" {
-  name = "${var.cluster_name}_nat_02"
+resource "libvirt_pool" "volumetmp_NET_LB" {
+  name = "${var.cluster_name}_NET_LB"
   type = "dir"
   target {
-    path = "/var/lib/libvirt/images/volumes/${var.cluster_name}_nat_02"
+    path = "/var/lib/libvirt/images/volumes/${var.cluster_name}_NET_LB"
   }
 }
 
 #  Imagen base del sistema
-resource "libvirt_volume" "rocky9_image" {
-  name   = "${var.cluster_name}_rocky9_image"
-  source = var.rocky9_image
-  pool   = libvirt_pool.volumetmp_nat_02.name
+resource "libvirt_volume" "so_image" {
+  name   = "${var.cluster_name}_so_image"
+  source = var.so_image
+  pool   = libvirt_pool.volumetmp_NET_LB.name
   format = "qcow2"
 }
 
 #  User-data por VM
 data "template_file" "vm-configs" {
-  for_each = var.vm_rockylinux_definitions
+  for_each = var.vm_linux_definitions
 
   template = file("${path.module}/config/${each.key}-user-data.tpl")
   vars = {
@@ -69,26 +65,26 @@ data "template_file" "vm-configs" {
 
 #  Cloud-init por VM
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
-  for_each = var.vm_rockylinux_definitions
+  for_each = var.vm_linux_definitions
 
   name      = "${each.key}_cloudinit.iso"
-  pool      = libvirt_pool.volumetmp_nat_02.name
+  pool      = libvirt_pool.volumetmp_NET_LB.name
   user_data = data.template_file.vm-configs[each.key].rendered
 }
 
 #  Disco raíz por VM
 resource "libvirt_volume" "vm_disk" {
-  for_each = var.vm_rockylinux_definitions
+  for_each = var.vm_linux_definitions
 
   name           = "${each.key}-${var.cluster_name}.qcow2"
-  base_volume_id = libvirt_volume.rocky9_image.id
-  pool           = libvirt_pool.volumetmp_nat_02.name
+  base_volume_id = libvirt_volume.so_image.id
+  pool           = libvirt_pool.volumetmp_NET_LB.name
   format         = "qcow2"
 }
 
 #  Definición de VMs
-resource "libvirt_domain" "vm_nat_02" {
-  for_each = var.vm_rockylinux_definitions
+resource "libvirt_domain" "vm_NET_LB" {
+  for_each = var.vm_linux_definitions
 
   name   = each.key
   memory = each.value.domain_memory
@@ -127,7 +123,7 @@ resource "libvirt_domain" "vm_nat_02" {
 #  Mostrar IPs asignadas
 output "ip_addresses" {
   value = {
-    for key, machine in libvirt_domain.vm_nat_02 :
-    key => var.vm_rockylinux_definitions[key].ip
+    for key, machine in libvirt_domain.vm_NET_LB :
+    key => var.vm_linux_definitions[key].ip
   }
 }
