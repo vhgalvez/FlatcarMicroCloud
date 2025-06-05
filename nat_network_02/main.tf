@@ -81,7 +81,7 @@ resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_linux_definitions
 
   name           = "${each.key}-${var.cluster_name}.qcow2"
-  base_volume_id = libvirt_volume.rocky9_image.id
+  base_volume_id = libvirt_volume.so_image.id
   pool           = libvirt_pool.volumetmp_nat_02.name
   format         = "qcow2"
 }
