@@ -45,7 +45,7 @@ variable "cluster_domain" {
   type        = string
 }
 
-variable "vm_rockylinux_definitions" {
+variable "vm_linux_definitions" {
   description = "Definitions of virtual machines including CPU and memory configuration"
   type = map(object({
     cpus           = number
