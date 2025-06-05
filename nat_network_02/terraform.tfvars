@@ -1,7 +1,5 @@
 # nat_network_02\terraform.tfvars
 
-# nat_network_02/terraform.tfvars
-
 # 📦 Imagen base del sistema operativo
 so_image = "/var/lib/libvirt/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 
@@ -38,12 +36,12 @@ vm_linux_definitions = {
 }
 
 # 🌐 Red y DNS
-cluster_name        = "cluster_socialdevs"
-cluster_domain      = "socialdevs.site"
+cluster_name    = "cluster_socialdevs"
+cluster_domain  = "socialdevs.site"
 so_network_name = "kube_network_02"
-gateway             = "10.17.3.1"
-dns1                = "10.17.3.11"
-dns2                = "8.8.8.8"
+gateway         = "10.17.3.1"
+dns1            = "10.17.3.11"
+dns2            = "8.8.8.8"
 
 # 🔐 Claves SSH autorizadas
 ssh_keys = [
