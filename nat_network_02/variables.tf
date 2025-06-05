@@ -9,12 +9,12 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "rocky9_image" {
+variable "so_image" {
   description = "Path to the Rocky Linux 9 image"
   type        = string
 }
 
-variable "rocky9_network_name" {
+variable "so_network_name" {
   description = "The network name for the VMs"
   type        = string
 }
@@ -51,7 +51,6 @@ variable "vm_rockylinux_definitions" {
     cpus           = number
     memory         = number
     ip             = string
-    ipvip          = string
     cloudinit_disk = string
     cloudinit_pool = string
     domain_memory  = string
