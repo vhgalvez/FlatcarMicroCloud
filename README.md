@@ -583,6 +583,7 @@ Este script es útil si estás automatizando la creación de máquinas virtuales
 | 15 | PostgreSQL sobre NFS                    | Base de datos persistente para servicios en K3s                  | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs) |
 | 16 | Cloudflare DDNS + IP Dinámica           | Actualiza el dominio si tu IP pública cambia                     | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns) |
 
+https://github.com/vhgalvez/ansible-helm-install-k3s
 
 1. generate_shared_ssh_key
 2. kvm-bridge-config
@@ -592,7 +593,9 @@ Este script es útil si estás automatizando la creación de máquinas virtuales
 6. ansible-k3s-etcd-cluster
 7. k3s-vip-switch-master1-bootstrap
 8. ansible-k3s-configure-access
-9. ansible-SealedSecrets-kubeseal
+ 9. ansible-helm-install-k3s
+9.  ansible-SealedSecrets-kubeseal
+
 10. traefik-ansible-k3s-cluster
 11. flatcar-k3s-storage-suite
 12. ansible-monitoring-stack
