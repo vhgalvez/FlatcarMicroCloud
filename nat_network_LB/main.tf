@@ -60,6 +60,7 @@ data "template_file" "vm-configs" {
     dns1           = each.value.dns1
     dns2           = each.value.dns2
     cluster_domain = var.cluster_domain
+    host_ip        = var.host_ip
   }
 }
 

@@ -1,4 +1,4 @@
-# nat_network_02\variables.tf
+# nat_network_LB\variables.tf
 variable "ssh_keys" {
   description = "SSH keys for the VMs"
   type        = list(string)
