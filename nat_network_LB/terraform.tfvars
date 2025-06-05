@@ -1,8 +1,6 @@
-# nat_network_LB\terraform.tfvars
+# nat_network_LB/terraform.tfvars
 
 so_image = "/var/lib/libvirt/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
-
-vm_linux_definitions
 
 vm_linux_definitions = {
   "load_balancer1" = {
@@ -16,7 +14,7 @@ vm_linux_definitions = {
     volume_format  = "qcow2"
     volume_size    = 30
     gateway        = "192.168.0.1"
-    dns1           = "10.17.3.11"   # Tu DNS interno
+    dns1           = "10.17.3.11"   # DNS interno
     dns2           = "8.8.8.8"      # DNS externo
   },
   "load_balancer2" = {
@@ -36,11 +34,11 @@ vm_linux_definitions = {
 }
 
 # Variables globales
-cluster_name        = "cluster_socialdevs"
-cluster_domain      = "socialdevs.site"
-so_network_name     = "br0"
-host_ip             = "192.168.0.40"
-timezone            = "Europe/Madrid"
+cluster_name    = "cluster_socialdevs"
+cluster_domain  = "socialdevs.site"
+so_network_name = "br0"
+host_ip         = "192.168.0.40"
+timezone        = "Europe/Madrid"
 
 # Claves SSH permitidas en cloud-init
 ssh_keys = [
