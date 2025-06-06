@@ -40,8 +40,8 @@ cluster_name    = "cluster_socialdevs"
 cluster_domain  = "socialdevs.site"
 so_network_name = "kube_network_02"
 gateway         = "10.17.3.1"
-dns1            = "10.17.3.11"
-dns2            = "8.8.8.8"
+dns1            = "8.8.8.8"
+dns2            = "10.17.3.11"
 
 # 🔐 Claves SSH autorizadas
 ssh_keys = [

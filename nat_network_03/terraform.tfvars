@@ -94,6 +94,6 @@ ssh_keys = [
 ]
 
 gateway  = "10.17.4.1"
-dns1     = "10.17.3.11"
-dns2     = "8.8.8.8"
+dns1     = "8.8.8.8"
+dns2     = "10.17.3.11"
 timezone = "Europe/Madrid"

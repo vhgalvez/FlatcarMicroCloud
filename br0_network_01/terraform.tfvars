@@ -18,8 +18,8 @@ vm_linux_definitions = {
     cloudinit_disk  = "loadbalancer1-seed.iso"
     cloudinit_pool  = "default"
     gateway         = "192.168.0.1"
-    dns1            = "10.17.3.11"
-    dns2            = "8.8.8.8"
+    dns1            = "8.8.8.8"
+    dns2            = "10.17.3.11"
   },
   "load_balancer2" = {
     cpus            = 1
@@ -36,8 +36,8 @@ vm_linux_definitions = {
     cloudinit_disk  = "loadbalancer2-seed.iso"
     cloudinit_pool  = "default"
     gateway         = "192.168.0.1"
-    dns1            = "10.17.3.11"
-    dns2            = "8.8.8.8"
+    dns1            = "8.8.8.8"
+    dns2            = "10.17.3.11"
   }
 }
 
