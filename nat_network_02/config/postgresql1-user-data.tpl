@@ -30,18 +30,6 @@ users:
     ssh_authorized_keys: ${ssh_keys}
 
 write_files:
-  - encoding: b64
-    content: U0VMSU5VWD1kaXNhYmxlZApTRUxJTlVYVFlQRT10YXJnZXRlZCAKIyAK
-    owner: root:root
-    path: /etc/sysconfig/selinux
-    permissions: "0644"
-
-  - encoding: b64
-    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDguOC44Ljg=
-    owner: root:root
-    path: /etc/resolv.conf
-    permissions: "0644"
-
   - path: /etc/NetworkManager/system-connections/eth0.nmconnection
     permissions: "0600"
     content: |
@@ -70,13 +58,10 @@ write_files:
       echo "::1         localhost" >> /etc/hosts
       echo "${ip}  ${hostname} ${short_hostname}" >> /etc/hosts
 
-  - path: /etc/sysctl.conf
-    content: |
-      net.ipv4.ip_forward = 1
-
-  - path: /etc/sysctl.d/99-haproxy-nonlocal-bind.conf
+  - path: /etc/sysctl.d/99-custom.conf
     permissions: "0644"
     content: |
+      net.ipv4.ip_forward = 1
       net.ipv4.ip_nonlocal_bind = 1
 
   - path: /etc/NetworkManager/conf.d/dns.conf
@@ -94,13 +79,11 @@ write_files:
       allow 10.17.0.0/16
 
 runcmd:
-  - echo " Iniciando cloud-init en $(hostname)" >> /var/log/cloud-init-output.log
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
   - mkswap /swapfile
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
-  - echo " Swap configurado" >> /var/log/cloud-init-output.log
   - dnf install -y firewalld resolvconf chrony
   - systemctl enable --now chronyd
   - firewall-cmd --permanent --add-port=443/tcp
@@ -108,7 +91,6 @@ runcmd:
   - firewall-cmd --permanent --add-port=80/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload
-  - echo " Firewall y NTP configurados" >> /var/log/cloud-init-output.log
   - /usr/local/bin/set-hosts.sh
   - sysctl --system
   - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
@@ -116,13 +98,11 @@ runcmd:
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
   - nmcli connection reload
-  - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
   - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${gateway}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${gateway}"
   - nmcli connection modify eth0 +ipv4.routes "192.168.0.0/24 ${gateway}"
   - nmcli connection down eth0 || true
   - nmcli connection up eth0
   - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
-  - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
