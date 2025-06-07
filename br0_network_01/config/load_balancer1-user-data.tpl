@@ -37,6 +37,18 @@ network:
           via: ${host_ip}
 
 write_files:
+  - encoding: b64
+    content: U0VMSU5VWD1kaXNhYmxlZApTRUxJTlVYVFlQRT10YXJnZXRlZCAKIyAK
+    owner: root:root
+    path: /etc/sysconfig/selinux
+    permissions: "0644"
+
+  - encoding: b64
+    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDguOC44Ljg=
+    owner: root:root
+    path: /etc/resolv.conf
+    permissions: "0644"
+
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
     content: |
