@@ -58,9 +58,7 @@ write_files:
       dns-search=${cluster_domain}
       may-fail=false
       route-metric=10
-      routes1=10.17.3.0/24 ${host_ip}
-      routes2=10.17.4.0/24 ${host_ip}
-      routes3=10.17.5.0/24 ${host_ip}
+      routes=10.17.3.0/24 ${host_ip};10.17.4.0/24 ${host_ip};10.17.5.0/24 ${host_ip}
 
       [ipv6]
       method=ignore
@@ -97,13 +95,13 @@ write_files:
       allow 10.17.0.0/16
 
 runcmd:
-  - echo " Iniciando cloud-init en $(hostname)" >> /var/log/cloud-init-output.log
+  - echo "Iniciando cloud-init en $(hostname)" >> /var/log/cloud-init-output.log
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
   - mkswap /swapfile
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
-  - echo " Swap configurado" >> /var/log/cloud-init-output.log
+  - echo "Swap configurado" >> /var/log/cloud-init-output.log
   - dnf install -y firewalld resolvconf chrony NetworkManager
   - systemctl enable --now chronyd firewalld
   - firewall-cmd --permanent --add-port=443/tcp
@@ -111,16 +109,13 @@ runcmd:
   - firewall-cmd --permanent --add-port=80/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload
-  - echo " Firewall y NTP configurados" >> /var/log/cloud-init-output.log
+  - echo "Firewall y NTP configurados" >> /var/log/cloud-init-output.log
   - /usr/local/bin/set-hosts.sh
   - sysctl --system
   - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
   - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
-  - nmcli connection reload
-  - nmcli connection up eth0
-  - nmcli connection delete "Wired connection 1" || true
-  - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
+  - echo "cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
