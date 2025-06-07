@@ -65,8 +65,6 @@ write_files:
       [ipv6]
       method=ignore
 
-
-
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
     content: |
@@ -121,7 +119,8 @@ runcmd:
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
   - nmcli connection reload
-  - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
+  - nmcli connection up eth0
+  - nmcli connection delete "Wired connection 1" || true
   - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
