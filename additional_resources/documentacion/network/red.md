@@ -133,7 +133,7 @@ ping 10.17.4.26
 # verifica las rutas y la configuración de red
 
 ```bash
-ping -c 4 10.17.4.21; ping -c 4 10.17.3.11; ping -c 4 10.17.3.1; ping -c 4 8.8.8.8; ping -c 4 192.168.0.30; ping -c 4 192.168.0.1 && ip route show && ip a && cat /proc/sys/net/ipv4/ip_forward
+ping -c 4 10.17.4.21; ping -c 4 10.17.3.11; ping -c 4 10.17.3.1; ping -c 4 8.8.8.8; ping -c 4 192.168.0.30; 192.168.0.31; 192.168.0.40; ping -c 4 192.168.0.1 && ip route show && ip a && cat /proc/sys/net/ipv4/ip_forward
 ```
 
 ip route show
