@@ -89,7 +89,7 @@ runcmd:
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
   - dnf install -y firewalld resolvconf chrony
-  - systemctl enable --now chronyd
+  - systemctl enable --now firewalld chronyd NetworkManager
   - firewall-cmd --permanent --add-port=443/tcp
   - firewall-cmd --permanent --add-port=123/tcp
   - firewall-cmd --permanent --add-port=80/tcp
