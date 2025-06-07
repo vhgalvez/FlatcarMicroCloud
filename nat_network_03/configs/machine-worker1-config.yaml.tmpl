@@ -56,7 +56,7 @@ storage:
 
           [Route]
           Destination=0.0.0.0/0
-          Gateway=10.17.4.1        
+          Gateway=10.17.4.1
 
     - path: /etc/tmpfiles.d/hosts.conf
       filesystem: root
@@ -67,14 +67,6 @@ storage:
           127.0.0.1   localhost
           ::1         localhost
           ${ip}  ${host_name} ${node_name}
-
-    - path: /run/systemd/resolve/resolv.conf
-      filesystem: root
-      mode: 0644
-      contents:
-        inline: |
-          nameserver ${dns1}
-          nameserver ${dns2}
 
     - path: /etc/tmpfiles.d/resolv.conf
       filesystem: root
@@ -130,6 +122,22 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
+    - name: set-ntp.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Enable NTP sync
+        After=network.target time-sync.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/timedatectl set-ntp true
+        RemainAfterExit=true
+
+        [Install]
+        WantedBy=multi-user.target
+
     - name: apply-network-routes.service
       enabled: true
       contents: |
@@ -141,21 +149,6 @@ systemd:
         [Service]
         Type=oneshot
         ExecStart=/usr/bin/systemctl restart systemd-networkd.service
-        RemainAfterExit=true
-
-        [Install]
-        WantedBy=multi-user.target
-
-    - name: set-hosts.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Set /etc/hosts file
-        After=network.target
-
-        [Service]
-        Type=oneshot
-        ExecStart=/bin/bash -c 'echo "127.0.0.1   localhost" > /etc/hosts; echo "::1         localhost" >> /etc/hosts; echo "${ip}  ${host_name} ${node_name}" >> /etc/hosts'
         RemainAfterExit=true
 
         [Install]
