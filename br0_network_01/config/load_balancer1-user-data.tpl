@@ -5,7 +5,6 @@ manage_etc_hosts: false
 growpart:
   mode: auto
   devices: ["/"]
-  ignore_growroot_disabled: false
 
 resize_rootfs: true
 
@@ -26,25 +25,29 @@ users:
     groups: [adm, wheel]
     lock_passwd: false
     ssh_authorized_keys: ${ssh_keys}
-  - name: root
-    ssh_authorized_keys: ${ssh_keys}
 
 write_files:
-  - encoding: b64
-    content: U0VMSU5VWD1kaXNhYmxlZApTRUxJTlVYVFlQRT10YXJnZXRlZCAKIyAK
-    owner: root:root
-    path: /etc/sysconfig/selinux
+  # SELinux en modo disabled
+  - path: /etc/sysconfig/selinux
     permissions: "0644"
-
-  - encoding: b64
-    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDguOC44Ljg=
     owner: root:root
-    path: /etc/resolv.conf
-    permissions: "0644"
+    content: |
+      SELINUX=disabled
+      SELINUXTYPE=targeted
 
+  # /etc/resolv.conf inicial
+  - path: /etc/resolv.conf
+    permissions: "0644"
+    owner: root:root
+    content: |
+      search ${cluster_domain}
+      nameserver ${dns1}
+      nameserver ${dns2}
+
+  # Conexión estática para eth0
   - path: /etc/NetworkManager/system-connections/eth0.nmconnection
-    permissions: "0600"
     owner: root:root
+    permissions: "0600"
     content: |
       [connection]
       id=eth0
@@ -53,7 +56,6 @@ write_files:
       interface-name=eth0
       autoconnect=true
       autoconnect-priority=100
-      permissions=
 
       [ipv4]
       method=manual
@@ -61,36 +63,35 @@ write_files:
       dns=${dns1};${dns2};
       dns-search=${cluster_domain}
       route-metric=10
-      may-fail=false
-      routes1=10.17.3.0/24 ${host_ip}
-      routes2=10.17.4.0/24 ${host_ip}
-      routes3=10.17.5.0/24 ${host_ip}
+      ignore-auto-routes=true          # evita que DHCP añada rutas
+      ignore-auto-dns=true             # evita que DHCP cambie resolv.conf
+      never-default=false
+
+      # Rutas estáticas persistentes (formato correcto)
+      routes1=10.17.3.0/24,${host_ip}
+      routes2=10.17.4.0/24,${host_ip}
+      routes3=10.17.5.0/24,${host_ip}
 
       [ipv6]
       method=ignore
 
+  # Script para /etc/hosts
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
     content: |
       #!/bin/bash
-      echo "127.0.0.1   localhost" > /etc/hosts
-      echo "::1         localhost" >> /etc/hosts
+      echo "127.0.0.1   localhost"       >  /etc/hosts
+      echo "::1         localhost"       >> /etc/hosts
       echo "${ip}  ${hostname} ${short_hostname}" >> /etc/hosts
 
-  - path: /etc/sysctl.conf
-    content: |
-      net.ipv4.ip_forward = 1
-
+  # sysctl
   - path: /etc/sysctl.d/99-haproxy-nonlocal-bind.conf
     permissions: "0644"
     content: |
+      net.ipv4.ip_forward = 1
       net.ipv4.ip_nonlocal_bind = 1
 
-  - path: /etc/NetworkManager/conf.d/dns.conf
-    content: |
-      [main]
-      dns=none
-
+  # chrony
   - path: /etc/chrony.conf
     permissions: "0644"
     content: |
@@ -101,31 +102,37 @@ write_files:
       allow 10.17.0.0/16
 
 runcmd:
-  - echo "Iniciando cloud-init en $(hostname)" >> /var/log/cloud-init-output.log
+  - echo "▶ cloud-init: inicio" >> /var/log/cloud-init-output.log
+
+  # swap de 2 GiB
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
   - mkswap /swapfile
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
+
+  # Instalar y habilitar servicios base
   - dnf install -y firewalld resolvconf chrony NetworkManager
-  - systemctl enable --now chronyd firewalld NetworkManager
+  - systemctl enable --now firewalld chronyd NetworkManager
+
+  # Abrir puertos (ejemplo)
   - firewall-cmd --permanent --add-port=443/tcp
-  - firewall-cmd --permanent --add-port=123/tcp
   - firewall-cmd --permanent --add-port=80/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload
+
+  # Aplicar /etc/hosts
   - /usr/local/bin/set-hosts.sh
+
+  # Recargar sysctl
   - sysctl --system
-  - echo "nameserver ${dns1}" > /etc/resolvconf/resolv.conf.d/base
-  - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
-  - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
-  - resolvconf -u
-  - chmod 0600 /etc/NetworkManager/system-connections/eth0.nmconnection
-  - chown root:root /etc/NetworkManager/system-connections/eth0.nmconnection
+
+  # Forzar NetworkManager a recargar la conexión keyfile
   - nmcli connection reload
-  - nmcli connection down "Wired connection 1" || true
+  - nmcli connection down "Wired connection 1" || true   # si existe
   - nmcli connection delete "Wired connection 1" || true
   - nmcli connection up eth0
-  - echo "cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
+
+  - echo "▶ cloud-init: finalizado" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
