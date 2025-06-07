@@ -77,7 +77,11 @@ write_files:
       server 1.pool.ntp.org iburst
       server 2.pool.ntp.org iburst
       allow 10.17.0.0/16
-
+      driftfile /var/lib/chrony/drift
+      makestep 1.0 3
+      bindcmdaddress 0.0.0.0
+      bindcmdaddress ::
+      
 runcmd:
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
