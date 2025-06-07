@@ -1,9 +1,4 @@
 #cloud-config
-# br0_network_01/config/load_balancer1-user-data.tpl
-
-############################
-# 1. HOSTNAME & USUARIOS   #
-############################
 hostname: ${hostname}
 manage_etc_hosts: false
 
@@ -19,9 +14,6 @@ users:
 disable_root: false
 ssh_pwauth: true
 
-############################
-# 2. NETWORK (v2 con Netplan)
-############################
 network:
   version: 2
   renderer: NetworkManager
@@ -44,9 +36,6 @@ network:
         - to: 10.17.5.0/24
           via: ${host_ip}
 
-############################
-# 3. FICHEROS Y AJUSTES    #
-############################
 write_files:
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
@@ -71,35 +60,18 @@ write_files:
       server 2.pool.ntp.org iburst
       allow 10.17.0.0/16
 
-############################
-# 4. COMANDOS DE ARRANQUE  #
-############################
 runcmd:
-  - echo "▶ cloud-init start" >> /var/log/cloud-init-output.log
-
-  # Crear SWAP
   - fallocate -l 2G /swapfile
   - chmod 600 /swapfile
   - mkswap /swapfile
   - swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
-
-  # Paquetes esenciales
   - dnf install -y firewalld resolvconf chrony NetworkManager
   - systemctl enable --now firewalld chronyd NetworkManager
-
-  # Reglas de firewall
   - firewall-cmd --permanent --add-port=443/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload
-
-  # Hosts y ajustes de kernel
   - /usr/local/bin/set-hosts.sh
   - sysctl --system
 
-  - echo "▶ cloud-init done" >> /var/log/cloud-init-output.log
-
-############################
-# 5. VARIOS                #
-############################
 timezone: ${timezone}

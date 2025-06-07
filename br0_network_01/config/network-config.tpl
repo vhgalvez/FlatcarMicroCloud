@@ -1,8 +1,5 @@
-#cloud-init
-# br0_network_01/config/network-config.tpl
 version: 2
 renderer: NetworkManager
-
 ethernets:
   eth0:
     match:
@@ -10,18 +7,18 @@ ethernets:
     dhcp4: false
     dhcp6: false
     addresses:
-      - ${ip}/24
-    gateway4: ${gateway}
+      - 192.168.0.30/24
+    gateway4: 192.168.0.1
     nameservers:
       addresses:
-        - ${dns1}
-        - ${dns2}
+        - 1.1.1.1
+        - 8.8.8.8
       search:
-        - ${cluster_domain}
+        - mycluster.local
     routes:
       - to: 10.17.3.0/24
-        via: ${host_ip}
+        via: 192.168.0.40
       - to: 10.17.4.0/24
-        via: ${host_ip}
+        via: 192.168.0.40
       - to: 10.17.5.0/24
-        via: ${host_ip}
+        via: 192.168.0.40
