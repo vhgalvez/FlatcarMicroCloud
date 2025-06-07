@@ -2,6 +2,19 @@
 hostname: ${hostname}
 manage_etc_hosts: false
 
+growpart:
+  mode: auto
+  devices: ["/"]
+  ignore_growroot_disabled: false
+
+resize_rootfs: true
+
+chpasswd:
+  list: |
+    core:$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/
+    root:$6$hNh1nwO5OWWct4aZ$OoeAkQ4gKNBnGYK0ECi8saBMbUNeQRMICcOPYEu1bFuj9Axt4Rh6EnGba07xtIsGNt2wP9SsPlz543gfJww11/
+  expire: false
+
 users:
   - default
   - name: core
@@ -36,19 +49,24 @@ network:
         - to: 10.17.5.0/24
           via: ${host_ip}
 
-write_files:
-  - encoding: b64
-    content: U0VMSU5VWD1kaXNhYmxlZApTRUxJTlVYVFlQRT10YXJnZXRlZCAKIyAK
-    owner: root:root
-    path: /etc/sysconfig/selinux
+write_files
+  # SELinux en modo disabled
+  - path: /etc/sysconfig/selinux
     permissions: "0644"
-
-  - encoding: b64
-    content: c2VhcmNoIGNlZmFzbG9jYWxzZXJ2ZXIuY29tCm5hbWVzZXIgMTAuMTcuMy4xMQpuYW1lc2VydmVyIDguOC44Ljg=
     owner: root:root
-    path: /etc/resolv.conf
-    permissions: "0644"
+    content: |
+      SELINUX=disabled
+      SELINUXTYPE=targeted
 
+  # /etc/resolv.conf inicial 
+  - path: /etc/resolv.conf
+    permissions: "0644"
+    owner: root:root
+    content: |
+      search socialdevs.site
+      nameserver 10.17.3.11
+      nameserver 8.8.8.8
+  
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
     content: |
