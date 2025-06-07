@@ -58,6 +58,9 @@ write_files:
       dns-search=${cluster_domain}
       may-fail=false
       route-metric=10
+      routes1=10.17.3.0/24 ${host_ip}
+      routes2=10.17.4.0/24 ${host_ip}
+      routes3=10.17.5.0/24 ${host_ip}
 
       [ipv6]
       method=ignore
@@ -119,13 +122,6 @@ runcmd:
   - resolvconf -u
   - nmcli connection reload
   - echo " Configurando rutas estáticas en eth0..." >> /var/log/cloud-init-output.log
-  - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${host_ip}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${host_ip}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${host_ip}"
-  - nmcli connection reload
-  - nmcli connection down eth0 || true
-  - nmcli connection up eth0
-  - nmcli con delete "$(nmcli -t -f NAME con show --active | grep Wired)" || true
   - echo " cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
