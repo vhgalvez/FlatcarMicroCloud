@@ -93,7 +93,6 @@ runcmd:
   - nmcli connection add type ethernet con-name eth0 ifname eth0 ipv4.method manual ipv4.addresses "${ip}/24" ipv4.gateway "${gateway}" ipv4.dns "${dns1},${dns2}" ipv4.dns-search "${cluster_domain}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${host_ip}"
   - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${host_ip}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${host_ip}"
   - nmcli connection up eth0
   - firewall-cmd --permanent --add-port=443/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
