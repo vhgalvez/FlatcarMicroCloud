@@ -47,6 +47,7 @@ write_files:
     content: |
       [connection]
       id=eth0
+      uuid=3b8df4d8-3d8b-4f15-9a22-df9cc0a509b3
       type=ethernet
       interface-name=eth0
       autoconnect=true
@@ -58,7 +59,9 @@ write_files:
       dns-search=${cluster_domain}
       may-fail=false
       route-metric=10
-      routes=10.17.3.0/24 ${host_ip};10.17.4.0/24 ${host_ip};10.17.5.0/24 ${host_ip}
+      routes1=10.17.3.0/24 ${host_ip}
+      routes2=10.17.4.0/24 ${host_ip}
+      routes3=10.17.5.0/24 ${host_ip}
 
       [ipv6]
       method=ignore
@@ -116,6 +119,10 @@ runcmd:
   - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
+  - nmcli connection reload
+  - nmcli connection down "Wired connection 1" || true
+  - nmcli connection delete "Wired connection 1" || true
+  - nmcli connection up eth0
   - echo "cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
 timezone: ${timezone}
