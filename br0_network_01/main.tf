@@ -1,4 +1,3 @@
-
 # br0_network_01\main.tf
 terraform {
   required_version = ">= 1.11.4, < 2.0.0"
@@ -19,7 +18,7 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# 🔌 Red puenteada LAN (br0 físico o definida por var.so_network_name)
+# Red puenteada (br0)
 resource "libvirt_network" "br0" {
   name      = var.so_network_name
   mode      = "bridge"
@@ -28,7 +27,7 @@ resource "libvirt_network" "br0" {
   addresses = ["192.168.0.0/24"]
 }
 
-# 📦 Pool de almacenamiento
+# Pool de almacenamiento
 resource "libvirt_pool" "volumetmp_NET_LB" {
   name = "${var.cluster_name}_NET_LB"
   type = "dir"
@@ -37,7 +36,7 @@ resource "libvirt_pool" "volumetmp_NET_LB" {
   }
 }
 
-# 📀 Imagen base del sistema operativo
+# Imagen base del sistema operativo
 resource "libvirt_volume" "so_image" {
   name   = "${var.cluster_name}_so_image"
   source = var.so_image
@@ -45,7 +44,7 @@ resource "libvirt_volume" "so_image" {
   format = "qcow2"
 }
 
-# 📝 Cloud-init (user-data) por VM
+# Generación de archivos cloud-init por VM
 data "template_file" "vm-configs" {
   for_each = var.vm_linux_definitions
 
@@ -65,7 +64,7 @@ data "template_file" "vm-configs" {
   }
 }
 
-# 📁 Disco cloud-init
+# Disco de cloud-init
 resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   for_each = var.vm_linux_definitions
 
@@ -74,7 +73,7 @@ resource "libvirt_cloudinit_disk" "vm_cloudinit" {
   user_data = data.template_file.vm-configs[each.key].rendered
 }
 
-# 📆 Disco raíz por VM
+# Disco raíz de la VM
 resource "libvirt_volume" "vm_disk" {
   for_each = var.vm_linux_definitions
 
@@ -84,7 +83,7 @@ resource "libvirt_volume" "vm_disk" {
   format         = "qcow2"
 }
 
-# 🖥️ Definición de VM
+# Definición de la máquina virtual
 resource "libvirt_domain" "vm_NET_LB" {
   for_each = var.vm_linux_definitions
 
@@ -123,7 +122,7 @@ resource "libvirt_domain" "vm_NET_LB" {
   }
 }
 
-# 🌐 Mostrar IPs asignadas
+# Salida con las IPs asignadas
 output "ip_addresses" {
   value = {
     for key, machine in libvirt_domain.vm_NET_LB :
