@@ -44,6 +44,7 @@ write_files:
 
   - path: /etc/NetworkManager/system-connections/eth0.nmconnection
     permissions: "0600"
+    owner: root:root
     content: |
       [connection]
       id=eth0
@@ -59,8 +60,8 @@ write_files:
       addresses1=${ip}/24,${gateway}
       dns=${dns1};${dns2};
       dns-search=${cluster_domain}
-      may-fail=false
       route-metric=10
+      may-fail=false
       routes1=10.17.3.0/24 ${host_ip}
       routes2=10.17.4.0/24 ${host_ip}
       routes3=10.17.5.0/24 ${host_ip}
@@ -119,6 +120,8 @@ runcmd:
   - echo "nameserver ${dns2}" >> /etc/resolvconf/resolv.conf.d/base
   - echo "search ${cluster_domain}" >> /etc/resolvconf/resolv.conf.d/base
   - resolvconf -u
+  - chmod 0600 /etc/NetworkManager/system-connections/eth0.nmconnection
+  - chown root:root /etc/NetworkManager/system-connections/eth0.nmconnection
   - nmcli connection reload
   - nmcli connection down "Wired connection 1" || true
   - nmcli connection delete "Wired connection 1" || true
