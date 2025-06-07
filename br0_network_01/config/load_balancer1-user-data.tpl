@@ -61,6 +61,9 @@ write_files:
       dns-search=${cluster_domain}
       may-fail=false
       route-metric=10
+      routes1=10.17.3.0/24 ${host_ip}
+      routes2=10.17.4.0/24 ${host_ip}
+      routes3=10.17.5.0/24 ${host_ip}
 
       [ipv6]
       method=ignore
@@ -119,10 +122,6 @@ runcmd:
   - nmcli connection reload
   - nmcli connection down "Wired connection 1" || true
   - nmcli connection delete "Wired connection 1" || true
-  - nmcli connection up eth0
-  - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${host_ip}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${host_ip}"
-  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${host_ip}"
   - nmcli connection up eth0
   - echo "cloud-init finalizado correctamente" >> /var/log/cloud-init-output.log
 
