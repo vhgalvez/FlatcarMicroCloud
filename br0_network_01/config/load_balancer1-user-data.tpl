@@ -49,24 +49,18 @@ network:
         - to: 10.17.5.0/24
           via: ${host_ip}
 
-write_files
-  # SELinux en modo disabled
+write_files:
   - path: /etc/sysconfig/selinux
     permissions: "0644"
-    owner: root:root
     content: |
       SELINUX=disabled
       SELINUXTYPE=targeted
-
-  # /etc/resolv.conf inicial 
   - path: /etc/resolv.conf
     permissions: "0644"
-    owner: root:root
     content: |
       search socialdevs.site
       nameserver 10.17.3.11
       nameserver 8.8.8.8
-  
   - path: /usr/local/bin/set-hosts.sh
     permissions: "0755"
     content: |
@@ -74,13 +68,11 @@ write_files
       echo "127.0.0.1   localhost" > /etc/hosts
       echo "::1         localhost" >> /etc/hosts
       echo "${ip}  ${hostname} ${short_hostname}" >> /etc/hosts
-
   - path: /etc/sysctl.d/99-custom.conf
     permissions: "0644"
     content: |
       net.ipv4.ip_forward = 1
       net.ipv4.ip_nonlocal_bind = 1
-
   - path: /etc/chrony.conf
     permissions: "0644"
     content: |
@@ -91,13 +83,18 @@ write_files
       allow 10.17.0.0/16
 
 runcmd:
-  - fallocate -l 2G /swapfile
-  - chmod 600 /swapfile
-  - mkswap /swapfile
-  - swapon /swapfile
+  - fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
   - echo "/swapfile none swap sw 0 0" >> /etc/fstab
   - dnf install -y firewalld resolvconf chrony NetworkManager
   - systemctl enable --now firewalld chronyd NetworkManager
+  - nmcli connection show --active | grep -E "eth0|System" | awk '{print $1}' | xargs -r -I {} nmcli connection down "{}" || true
+  - nmcli connection show | grep -E "eth0|System" | awk '{print $1}' | xargs -r -I {} nmcli connection delete "{}" || true
+  - rm -f /etc/sysconfig/network-scripts/ifcfg-eth0
+  - nmcli connection add type ethernet con-name eth0 ifname eth0 ipv4.method manual ipv4.addresses "${ip}/24" ipv4.gateway "${gateway}" ipv4.dns "${dns1},${dns2}" ipv4.dns-search "${cluster_domain}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.3.0/24 ${host_ip}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.4.0/24 ${host_ip}"
+  - nmcli connection modify eth0 +ipv4.routes "10.17.5.0/24 ${host_ip}"
+  - nmcli connection up eth0
   - firewall-cmd --permanent --add-port=443/tcp
   - firewall-cmd --permanent --add-port=6443/tcp
   - firewall-cmd --reload

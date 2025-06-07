@@ -4,13 +4,10 @@ renderer: NetworkManager
 ethernets:
   eth0:
     dhcp4: false
-    dhcp6: false
     addresses:
       - ${ip}/24
     gateway4: ${gateway}
     nameservers:
-      search:
-        - ${cluster_domain}
       addresses:
         - ${dns1}
         - ${dns2}
