@@ -394,12 +394,17 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 |  9 | Gestión de Secretos con Sealed Secrets                 | Encripta secretos para GitOps con ArgoCD                                              | [https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal)     |
 | 10 | Ingress Controller con Traefik (K3s)                   | Entrada segura HTTP(S) para servicios internos y externos                             | [https://github.com/vhgalvez/traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster)           |
 | 11 | Almacenamiento Persistente (Longhorn + NFS)            | Volúmenes distribuidos y resilientes para pods                                        | [https://github.com/vhgalvez/flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)               |
-| 12 | **Migrar certificados TLS a PVC (Traefik ↦ Longhorn)** | Mantiene los certificados de Traefik en un PVC gestionado por Longhorn (persistencia) | [https://github.com/vhgalvez/traefik\_migrate\_tls\_to\_pvc](https://github.com/vhgalvez/traefik_migrate_tls_to_pvc)         |
+(https://github.com/vhgalvez/traefik_migrate_tls_to_pvc)         |
 | 13 | Stack de Monitoreo                                     | Observabilidad con Prometheus, Grafana y Alertmanager                                 | [https://github.com/vhgalvez/ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                 |
 | 14 | Automatización con ArgoCD                              | GitOps: aplica despliegues automáticamente desde Git                                  | [https://github.com/vhgalvez/ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)               |
 | 15 | CI/CD con Jenkins + Ansible                            | Compila imágenes y las despliega usando Git + ArgoCD                                  | [https://github.com/vhgalvez/jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                 |
 | 16 | PostgreSQL sobre NFS                                   | Base de datos persistente accesible desde Kubernetes                                  | [https://github.com/vhgalvez/postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)                         |
 | 17 | Cloudflare DDNS + IP Dinámica                          | Actualiza el DNS de Cloudflare si cambia tu IP pública                                | [https://github.com/vhgalvez/cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns)                     |
+
+
+
+
+https://github.com/vhgalvez/longhorn-dashboard-ui-ansible
 
 ---
 
@@ -412,7 +417,13 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 ---
 
 
-https://github.com/vhgalvez/k3s-secrets-cluster
+
+https://github.com/vhgalvez/flatcar-k3s-storage-suite
+https://github.com/vhgalvez/traefik-ansible-k3s-cluster
+https://github.com/vhgalvez/longhorn-dashboard-ui-ansible
+https://github.com/vhgalvez/ArgoCD-ansible-kubernetes
+https://github.com/vhgalvez/jenkins-ansible-playbook
+
 
 
 | Proyecto                                         | Repositorio                                                                                                                              |
