@@ -372,32 +372,6 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
    - Los nodos workers y maestros ejecutan las aplicaciones, manteniendo la sincronización temporal a través de `chronyc`.
 
-## Recursos de Automatización
-
-# 🔁 Proceso Modular de Automatización para Clúster K3s HA sobre Bare Metal
-
-| Nº | Proyecto                                               | Motivo de Ejecución                                                                   | Repositorio                                                                                                                  |
-|----|--------------------------------------------------------|----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| 01 | Generador de Clave SSH Compartida                      | Base para acceso entre nodos con Ansible sin contraseña                               | [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key)                                               |
-| 02 | Bridge de Red para KVM/libvirt                         | Permite VMs con acceso LAN real (modo bridge)                                         | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config)                                                           |
-| 03 | Configuración de CoreDNS                               | DNS interno para resolución de servicios y nodos                                      | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)                                       |
-| 04 | Sincronización de Tiempo (NTP/Chrony)                  | Requisito para etcd, certificados y coherencia temporal                               | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)                                   |
-| 05 | Balanceador HAProxy + Keepalived                       | Alta disponibilidad con VIPs para API y tráfico web                                   | [ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer)                                       |
-| 06 | Despliegue K3s HA con etcd                             | Clúster K3s multi-master con almacenamiento distribuido                               | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                                             |
-| 07 | Cambio a VIP en Master 1 (Bootstrap)                   | Redirecciona el primer nodo a usar la VIP como servidor                               | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap)                             |
-| 08 | Configuración de Acceso Remoto `kubectl`               | Permite administrar el clúster desde una estación externa                             | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access)                                     |
-| 09 | Almacenamiento Persistente (Longhorn + NFS)            | Volúmenes distribuidos y resilientes para pods                                        | [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)                                           |
-| 10 | Ingress Controller con Traefik (K3s)                   | Entrada segura HTTP(S) para servicios internos y externos                             | [traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster)                                       |
-| 11 | Dashboard Web de Longhorn con Auth                     | UI protegida para gestionar almacenamiento persistente                                | [longhorn-dashboard-ui-ansible](https://github.com/vhgalvez/longhorn-dashboard-ui-ansible)                                   |
-| 12 | Gestión de Secretos con Sealed Secrets                 | Encripta secretos para GitOps con ArgoCD                                              | [ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal)                                 |
-| 13 | Stack de Monitoreo                                     | Observabilidad con Prometheus, Grafana y Alertmanager                                 | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                                             |
-| 14 | Automatización con ArgoCD                              | GitOps: aplica despliegues automáticamente desde Git                                  | [ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)                                           |
-| 15 | CI/CD con Jenkins + Ansible                            | Compila imágenes y las despliega usando Git + ArgoCD                                  | [jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                                             |
-| 16 | PostgreSQL sobre NFS                                   | Base de datos persistente accesible desde Kubernetes                                  | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)                                                     |
-| 17 | Cloudflare DDNS + IP Dinámica                          | Actualiza el DNS de Cloudflare si cambia tu IP pública                                | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns)                                                 |
-
-
-
 # 🔁 Proceso Modular de Automatización — Clúster K3s HA (bare-metal)
 
 | Nº | Fase | Proyecto / Repositorio | Motivo principal | Dependencias clave |
@@ -429,7 +403,6 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 ---
 
-
 # 🔁 Proceso Modular de Automatización para Clúster K3s HA (Bare-Metal)
 
 | Nº | Proyecto / Repositorio | Motivo principal | Notas de dependencia |
@@ -452,10 +425,6 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 | 16 | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs) | PostgreSQL stateful | PVC Longhorn; métricas ya disponibles |
 | 17 | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns) | DDNS público en Cloudflare | Opcional; ejecútalo antes de emitir Let’s Encrypt |
 
-
-
-
-
 ---
 
 ## ✅ Validaciones Importantes
@@ -465,9 +434,6 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 - 🔄 **ArgoCD y Jenkins pueden funcionar en paralelo, pero Jenkins debe estar listo para generar las imágenes que ArgoCD desplegará.**
 
 ---
-
-
-
 
 
 | Proyecto                                         | Repositorio                                                                                                                              |
