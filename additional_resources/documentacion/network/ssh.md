@@ -46,5 +46,10 @@ Intenta conectarte nuevamente usando `sudo ssh` para verificar que la configurac
 sudo ssh -i /root/.ssh/cluster_openshift/key_cluster_openshift/id_rsa_key_cluster_openshift core@10.17.4.21 -p 22
 ```
 
+```bash
+sudo ssh -i /root/.ssh/cluster_k3s/shared/id_rsa_shared_cluster core@10.17.3.11 -p 22
+```
+
+
 Con esta configuración en `/root/.ssh/config`, `sudo ssh` debería conectarse sin solicitar la confirmación de autenticidad de host para cada conexión nueva.
 
