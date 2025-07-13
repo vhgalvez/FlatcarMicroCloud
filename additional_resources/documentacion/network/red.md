@@ -390,3 +390,4 @@ Interfaz Tipo Fuente Modelo MAC
 vnet0 bridge br0 virtio 52:54:00:aa:bb:cc
 
 [victory@virtualizacion-server br0_network_01]$
+
