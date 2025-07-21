@@ -4,8 +4,6 @@
 
 **FlatcarMicroCloud** es una solución Kubernetes diseñada para maximizar los recursos de un servidor físico. El entorno se ejecuta sobre un servidor **ProLiant DL380 G7**, utilizando **Rocky Linux 9.5** como sistema operativo base para virtualización, junto con **AlmaLinux 9.4** en algunos nodos auxiliares. Las máquinas virtuales que componen el clúster Kubernetes utilizan **Flatcar Container Linux** como sistema operativo liviano y seguro.
 
-
-
 Esta arquitectura permite desplegar aplicaciones en contenedores mediante herramientas modernas como:
 
 - **K3s**, una distribución ligera de Kubernetes.
@@ -24,13 +22,14 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 #### ⚙️ Virtualización y Automatización
 
 ##### Hipervisor
+
 - **KVM/QEMU**: Virtualización nativa de alto rendimiento para entornos Linux.
-- **Virt-Manager** *(opcional)*: Interfaz gráfica para la gestión de máquinas virtuales.
+- **Virt-Manager** _(opcional)_: Interfaz gráfica para la gestión de máquinas virtuales.
 
 ##### Provisión de Infraestructura
+
 - **Libvirt** como backend de virtualización.
 - **Terraform** con el proveedor `libvirt`: Automatización del ciclo de vida de las máquinas virtuales.
-
 
 ## 2. Hardware del Servidor
 
@@ -41,7 +40,7 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 - **Almacenamiento**:
   - Disco Principal: 1.5TB
   - Disco Secundario: 3.0TB
-  
+
 ### Homelab Server (Servidor Físico ProLiant DL380 G7)
 
 ![ProLiant DL380 G7](additional_resources/image/hp_server.png)
@@ -61,20 +60,20 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 
 ## 4. Resumen de Recursos para Máquinas Virtuales
 
-| **Hostname**    | **IP**        | **Dominio**                  | **CPU** | **Memoria (MB)** | **Disco (GB)** |
-|-----------------|---------------|-----------------------------|---------|------------------|----------------|
-| master1         | 10.17.4.21    | master1.cefaslocalserver.com | 2       | 4096             | 50             |
-| master2         | 10.17.4.22    | master2.cefaslocalserver.com | 2       | 4096             | 50             |
-| master3         | 10.17.4.23    | master3.cefaslocalserver.com | 2       | 4096             | 50             |
-| worker1         | 10.17.4.24    | worker1.cefaslocalserver.com | 2       | 4096             | 50             |
-| worker2         | 10.17.4.25    | worker2.cefaslocalserver.com | 2       | 4096             | 50             |
-| worker3         | 10.17.4.26    | worker3.cefaslocalserver.com | 2       | 4096             | 50             |
-| storage1        | 10.17.3.27    | storage1.cefaslocalserver.com| 2       | 2048             | 80             |
-| infra-cluster   | 10.17.3.11    | infra-cluster.cefaslocalserver.com| 2   | 2048             | 32             |
-| loadbalancer1   | 10.17.3.12    | loadbalancer1.cefaslocalserver.com | 2   | 2048             | 32             |
-| loadbalancer2   | 10.17.3.13    | loadbalancer2.cefaslocalserver.com | 2   | 2048             | 32             |
-| postgresql1     | 10.17.3.14    | postgresql1.cefaslocalserver.com | 2     | 2048             | 32             |
-| k8s-api-lb      | 192.168.0.30  | k8s-api-lb.cefaslocalserver.com | 2     | 2048             | 80             |
+| **Hostname**  | **IP**       | **Dominio**                        | **CPU** | **Memoria (MB)** | **Disco (GB)** |
+| ------------- | ------------ | ---------------------------------- | ------- | ---------------- | -------------- |
+| master1       | 10.17.4.21   | master1.cefaslocalserver.com       | 2       | 4096             | 50             |
+| master2       | 10.17.4.22   | master2.cefaslocalserver.com       | 2       | 4096             | 50             |
+| master3       | 10.17.4.23   | master3.cefaslocalserver.com       | 2       | 4096             | 50             |
+| worker1       | 10.17.4.24   | worker1.cefaslocalserver.com       | 2       | 4096             | 50             |
+| worker2       | 10.17.4.25   | worker2.cefaslocalserver.com       | 2       | 4096             | 50             |
+| worker3       | 10.17.4.26   | worker3.cefaslocalserver.com       | 2       | 4096             | 50             |
+| storage1      | 10.17.3.27   | storage1.cefaslocalserver.com      | 2       | 2048             | 80             |
+| infra-cluster | 10.17.3.11   | infra-cluster.cefaslocalserver.com | 2       | 2048             | 32             |
+| loadbalancer1 | 10.17.3.12   | loadbalancer1.cefaslocalserver.com | 2       | 2048             | 32             |
+| loadbalancer2 | 10.17.3.13   | loadbalancer2.cefaslocalserver.com | 2       | 2048             | 32             |
+| postgresql1   | 10.17.3.14   | postgresql1.cefaslocalserver.com   | 2       | 2048             | 32             |
+| k8s-api-lb    | 192.168.0.30 | k8s-api-lb.cefaslocalserver.com    | 2       | 2048             | 80             |
 
 ## 5. Máquinas Virtuales y Roles
 
@@ -82,24 +81,28 @@ Esta arquitectura permite desplegar aplicaciones en contenedores mediante herram
 | ------------------ | ----------------------- | ------------------------------------------ | -------- |
 | k8s-api-lb         | Alma Linux              | Gestión y seguridad                        | 1        |
 | Load Balancer Node | Alma Linux              | Balanceo Traefik controlador de ingress    | 2        |
-| infra-cluster Node | Alma Linux              | DNS CoreDNS / NTP Chrony                  | 1        |
+| infra-cluster Node | Alma Linux              | DNS CoreDNS / NTP Chrony                   | 1        |
 | PostgreSQL Node    | Alma Linux              | Base de datos central para microservicios  | 1        |
 | Master Node        | Flatcar Container Linux | Administración de API de Kubernetes        | 3        |
 | Worker Nodes       | Flatcar Container Linux | Ejecución de microservicios y aplicaciones | 3        |
-| storage1           | Alma Linux              | Almacenamiento                            | 1        |
+| storage1           | Alma Linux              | Almacenamiento                             | 1        |
 
 ## 6. Explicación de Roles de las VMs
 
 - **Maestros (master1, master2, master3)**:
+
   - Nodos que conforman el plano de control de Kubernetes, manejando la API y distribuyendo la carga en los nodos worker.
 
 - **Workers (worker1, worker2, worker3)**:
+
   - Nodos que ejecutan aplicaciones y microservicios, proporcionando la capacidad de escalar horizontalmente.
 
 - **infra-cluster (infra-cluster)**:
+
   - Nodo que actúa como servidor DNS CoreDNS y NTP Chrony.
 
 - **Load Balancer (loadbalancer1, loadbalancer2)**:
+
   - Nodos que distribuyen el tráfico de red entre los nodos maestros y workers, asegurando un balanceo de carga eficiente.
 
 - **PostgreSQL (postgresql1)**:
@@ -248,7 +251,6 @@ Siguiendo este flujo, todas las dependencias y configuraciones serán instaladas
 - **Sincronización de tiempo**:
   Todos los nodos del clúster, incluyendo los nodos maestros, workers y el Bootstrap Node, sincronizan su tiempo utilizando **chronyc**. Esto garantiza que todos los nodos mantengan una sincronización temporal precisa, lo cual es crucial para la operación correcta de Kubernetes y otros servicios distribuidos.
 
-
 ## Redes Virtuales y Arquitectura de Red
 
 ### Redes Virtuales Configuradas
@@ -265,13 +267,13 @@ Siguiendo este flujo, todas las dependencias y configuraciones serán instaladas
 | kube_network_03 | worker1       | 10.17.4.24   | Ejecución de aplicaciones                |
 | kube_network_03 | worker2       | 10.17.4.25   | Ejecución de aplicaciones                |
 | kube_network_03 | worker3       | 10.17.4.26   | Ejecución de aplicaciones                |
-| kube_network_03 | storage1      | 10.17.4.27   | Almacenamiento                          |
+| kube_network_03 | storage1      | 10.17.4.27   | Almacenamiento                           |
 
 ### Red nat_network_01
 
-| Red NAT | Nodo       | Dirección IP | Rol del Nodo                             |
-| ------- | ---------- | ------------ |------------------------------------------|
-| kube_network_01     | k8s-api-lb | 10.17.5.10   | HAProxy + Keepalived VIP                 |
+| Red NAT         | Nodo       | Dirección IP | Rol del Nodo             |
+| --------------- | ---------- | ------------ | ------------------------ |
+| kube_network_01 | k8s-api-lb | 10.17.5.10   | HAProxy + Keepalived VIP |
 
 ## Detalles de Configuración
 
@@ -284,8 +286,8 @@ Siguiendo este flujo, todas las dependencias y configuraciones serán instaladas
   - Flatcar Container Linux: `/mnt/lv_data/organized_storage/images/flatcar_production_qemu_image.img`
 
 - **Red Gateway**:
-  
-  - kube_network_01: 10.17.5.1  
+
+  - kube_network_01: 10.17.5.1
   - kube_network_02: 10.17.3.1
   - kube_network_03: 10.17.4.1
 
@@ -374,25 +376,25 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 # 🔁 Proceso Modular de Automatización — Clúster K3s HA (bare-metal)
 
-| Nº | Fase | Proyecto / Repositorio | Motivo principal | Dependencias clave |
-|---:|:----:|------------------------|------------------|--------------------|
-| 1  | 0 | [generate_shared_ssh_key] | SSH sin contraseña entre nodos | — |
-| 2  | 0 | [kvm-bridge-config] | Bridge LAN real a las VMs | 1 |
-| 3  | 1 | [ansible-CoreDNS-setup-Linux] | DNS interno | 1-2 |
-| 4  | 1 | [ansible-ntp-chrony-kubernetes] | Sincronización de tiempo | 1-2 |
-| 5  | 2 | [ansible-k8s-ha-loadbalancer] | VIPs con HAProxy + Keepalived | 3-4 |
-| 6  | 3 | [ansible-k3s-etcd-cluster] | K3s HA (etcd) | 5 |
-| 7  | 4 | [k3s-vip-switch-master1-bootstrap] | Re-alinea `master-0` a la VIP | 6 |
-| 8  | 5 | [ansible-k3s-configure-access] | Copia `kubeconfig` remoto | 6-7 |
-| 9  | 6 | [flatcar-k3s-storage-suite] | Longhorn + NFS (PVC) | 6 |
-| 10 | 7 | [traefik-ansible-k3s-cluster] | Ingress Controller + TLSStore | 9 |
-| 11 | 7 | [longhorn-dashboard-ui-ansible] | UI protegida de Longhorn | 9-10 |
-| 12 | 8 | [ansible-SealedSecrets-kubeseal] | Secretos cifrados (GitOps) | 6 |
-| 13 | 9 | [ArgoCD-ansible-kubernetes] | Motor GitOps | 10-12 |
-| 14 | 10 | [jenkins-ansible-playbook] | CI/CD (build → push → ArgoCD) | 10-13 |
-| 15 | 10 | [ansible-monitoring-stack] | Prometheus + Grafana | 9-10 |
-| 16 | 11 | [postgres-ansible-nfs] | PostgreSQL stateful | 9-15 |
-| 17 | 12 | [cloudflare-dynamic-dns] | DDNS Cloudflare | opcional — antes de emitir LE |
+|  Nº | Fase | Proyecto / Repositorio             | Motivo principal               | Dependencias clave            |
+| --: | :--: | ---------------------------------- | ------------------------------ | ----------------------------- |
+|   1 |  0   | [generate_shared_ssh_key]          | SSH sin contraseña entre nodos | —                             |
+|   2 |  0   | [kvm-bridge-config]                | Bridge LAN real a las VMs      | 1                             |
+|   3 |  1   | [ansible-CoreDNS-setup-Linux]      | DNS interno                    | 1-2                           |
+|   4 |  1   | [ansible-ntp-chrony-kubernetes]    | Sincronización de tiempo       | 1-2                           |
+|   5 |  2   | [ansible-k8s-ha-loadbalancer]      | VIPs con HAProxy + Keepalived  | 3-4                           |
+|   6 |  3   | [ansible-k3s-etcd-cluster]         | K3s HA (etcd)                  | 5                             |
+|   7 |  4   | [k3s-vip-switch-master1-bootstrap] | Re-alinea `master-0` a la VIP  | 6                             |
+|   8 |  5   | [ansible-k3s-configure-access]     | Copia `kubeconfig` remoto      | 6-7                           |
+|   9 |  6   | [flatcar-k3s-storage-suite]        | Longhorn + NFS (PVC)           | 6                             |
+|  10 |  7   | [traefik-ansible-k3s-cluster]      | Ingress Controller + TLSStore  | 9                             |
+|  11 |  7   | [longhorn-dashboard-ui-ansible]    | UI protegida de Longhorn       | 9-10                          |
+|  12 |  8   | [ansible-SealedSecrets-kubeseal]   | Secretos cifrados (GitOps)     | 6                             |
+|  13 |  9   | [ArgoCD-ansible-kubernetes]        | Motor GitOps                   | 10-12                         |
+|  14 |  10  | [jenkins-ansible-playbook]         | CI/CD (build → push → ArgoCD)  | 10-13                         |
+|  15 |  10  | [ansible-monitoring-stack]         | Prometheus + Grafana           | 9-10                          |
+|  16 |  11  | [postgres-ansible-nfs]             | PostgreSQL stateful            | 9-15                          |
+|  17 |  12  | [cloudflare-dynamic-dns]           | DDNS Cloudflare                | opcional — antes de emitir LE |
 
 > **Leyenda de fases**  
 > 0 Bootstrap host-to-host 1 Servicios base 2 VIP network  
@@ -405,27 +407,40 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 # 🔁 Proceso Modular de Automatización para Clúster K3s HA (Bare-Metal)
 
-| Nº | Proyecto / Repositorio | Motivo principal | Notas de dependencia |
-|---:|------------------------|------------------|----------------------|
-| 1  | [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key) | SSH sin contraseña entre nodos | Requisito para todos los playbooks posteriores |
-| 2  | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config) | Bridge LAN real a las VMs | Reinicia libvirt/networks |
-| 3  | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux) | DNS interno | Clúster y etcd dependen de DNS local |
-| 4  | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes) | Sincronización de tiempo | Necesario para certificados y etcd |
-| 5  | [ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer) | VIPs con HAProxy + Keepalived | Expone 6443/80/443 |
-| 6  | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster) | K3s HA con etcd | Usa la VIP como `--tls-san` |
-| 7  | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap) | Re-alinea master-0 a la VIP | Solo si bootstrap inicial fue con la IP local |
-| 8  | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access) | Copia `kubeconfig` remoto | Para gestionar el clúster desde tu estación |
-| 9  | [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite) | Longhorn + NFS (PVC) | Provee almacenamiento persistente |
-| 10 | [traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster) | Ingress Controller + TLSStore | Consume PVC Longhorn (`acme.json`) |
-| 11 | [longhorn-dashboard-ui-ansible](https://github.com/vhgalvez/longhorn-dashboard-ui-ansible) | UI protegida de Longhorn | Publicada vía Traefik |
-| 12 | [ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal) | Secretos cifrados para GitOps | Requiere API K3s operativa |
-| 13 | [ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes) | Motor GitOps | Depende de Traefik, Sealed Secrets y PVC |
-| 14 | [jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook) | CI/CD (build → push → ArgoCD) | Publicado vía Traefik y gestionado por ArgoCD |
-| 15 | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack) | Prometheus + Grafana | Usa PVC y se expone por Traefik |
-| 16 | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs) | PostgreSQL stateful | PVC Longhorn; métricas ya disponibles |
-| 17 | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns) | DDNS público en Cloudflare | Opcional; ejecútalo antes de emitir Let’s Encrypt |
+|  Nº | Proyecto / Repositorio                                                                           | Motivo principal               | Notas de dependencia                              |
+| --: | ------------------------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------- |
+|   1 | [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key)                   | SSH sin contraseña entre nodos | Requisito para todos los playbooks posteriores    |
+|   2 | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config)                               | Bridge LAN real a las VMs      | Reinicia libvirt/networks                         |
+|   3 | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)           | DNS interno                    | Clúster y etcd dependen de DNS local              |
+|   4 | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)       | Sincronización de tiempo       | Necesario para certificados y etcd                |
+|   5 | [ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer)           | VIPs con HAProxy + Keepalived  | Expone 6443/80/443                                |
+|   6 | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                 | K3s HA con etcd                | Usa la VIP como `--tls-san`                       |
+|   7 | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap) | Re-alinea master-0 a la VIP    | Solo si bootstrap inicial fue con la IP local     |
+|   8 | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access)         | Copia `kubeconfig` remoto      | Para gestionar el clúster desde tu estación       |
+|   9 | [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)               | Longhorn + NFS (PVC)           | Provee almacenamiento persistente                 |
+|  10 | [traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster)           | Ingress Controller + TLSStore  | Consume PVC Longhorn (`acme.json`)                |
+|  11 | [longhorn-dashboard-ui-ansible](https://github.com/vhgalvez/longhorn-dashboard-ui-ansible)       | UI protegida de Longhorn       | Publicada vía Traefik                             |
+|  12 | [ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal)     | Secretos cifrados para GitOps  | Requiere API K3s operativa                        |
+|  13 | [ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)               | Motor GitOps                   | Depende de Traefik, Sealed Secrets y PVC          |
+|  14 | [jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                 | CI/CD (build → push → ArgoCD)  | Publicado vía Traefik y gestionado por ArgoCD     |
+|  15 | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                 | Prometheus + Grafana           | Usa PVC y se expone por Traefik                   |
+|  16 | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)                         | PostgreSQL stateful            | PVC Longhorn; métricas ya disponibles             |
+|  17 | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns)                     | DDNS público en Cloudflare     | Opcional; ejecútalo antes de emitir Let’s Encrypt |
 
 ---
+
+## 🔗 Proyectos Relacionados
+
+Este repositorio forma parte de un ecosistema completo de laboratorio DevOps en Kubernetes local, diseñado para simular entornos reales con herramientas de bajo coste.
+
+| Proyecto                                                                             | Descripción                                                                                                          |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| [socialdevs-gitops](https://github.com/vhgalvez/socialdevs-gitops)                   | Repositorio GitOps gestionado por ArgoCD para desplegar automáticamente aplicaciones en Kubernetes.                  |
+| [Jenkins_k3d_local](https://github.com/vhgalvez/Jenkins_k3d_local)                   | Instalación automatizada de Jenkins en K3d con Helm, JCasC, agentes Kubernetes (Node.js, Kaniko), y CI/CD funcional. |
+| [argocd-bootstrap_local_k3d](https://github.com/vhgalvez/argocd-bootstrap_local_k3d) | Instalación y configuración de ArgoCD en entorno local con Helm, incluyendo ejemplo de bootstrap de aplicaciones.    |
+| [socialdevs-public-frontend](https://github.com/vhgalvez/socialdevs-public-frontend) | Aplicación frontend pública (Vue) conectada a la tubería CI/CD con Jenkins y desplegada con GitOps vía ArgoCD.       |
+
+> 💡 Todos estos proyectos están diseñados para ser usados juntos como un laboratorio DevOps completo, educativo y reproducible.
 
 ## ✅ Validaciones Importantes
 
@@ -435,22 +450,18 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 ---
 
-
 | Proyecto                                         | Repositorio                                                                                                                              |
 | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Traefik Ingress Controller external *(opcional)* | [https://github.com/vhgalvez/traefik-ansible-external-k3s-ingress](https://github.com/vhgalvez/traefik-ansible-external-k3s-ingress.git) |
+| Traefik Ingress Controller external _(opcional)_ | [https://github.com/vhgalvez/traefik-ansible-external-k3s-ingress](https://github.com/vhgalvez/traefik-ansible-external-k3s-ingress.git) |
 
 ## Arquitectura de Infraestructura Global de FlatcarMicroCloud
 
-
 ![Infraestructura Global](additional_resources/image/infraestructura_global.png)
-
 
 **Repositorio:** [arquitectura_FlatcarMicroCloud](https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud) - https://github.com/vhgalvez/arquitectura_FlatcarMicroCloud
 
 Este diagrama fue generado con **Python** utilizando la librería [Diagrams by Mingrammer](https://github.com/mingrammer/diagrams).  
 Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://github.com/vhgalvez/FlatcarMicroCloud), incluyendo red pública, túnel VPN, balanceadores Ingress, clúster Kubernetes con K3s, almacenamiento distribuido y servicios esenciales.
-
 
 ## Resumen del Flujo
 
@@ -469,7 +480,6 @@ Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://git
 5. **Ejecución de Aplicaciones**:  
    Los **nodos workers** ejecutan las aplicaciones y microservicios, mientras que los **nodos maestros** gestionan el plano de control de Kubernetes. Todos los nodos mantienen sincronización temporal mediante **chronyc**.
 
-
 ## Arquitectura de Kubernetes (Cluster K3s)
 
 ![Cluster K3s](additional_resources/image/cluster_k3s.jpg)
@@ -482,14 +492,13 @@ Representa la arquitectura completa del proyecto [FlatcarMicroCloud](https://git
 
 Pantalla de inicio de sesión de **Cockpit**, una interfaz web para administrar servidores **Rocky Linux** de forma remota y gráfica. Permite monitorear el sistema, gestionar servicios, redes, usuarios y acceder a una terminal sin depender exclusivamente de la línea de comandos.
 
-## Longhorn instalado en el clúster K3s 
+## Longhorn instalado en el clúster K3s
 
 ![alt text](additional_resources/image/k3s_ansible_Longhorn_02.png)
 
 ![alt text](additional_resources/image/k3s_ansible_Longhorn.png)
 
 ---
-
 
 ## 🌐 Configuración de Redes Virtuales con pfSense
 
@@ -591,5 +600,5 @@ Este script es útil si estás automatizando la creación de máquinas virtuales
 Especialista en DevOps, Infraestructura, Kubernetes y Automatización.  
 Ingeniero con visión estratégica orientado a soluciones escalables y eficientes.
 
-- 🌐 **GitHub:** [@vhgalvez](https://github.com/vhgalvez)  
+- 🌐 **GitHub:** [@vhgalvez](https://github.com/vhgalvez)
 - 💼 **LinkedIn:** [victor-hugo-galvez-sastoque](https://www.linkedin.com/in/victor-hugo-galvez-sastoque/)
