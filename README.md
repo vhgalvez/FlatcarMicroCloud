@@ -413,7 +413,7 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 |   2 | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config)                               | Bridge LAN real a las VMs      | Reinicia libvirt/networks                         |
 |   3 | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)           | DNS interno                    | Clúster y etcd dependen de DNS local              |
 |   4 | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)       | Sincronización de tiempo       | Necesario para certificados y etcd                |
-|   5 | [ansible-k8s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k8s-ha-loadbalancer)           | VIPs con HAProxy + Keepalived  | Expone 6443/80/443                                |
+|   5 | [ansible-k3s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k3s-ha-loadbalancer)           | VIPs con HAProxy + Keepalived  | Expone 6443/80/443                                |
 |   6 | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                 | K3s HA con etcd                | Usa la VIP como `--tls-san`                       |
 |   7 | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap) | Re-alinea master-0 a la VIP    | Solo si bootstrap inicial fue con la IP local     |
 |   8 | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access)         | Copia `kubeconfig` remoto      | Para gestionar el clúster desde tu estación       |
