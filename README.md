@@ -429,24 +429,84 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 ---
 
-## 🔗 Proyectos Relacionados
+# 🌐 Ecosistema DevOps: Entorno Local (K3d) y Producción (K3s)
 
-Este repositorio forma parte de un ecosistema completo de laboratorio DevOps en Kubernetes local, diseñado para simular entornos reales con herramientas de bajo coste.
+Este repositorio forma parte de un ecosistema completo de **laboratorio DevOps en Kubernetes**, diseñado para simular entornos reales con herramientas modernas y de bajo coste. Ideal para validar flujos CI/CD, GitOps y despliegue automatizado en entornos locales (K3d) y escalables a producción (K3s).
 
-| Proyecto                                                                             | Descripción                                                                                                          |
-| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| [socialdevs-gitops](https://github.com/vhgalvez/socialdevs-gitops)                   | Repositorio GitOps gestionado por ArgoCD para desplegar automáticamente aplicaciones en Kubernetes.                  |
-| [Jenkins_k3d_local](https://github.com/vhgalvez/Jenkins_k3d_local)                   | Instalación automatizada de Jenkins en K3d con Helm, JCasC, agentes Kubernetes (Node.js, Kaniko), y CI/CD funcional. |
-| [argocd-bootstrap_local_k3d](https://github.com/vhgalvez/argocd-bootstrap_local_k3d) | Instalación y configuración de ArgoCD en entorno local con Helm, incluyendo ejemplo de bootstrap de aplicaciones.    |
-| [socialdevs-public-frontend](https://github.com/vhgalvez/socialdevs-public-frontend) | Aplicación frontend pública (Vue) conectada a la tubería CI/CD con Jenkins y desplegada con GitOps vía ArgoCD.       |
+---
 
-> 💡 Todos estos proyectos están diseñados para ser usados juntos como un laboratorio DevOps completo, educativo y reproducible.
+## 🧹 Repositorios del ecosistema
 
-## ✅ Validaciones Importantes
+| Proyecto                                                                                                 | Descripción                                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [socialdevs-gitops](https://github.com/vhgalvez/socialdevs-gitops)                                       | Repositorio GitOps gestionado por ArgoCD. Contiene los manifiestos de las aplicaciones desplegadas automáticamente en Kubernetes.           |
+| [Jenkins\_k3d\_local](https://github.com/vhgalvez/Jenkins_k3d_local)                                     | Instalación automatizada de Jenkins en K3d usando Helm y JCasC. Incluye agentes Kubernetes (Node.js, Kaniko) y pipelines CI/CD funcionales. |
+| [argocd-bootstrap\_local\_k3d](https://github.com/vhgalvez/argocd-bootstrap_local_k3d)                   | Instalación de ArgoCD en entorno local con Helm. Incluye ejemplo de bootstrap para sincronizar aplicaciones desde el repositorio GitOps.    |
+| [socialdevs-public-frontend](https://github.com/vhgalvez/socialdevs-public-frontend)                     | Aplicación frontend (Vue.js) conectada al pipeline CI/CD (Jenkins) y desplegada con GitOps (ArgoCD).                                        |
+| [frontend-socialdevs-argocd-bootstrap](https://github.com/vhgalvez/frontend-socialdevs-argocd-bootstrap) | Configuración específica para bootstrap de la app frontend en ArgoCD. Ú til en la inicialización del entorno GitOps.                        |
 
-- 🔐 **Sealed Secrets debe instalarse antes del Ingress Controller (Traefik)** si planeas usar secretos cifrados para credenciales `htpasswd` o tokens.
-- 📡 **El acceso con `kubectl` desde el nodo de control debe validarse tras aplicar el cambio de VIP.**
-- 🔄 **ArgoCD y Jenkins pueden funcionar en paralelo, pero Jenkins debe estar listo para generar las imágenes que ArgoCD desplegará.**
+---
+
+## 🧪 Entorno local (K3d)
+
+* Cluster local de Kubernetes con [K3d](https://k3d.io/)
+* Jenkins con JCasC, agentes Kaniko/Node.js, CI funcional
+* ArgoCD con sincronización automática desde repositorio GitOps
+* Traefik como Ingress Controller con TLS local (autofirmado o mkcert)
+* Perfecto para desarrollo, testing y aprendizaje DevOps
+
+---
+
+## 🚀 Producción (K3s)
+
+* Cluster Kubernetes ligero y productivo con [K3s](https://k3s.io/)
+* Helm + ArgoCD para despliegue GitOps continuo
+* TLS con Let's Encrypt + almacenamiento persistente (Longhorn/NFS)
+* Compatible con el mismo flujo y manifiestos que K3d
+* Fácil de desplegar en cloud, bare-metal o datacenter low-cost
+
+---
+
+## 🔁 Flujo CI/CD (Jenkins + ArgoCD + GitOps)
+
+```mermaid
+graph TD
+  A[Commit en GitHub] --> B[Jenkins CI]
+  B --> C[DockerHub (build + push)]
+  B --> D[Actualiza manifiestos YAML]
+  D --> E[Repositorio GitOps (socialdevs-gitops)]
+  E --> F[ArgoCD CD]
+  F --> G[Cluster K3d o K3s]
+```
+
+## 📦 Tecnologías clave
+
+* **Kubernetes** (K3d local / K3s producción)
+* **Jenkins** (CI + JCasC + Agentes personalizados)
+* **ArgoCD** (GitOps)
+* **DockerHub** (Imágenes públicas)
+* **Vue.js** (Frontend app)
+* **Helm** (Paquetes y despliegues)
+* **Traefik** (Ingress + TLS)
+* **Longhorn** (Persistencia opcional en producción)
+
+## 📁 Estructura general
+
+```
+📆 socialdevs-gitops
+📆 Jenkins_k3d_local
+📆 argocd-bootstrap_local_k3d
+📆 socialdevs-public-frontend
+📆 frontend-socialdevs-argocd-bootstrap
+```
+
+## ✅ Objetivo
+
+Proveer una base sólida y funcional para:
+
+* Simular entornos reales DevOps desde el entorno local
+* Aprender y practicar CI/CD y GitOps
+* Escalar sin fricción hacia producción en K3s o entornos cloud
 
 ---
 
