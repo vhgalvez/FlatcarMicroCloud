@@ -426,6 +426,7 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 |  15 | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                 | Prometheus + Grafana           | Usa PVC y se expone por Traefik                   |
 |  16 | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)                         | PostgreSQL stateful            | PVC Longhorn; métricas ya disponibles             |
 |  17 | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns)                     | DDNS público en Cloudflare     | Opcional; ejecútalo antes de emitir Let’s Encrypt |
+|  18 | [cloudflare-dns-guardian](https://github.com/vhgalvez/cloudflare-dns-guardian.git)               | Protección contra ataques DDoS | Opcional; protege el acceso público a servicios expuestos |
 
 ---
 
