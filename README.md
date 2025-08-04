@@ -473,11 +473,12 @@ Este repositorio forma parte de un ecosistema completo de **laboratorio DevOps e
 ```mermaid
 graph TD
   A[Commit en GitHub] --> B[Jenkins CI]
-  B --> C[DockerHub (build + push)]
+  B --> C[DockerHub (build & push)]
   B --> D[Actualiza manifiestos YAML]
-  D --> E[Repositorio GitOps (socialdevs-gitops)]
+  D --> E[Repositorio GitOps: socialdevs-gitops]
   E --> F[ArgoCD CD]
-  F --> G[Cluster K3d o K3s]
+  F --> G[Cluster K3d/K3s]
+
 ```
 
 ## 📦 Tecnologías clave
