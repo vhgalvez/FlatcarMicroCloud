@@ -407,25 +407,25 @@ Estas interfaces están conectadas a un switch y un router de fibra óptica, ope
 
 # 🔁 Proceso Modular de Automatización para Clúster K3s HA (Bare-Metal)
 
-|  Nº | Proyecto / Repositorio                                                                           | Motivo principal               | Notas de dependencia                              |
-| --: | ------------------------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------- |
-|   1 | [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key)                   | SSH sin contraseña entre nodos | Requisito para todos los playbooks posteriores    |
-|   2 | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config)                               | Bridge LAN real a las VMs      | Reinicia libvirt/networks                         |
-|   3 | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)           | DNS interno                    | Clúster y etcd dependen de DNS local              |
-|   4 | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)       | Sincronización de tiempo       | Necesario para certificados y etcd                |
-|   5 | [ansible-k3s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k3s-ha-loadbalancer)           | VIPs con HAProxy + Keepalived  | Expone 6443/80/443                                |
-|   6 | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                 | K3s HA con etcd                | Usa la VIP como `--tls-san`                       |
-|   7 | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap) | Re-alinea master-0 a la VIP    | Solo si bootstrap inicial fue con la IP local     |
-|   8 | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access)         | Copia `kubeconfig` remoto      | Para gestionar el clúster desde tu estación       |
-|   9 | [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)               | Longhorn + NFS (PVC)           | Provee almacenamiento persistente                 |
-|  10 | [traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster)           | Ingress Controller + TLSStore  | Consume PVC Longhorn (`acme.json`)                |
-|  11 | [longhorn-dashboard-ui-ansible](https://github.com/vhgalvez/longhorn-dashboard-ui-ansible)       | UI protegida de Longhorn       | Publicada vía Traefik                             |
-|  12 | [ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal)     | Secretos cifrados para GitOps  | Requiere API K3s operativa                        |
-|  13 | [ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)               | Motor GitOps                   | Depende de Traefik, Sealed Secrets y PVC          |
-|  14 | [jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                 | CI/CD (build → push → ArgoCD)  | Publicado vía Traefik y gestionado por ArgoCD     |
-|  15 | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                 | Prometheus + Grafana           | Usa PVC y se expone por Traefik                   |
-|  16 | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)                         | PostgreSQL stateful            | PVC Longhorn; métricas ya disponibles             |
-|  17 | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns)                     | DDNS público en Cloudflare     | Opcional; ejecútalo antes de emitir Let’s Encrypt |
+|  Nº | Proyecto / Repositorio                                                                           | Motivo principal               | Notas de dependencia                                      |
+| --: | ------------------------------------------------------------------------------------------------ | ------------------------------ | --------------------------------------------------------- |
+|   1 | [generate_shared_ssh_key](https://github.com/vhgalvez/generate_shared_ssh_key)                   | SSH sin contraseña entre nodos | Requisito para todos los playbooks posteriores            |
+|   2 | [kvm-bridge-config](https://github.com/vhgalvez/kvm-bridge-config)                               | Bridge LAN real a las VMs      | Reinicia libvirt/networks                                 |
+|   3 | [ansible-CoreDNS-setup-Linux](https://github.com/vhgalvez/ansible-CoreDNS-setup-Linux)           | DNS interno                    | Clúster y etcd dependen de DNS local                      |
+|   4 | [ansible-ntp-chrony-kubernetes](https://github.com/vhgalvez/ansible-ntp-chrony-kubernetes)       | Sincronización de tiempo       | Necesario para certificados y etcd                        |
+|   5 | [ansible-k3s-ha-loadbalancer](https://github.com/vhgalvez/ansible-k3s-ha-loadbalancer)           | VIPs con HAProxy + Keepalived  | Expone 6443/80/443                                        |
+|   6 | [ansible-k3s-etcd-cluster](https://github.com/vhgalvez/ansible-k3s-etcd-cluster)                 | K3s HA con etcd                | Usa la VIP como `--tls-san`                               |
+|   7 | [k3s-vip-switch-master1-bootstrap](https://github.com/vhgalvez/k3s-vip-switch-master1-bootstrap) | Re-alinea master-0 a la VIP    | Solo si bootstrap inicial fue con la IP local             |
+|   8 | [ansible-k3s-configure-access](https://github.com/vhgalvez/ansible-k3s-configure-access)         | Copia `kubeconfig` remoto      | Para gestionar el clúster desde tu estación               |
+|   9 | [flatcar-k3s-storage-suite](https://github.com/vhgalvez/flatcar-k3s-storage-suite)               | Longhorn + NFS (PVC)           | Provee almacenamiento persistente                         |
+|  10 | [traefik-ansible-k3s-cluster](https://github.com/vhgalvez/traefik-ansible-k3s-cluster)           | Ingress Controller + TLSStore  | Consume PVC Longhorn (`acme.json`)                        |
+|  11 | [longhorn-dashboard-ui-ansible](https://github.com/vhgalvez/longhorn-dashboard-ui-ansible)       | UI protegida de Longhorn       | Publicada vía Traefik                                     |
+|  12 | [ansible-SealedSecrets-kubeseal](https://github.com/vhgalvez/ansible-SealedSecrets-kubeseal)     | Secretos cifrados para GitOps  | Requiere API K3s operativa                                |
+|  13 | [ArgoCD-ansible-kubernetes](https://github.com/vhgalvez/ArgoCD-ansible-kubernetes)               | Motor GitOps                   | Depende de Traefik, Sealed Secrets y PVC                  |
+|  14 | [jenkins-ansible-playbook](https://github.com/vhgalvez/jenkins-ansible-playbook)                 | CI/CD (build → push → ArgoCD)  | Publicado vía Traefik y gestionado por ArgoCD             |
+|  15 | [ansible-monitoring-stack](https://github.com/vhgalvez/ansible-monitoring-stack)                 | Prometheus + Grafana           | Usa PVC y se expone por Traefik                           |
+|  16 | [postgres-ansible-nfs](https://github.com/vhgalvez/postgres-ansible-nfs)                         | PostgreSQL stateful            | PVC Longhorn; métricas ya disponibles                     |
+|  17 | [cloudflare-dynamic-dns](https://github.com/vhgalvez/cloudflare-dynamic-dns)                     | DDNS público en Cloudflare     | Opcional; ejecútalo antes de emitir Let’s Encrypt         |
 |  18 | [cloudflare-dns-guardian](https://github.com/vhgalvez/cloudflare-dns-guardian.git)               | Protección contra ataques DDoS | Opcional; protege el acceso público a servicios expuestos |
 
 ---
@@ -441,8 +441,8 @@ Este repositorio forma parte de un ecosistema completo de **laboratorio DevOps e
 | Proyecto                                                                                                 | Descripción                                                                                                                                 |
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | [socialdevs-gitops](https://github.com/vhgalvez/socialdevs-gitops)                                       | Repositorio GitOps gestionado por ArgoCD. Contiene los manifiestos de las aplicaciones desplegadas automáticamente en Kubernetes.           |
-| [Jenkins\_k3d\_local](https://github.com/vhgalvez/Jenkins_k3d_local)                                     | Instalación automatizada de Jenkins en K3d usando Helm y JCasC. Incluye agentes Kubernetes (Node.js, Kaniko) y pipelines CI/CD funcionales. |
-| [argocd-bootstrap\_local\_k3d](https://github.com/vhgalvez/argocd-bootstrap_local_k3d)                   | Instalación de ArgoCD en entorno local con Helm. Incluye ejemplo de bootstrap para sincronizar aplicaciones desde el repositorio GitOps.    |
+| [Jenkins_k3d_local](https://github.com/vhgalvez/Jenkins_k3d_local)                                       | Instalación automatizada de Jenkins en K3d usando Helm y JCasC. Incluye agentes Kubernetes (Node.js, Kaniko) y pipelines CI/CD funcionales. |
+| [argocd-bootstrap_local_k3d](https://github.com/vhgalvez/argocd-bootstrap_local_k3d)                     | Instalación de ArgoCD en entorno local con Helm. Incluye ejemplo de bootstrap para sincronizar aplicaciones desde el repositorio GitOps.    |
 | [socialdevs-public-frontend](https://github.com/vhgalvez/socialdevs-public-frontend)                     | Aplicación frontend (Vue.js) conectada al pipeline CI/CD (Jenkins) y desplegada con GitOps (ArgoCD).                                        |
 | [frontend-socialdevs-argocd-bootstrap](https://github.com/vhgalvez/frontend-socialdevs-argocd-bootstrap) | Configuración específica para bootstrap de la app frontend en ArgoCD. Ú til en la inicialización del entorno GitOps.                        |
 
@@ -450,21 +450,21 @@ Este repositorio forma parte de un ecosistema completo de **laboratorio DevOps e
 
 ## 🧪 Entorno local (K3d)
 
-* Cluster local de Kubernetes con [K3d](https://k3d.io/)
-* Jenkins con JCasC, agentes Kaniko/Node.js, CI funcional
-* ArgoCD con sincronización automática desde repositorio GitOps
-* Traefik como Ingress Controller con TLS local (autofirmado o mkcert)
-* Perfecto para desarrollo, testing y aprendizaje DevOps
+- Cluster local de Kubernetes con [K3d](https://k3d.io/)
+- Jenkins con JCasC, agentes Kaniko/Node.js, CI funcional
+- ArgoCD con sincronización automática desde repositorio GitOps
+- Traefik como Ingress Controller con TLS local (autofirmado o mkcert)
+- Perfecto para desarrollo, testing y aprendizaje DevOps
 
 ---
 
 ## 🚀 Producción (K3s)
 
-* Cluster Kubernetes ligero y productivo con [K3s](https://k3s.io/)
-* Helm + ArgoCD para despliegue GitOps continuo
-* TLS con Let's Encrypt + almacenamiento persistente (Longhorn/NFS)
-* Compatible con el mismo flujo y manifiestos que K3d
-* Fácil de desplegar en cloud, bare-metal o datacenter low-cost
+- Cluster Kubernetes ligero y productivo con [K3s](https://k3s.io/)
+- Helm + ArgoCD para despliegue GitOps continuo
+- TLS con Let's Encrypt + almacenamiento persistente (Longhorn/NFS)
+- Compatible con el mismo flujo y manifiestos que K3d
+- Fácil de desplegar en cloud, bare-metal o datacenter low-cost
 
 ---
 
@@ -482,14 +482,14 @@ graph TD
 
 ## 📦 Tecnologías clave
 
-* **Kubernetes** (K3d local / K3s producción)
-* **Jenkins** (CI + JCasC + Agentes personalizados)
-* **ArgoCD** (GitOps)
-* **DockerHub** (Imágenes públicas)
-* **Vue.js** (Frontend app)
-* **Helm** (Paquetes y despliegues)
-* **Traefik** (Ingress + TLS)
-* **Longhorn** (Persistencia opcional en producción)
+- **Kubernetes** (K3d local / K3s producción)
+- **Jenkins** (CI + JCasC + Agentes personalizados)
+- **ArgoCD** (GitOps)
+- **DockerHub** (Imágenes públicas)
+- **Vue.js** (Frontend app)
+- **Helm** (Paquetes y despliegues)
+- **Traefik** (Ingress + TLS)
+- **Longhorn** (Persistencia opcional en producción)
 
 ## 📁 Estructura general
 
@@ -505,9 +505,9 @@ graph TD
 
 Proveer una base sólida y funcional para:
 
-* Simular entornos reales DevOps desde el entorno local
-* Aprender y practicar CI/CD y GitOps
-* Escalar sin fricción hacia producción en K3s o entornos cloud
+- Simular entornos reales DevOps desde el entorno local
+- Aprender y practicar CI/CD y GitOps
+- Escalar sin fricción hacia producción en K3s o entornos cloud
 
 ---
 
