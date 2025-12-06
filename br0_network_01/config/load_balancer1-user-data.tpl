@@ -73,7 +73,7 @@ write_files:
     content: |
       net.ipv4.ip_forward = 1
       net.ipv4.ip_nonlocal_bind = 1
-      
+
   - path: /etc/chrony.conf
     permissions: "0644"
     content: |
