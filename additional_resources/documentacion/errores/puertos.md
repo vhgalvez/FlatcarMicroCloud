@@ -1,6 +1,6 @@
 ¿Debo “abrir” (configurar) los NodePorts 32591 y 31541 en HAProxy para cada Ingress (local / público)?
 No.
-Esos dos NodePorts son únicos para el Service de Traefik, no para cada IngressRoute. Todas las rutas (locales y públicas) comparten el mismo punto de entrada L4:
+Esos dos NodePorts son únicos para el Service de Traefik, no para cada IngressRoute.Todas las rutas (locales y públicas) comparten el mismo punto de entrada L4:
 
 Capa	Externo	HAProxy	Kubernetes -> Traefik	IngressRoute
 L4	80 / 443	➜ 32591 / 31541	➜ Service traefik (NodePort)	(Reglas Host/Path que tu definas)
